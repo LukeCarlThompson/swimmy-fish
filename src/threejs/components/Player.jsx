@@ -68,10 +68,13 @@ const EyeBall = props => {
   useFrame(state => {
     const [x, y, z] = playerStore.getState().velocity;
     const lerpOutput = vec3.lerp(
-      vec3.set(sigmoid(y * -1), sigmoid(y * -0.5) * 0.25 + 0.5, 0),
+      vec3.set(sigmoid(y * -0.1), sigmoid(y * -1) * 0.1 + 0.5, 0),
       0.25
     );
-    ref.current.setRotationFromAxisAngle(lerpOutput, 0.5);
+    ref.current.setRotationFromAxisAngle(
+      lerpOutput.normalize(),
+      props.mirror ? -10 : 0.5
+    );
   });
 
   return (
@@ -128,7 +131,10 @@ const Player = props => {
 
     props.left && api.velocity.set(velocityX - 1, velocityY, 0);
 
+    // console.log('turning -->', sigmoid(velocityX / 10) * 180);
+
     // Main player body rotation
+    // TODO: Change direction based on input not velocity and lerp or spring to the new direction.
     api.rotation.set(0, 0, degToRad(sigmoid(velocityY / 10) * 45));
 
     // Side fins rotation
@@ -196,6 +202,7 @@ const Player = props => {
       </RoundedBox>
       {/* Eyeball */}
       <EyeBall position={[0.6, 0.1, 0.5]} />
+      <EyeBall position={[0.6, 0.1, -0.5]} mirror />
       {/* Tail */}
       <Tail color={props.color} />
     </group>
