@@ -133,6 +133,8 @@ const Player = props => {
 
     // console.log('turning -->', sigmoid(velocityX / 10) * 180);
 
+    // TODO: try setting impulse instead of velocity api.applyImpulse([0, 5, -10], [1, 1, 1])
+
     // Main player body rotation
     // TODO: Change direction based on input not velocity and lerp or spring to the new direction.
     api.rotation.set(0, 0, degToRad(sigmoid(velocityY / 10) * 45));

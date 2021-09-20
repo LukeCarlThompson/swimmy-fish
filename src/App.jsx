@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import React from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import styled from 'styled-components';
 import { useSpring, a } from '@react-spring/three';
-import { OrbitControls, Sky, Plane, Sphere } from '@react-three/drei';
+import { OrbitControls, Sky } from '@react-three/drei';
 import * as THREE from 'three';
 import Scene from './threejs/components/Scene';
 import Effects from './threejs/components/Effects';
 import playerStore from './stores/playerStore';
-import { sigmoid } from './threejs/helpers';
 
 const SceneStyles = styled.div`
   width: 100vw;
@@ -15,7 +14,6 @@ const SceneStyles = styled.div`
 `;
 
 const CameraMovement = () => {
-  // const lookAtPos = new THREE.Vector3();
   const vec3 = new THREE.Vector3();
   console.log('Camera movement');
 
@@ -76,11 +74,9 @@ const App = () => {
           sunPosition={[0.1, 0, -5]}
           distance={10000}
         />
-        {/* <Sphere scale={500} position={[4.5, -519, -10]}>
-          <meshPhongMaterial attach="material" color="#2f313d" />
-        </Sphere> */}
+        <fog attach="fog" args={['#547f91', 30, 200]} />
         <CameraMovement />
-        {/* <Effects /> */}
+        <Effects />
       </Canvas>
     </SceneStyles>
   );

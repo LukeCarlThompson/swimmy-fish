@@ -90,7 +90,6 @@ const Scene = props => {
   return (
     <>
       <pointLight position={[10, 10, -10]} decay={10} intensity={2} />
-
       <Physics>
         {/* <Block ref={ref} position={animPosition} /> */}
         <Player
