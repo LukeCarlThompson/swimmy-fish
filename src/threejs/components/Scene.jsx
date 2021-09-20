@@ -90,12 +90,16 @@ const Scene = props => {
     window.addEventListener('keyup', keyupHandler);
     window.addEventListener('mousedown', mouseDownHandler);
     window.addEventListener('mouseup', mouseUpHandler);
+    window.addEventListener('touchstart', mouseDownHandler);
+    window.addEventListener('touchend', mouseUpHandler);
 
     return () => {
       window.removeEventListener('keydown', keydownHandler);
       window.removeEventListener('keyup', keyupHandler);
       window.removeEventListener('mousedown', mouseDownHandler);
       window.removeEventListener('mouseup', mouseUpHandler);
+      window.removeEventListener('touchstart', mouseDownHandler);
+      window.removeEventListener('touchend', mouseUpHandler);
     };
   }, []);
 
