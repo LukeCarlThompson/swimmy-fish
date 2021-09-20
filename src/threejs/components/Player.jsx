@@ -35,7 +35,7 @@ const Tail = props => {
         args={[0.6, 0.6, 0.2]}
         position={[-0.2, 0, 0]}
         radius={0.05}
-        smoothness={4}
+        smoothness={2}
       >
         <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
       </RoundedBox>
@@ -43,7 +43,7 @@ const Tail = props => {
         args={[0.75, 0.4, 0.1]}
         position={[-0.6, 0.15, 0]}
         radius={0.05}
-        smoothness={4}
+        smoothness={2}
         rotation={[0, 0, -10]}
       >
         <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
@@ -52,7 +52,7 @@ const Tail = props => {
         args={[0.75, 0.4, 0.1]}
         position={[-0.6, -0.15, 0]}
         radius={0.05}
-        smoothness={4}
+        smoothness={2}
         rotation={[0, 0, 10]}
       >
         <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
@@ -152,24 +152,37 @@ const Player = props => {
 
   return (
     <group ref={ref}>
-      <RoundedBox args={[2, 1, 1]} radius={0.15} smoothness={4}>
+      <RoundedBox
+        args={[1.5, 1.2, 0.8]}
+        position={[0.25, 0.1, 0]}
+        radius={0.2}
+        smoothness={2}
+      >
         <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
       </RoundedBox>
       <RoundedBox
-        args={[0.5, 0.5, 0.9]}
-        position={[0.9, -0.25, 0]}
+        args={[1, 0.75, 0.6]}
+        position={[-0.5, 0.05, 0]}
+        radius={0.2}
+        smoothness={2}
+      >
+        <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
+      </RoundedBox>
+      <RoundedBox
+        args={[0.7, 0.5, 0.8]}
+        position={[0.8, -0.25, 0]}
         rotation={[0, 0, 0]}
         radius={0.1}
-        smoothness={4}
+        smoothness={2}
       >
         <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
       </RoundedBox>
       {/* Dorsal fin */}
       <RoundedBox
-        args={[0.5, 0.5, 0.1]}
-        position={[0.25, 0.5, 0]}
+        args={[0.5, 0.5, 0.05]}
+        position={[0.25, 0.7, 0]}
         radius={0.05}
-        smoothness={4}
+        smoothness={2}
         rotation={[0, 0, 10]}
       >
         <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
@@ -178,18 +191,18 @@ const Player = props => {
       <RoundedBox
         ref={leftFinRef}
         args={[0.5, 0.1, 0.6]}
-        position={[-0, -0.25, 0.5]}
+        position={[-0, -0.25, 0.4]}
         radius={0.05}
-        smoothness={4}
+        smoothness={2}
       >
         <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
       </RoundedBox>
       <RoundedBox
         ref={rightFinRef}
         args={[0.5, 0.1, 0.6]}
-        position={[-0, -0.25, -0.5]}
+        position={[-0, -0.25, -0.4]}
         radius={0.05}
-        smoothness={4}
+        smoothness={2}
       >
         <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
       </RoundedBox>
@@ -198,13 +211,13 @@ const Player = props => {
         args={[0.1, 0.1, 0.5]}
         position={[1.15, -0.4, 0]}
         radius={0.05}
-        smoothness={4}
+        smoothness={2}
       >
         <meshPhongMaterial attach="material" color="black" />
       </RoundedBox>
       {/* Eyeball */}
-      <EyeBall position={[0.6, 0.1, 0.5]} />
-      <EyeBall position={[0.6, 0.1, -0.5]} mirror />
+      <EyeBall position={[0.6, 0.1, 0.35]} />
+      <EyeBall position={[0.6, 0.1, -0.35]} mirror />
       {/* Tail */}
       <Tail color={props.color} />
     </group>
