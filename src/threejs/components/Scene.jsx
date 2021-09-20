@@ -78,12 +78,24 @@ const Scene = props => {
       }
     };
 
+    const mouseDownHandler = () => {
+      setPressingUp(true);
+    };
+
+    const mouseUpHandler = () => {
+      setPressingUp(false);
+    };
+
     window.addEventListener('keydown', keydownHandler);
     window.addEventListener('keyup', keyupHandler);
+    window.addEventListener('mousedown', mouseDownHandler);
+    window.addEventListener('mouseup', mouseUpHandler);
 
     return () => {
       window.removeEventListener('keydown', keydownHandler);
       window.removeEventListener('keyup', keyupHandler);
+      window.removeEventListener('mousedown', mouseDownHandler);
+      window.removeEventListener('mouseup', mouseUpHandler);
     };
   }, []);
 
