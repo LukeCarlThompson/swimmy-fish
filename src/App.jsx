@@ -74,9 +74,9 @@ const App = () => {
           sunPosition={[0.1, 0, -5]}
           distance={10000}
         />
-        <fog attach="fog" args={['#547f91', 30, 200]} />
+        {/* <fog attach="fog" args={['#547f91', 30, 200]} /> */}
         <CameraMovement />
-        <Effects />
+        {/* <Effects /> */}
       </Canvas>
     </SceneStyles>
   );
