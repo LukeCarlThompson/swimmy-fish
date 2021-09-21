@@ -5,9 +5,9 @@ import React, {
   useCallback,
   createRef,
 } from 'react';
-import { useSpring, a } from '@react-spring/three';
+// import { useSpring, a } from '@react-spring/three';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Physics, useBox } from '@react-three/cannon';
+import { useBox } from '@react-three/cannon';
 import { Plane, Sphere, RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
 import playerStore from '../../stores/playerStore';
@@ -23,8 +23,11 @@ const Tail = props => {
     // tail movement
     tailRef.current.rotation.set(
       0,
-      degToRad(Math.sin(velocityY * 0.5 + state.clock.getElapsedTime() * 2)) *
-        35,
+      degToRad(
+        Math.sin(
+          (velocityY + velocityX) * 0.5 + state.clock.getElapsedTime() * 2
+        )
+      ) * 35,
       0
     );
   });
@@ -111,25 +114,31 @@ const Player = props => {
       playerStore.setState({ position: p });
     });
 
+    const unsubscribeRotation = api.rotation.subscribe(r => {
+      playerStore.setState({ rotation: r });
+    });
+
     return () => {
       unsubscribeVelocity();
       unsubscribePosition();
+      unsubscribeRotation();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useFrame(() => {
+  useFrame(state => {
     const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
+    // const [rotationX, rotationY, rotationZ] = playerStore.getState().rotation;
 
     if (props.up) {
-      api.velocity.set(0, velocityY + 1, 0);
+      api.velocity.set(velocityX, velocityY + 1, velocityZ);
     }
 
-    props.down && api.velocity.set(0, velocityY - 1, 0);
+    props.down && api.velocity.set(velocityX, velocityY - 1, velocityZ);
 
-    props.right && api.velocity.set(velocityX + 1, velocityY, 0);
+    props.right && api.velocity.set(velocityX + 1, velocityY, velocityZ);
 
-    props.left && api.velocity.set(velocityX - 1, velocityY, 0);
+    props.left && api.velocity.set(velocityX - 1, velocityY, velocityZ);
 
     // console.log('turning -->', sigmoid(velocityX / 10) * 180);
 
@@ -137,7 +146,27 @@ const Player = props => {
 
     // Main player body rotation
     // TODO: Change direction based on input not velocity and lerp or spring to the new direction.
-    api.rotation.set(0, 0, degToRad(sigmoid(velocityY / 10) * 45));
+    // api.rotation.set(0, 0, degToRad(sigmoid(velocityY / 10) * 45));
+
+    // console.log('rotationX -->', rotationX);
+
+    // const wobble = Math.sin(state.clock.getElapsedTime() * 10) * 5;
+
+    const wobble =
+      Math.sin(
+        (velocityY + velocityX) * 0.5 + state.clock.getElapsedTime() * 2
+      ) * -10;
+
+    const lerpOutput = vec3.lerp(
+      vec3.set(
+        0,
+        degToRad((sigmoid(velocityX) * 0.5 - 0.5) * 180 + wobble),
+        // degToRad(velocityX >= 0 ? rotationX * 0.9 : 180),
+        degToRad(sigmoid(velocityY / 10) * 45)
+      ),
+      0.1
+    );
+    api.rotation.set(0, lerpOutput.y, lerpOutput.z);
 
     // Side fins rotation
     leftFinRef.current.setRotationFromAxisAngle(
