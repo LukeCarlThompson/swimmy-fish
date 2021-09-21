@@ -22,10 +22,11 @@ const CameraMovement = () => {
     // state.camera.position.y = y;
     const lerpOutput = vec3.lerp(vec3.set(x, y, z), 0.05);
     state.camera.lookAt(lerpOutput);
-    // state.camera.lookAt(vec3.set(x, y, z));
-    // state.camera.position.y = y;
-    // state.camera.position.x = x;
-    // state.camera.position.z = 50;
+    // state.camera.position = lerpOutput;
+    // console.log('lerpOutput -->', lerpOutput);
+    // state.camera.position.y = lerpOutput.y;
+    state.camera.position.x = lerpOutput.x;
+    state.camera.position.z = 30;
     // sigmoid(THREE.MathUtils.lerp(state.camera.position.y, y, 0.5)) * 20;
     // THREE.MathUtils.lerp(state.camera.position.y, y, 1);
 
@@ -57,12 +58,12 @@ const App = () => {
           near: 0.1,
         }}
       >
-        <OrbitControls
+        {/* <OrbitControls
           enabled
           target={[0, -20, 0]}
           minDistance={20}
           maxDistance={60}
-        />
+        /> */}
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
         <Scene />

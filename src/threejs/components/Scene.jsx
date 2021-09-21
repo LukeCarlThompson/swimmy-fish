@@ -6,9 +6,9 @@ import React, {
   useCallback,
   createRef,
 } from 'react';
-import { useSpring, a } from '@react-spring/three';
+// import { useSpring, a } from '@react-spring/three';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Physics, useBox, usePlane } from '@react-three/cannon';
+import { Physics, useBox, usePlane, useSpring } from '@react-three/cannon';
 import playerStore from '../../stores/playerStore';
 import { sigmoid, degToRad } from '../helpers';
 import Player from './Player';
@@ -38,7 +38,7 @@ const Scene = props => {
 
   useEffect(() => {
     const keydownHandler = e => {
-      if (e.keyCode === 38 || e.keyCode === 87) {
+      if (e.keyCode === 38 || e.keyCode === 87 || e.keyCode === 32) {
         // up
         setPressingUp(true);
 
@@ -58,7 +58,7 @@ const Scene = props => {
     };
 
     const keyupHandler = e => {
-      if (e.keyCode === 38 || e.keyCode === 87) {
+      if (e.keyCode === 38 || e.keyCode === 87 || e.keyCode === 32) {
         // up
         console.log('up keyup');
         setPressingUp(false);
@@ -106,7 +106,7 @@ const Scene = props => {
   return (
     <>
       <pointLight position={[10, 10, -10]} decay={10} intensity={2} />
-      <Physics>
+      <Physics gravity={[0, -10, 0]} tolerance={0.1}>
         {/* <Block ref={ref} position={animPosition} /> */}
         <Player
           color="red"

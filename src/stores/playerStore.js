@@ -3,6 +3,7 @@ import create from 'zustand';
 const playerStore = create(set => ({
   position: [0, 0, 0],
   velocity: [0, 0, 0],
+  rotation: [0, 0, 0],
   setVelocity: newVelocity => set({ velocity: newVelocity }),
   increaseVelocityUp: () =>
     set(state => ({
