@@ -112,7 +112,7 @@ function getAttributeData(instances, width) {
 
 export default function Grass({
   options = { bW: 0.12, bH: 1, joints: 5 },
-  width = 100,
+  width = 200,
   instances = 50000,
 }) {
   const { bW, bH, joints } = options;
@@ -149,7 +149,7 @@ export default function Grass({
   );
   return (
     <>
-      <mesh position={[5, -21, -30]}>
+      <mesh position={[0, -10, -30]}>
         <instancedBufferGeometry
           index={baseGeom.index}
           attributes-position={baseGeom.attributes.position}
@@ -178,8 +178,8 @@ export default function Grass({
         </instancedBufferGeometry>
         <grassMaterial ref={materialRef} map={texture} alphaMap={alphaMap} />
       </mesh>
-      <mesh position={[5, -21, -30]} geometry={groundGeo}>
-        <meshStandardMaterial color="#1b1b0e" />
+      <mesh position={[5, -10, -30]} geometry={groundGeo}>
+        <meshStandardMaterial color="#4f4528" />
       </mesh>
     </>
   );

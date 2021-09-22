@@ -16,14 +16,14 @@ import Player from './Player';
 const Plane = props => {
   const [ref] = usePlane(() => ({
     rotation: [-Math.PI / 2, 0, 0],
-    position: [0, -20, 0],
+    position: [0, -10, 0],
     ...props,
   }));
   return (
     <mesh ref={ref} receiveShadow>
-      <planeBufferGeometry attach="geometry" args={[1009, 1000]} />
+      <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
       <shadowMaterial attach="material" color="#171717" />
-      <meshStandardMaterial color="#4bb3fd" />
+      <meshStandardMaterial color="#615637" />
     </mesh>
   );
 };
@@ -33,6 +33,8 @@ const Scene = props => {
   const [pressingDown, setPressingDown] = useState(false);
   const [pressingLeft, setPressingLeft] = useState(false);
   const [pressingRight, setPressingRight] = useState(false);
+  const gravityRef = useRef([0, -10, 0]);
+  const [gravity, setGravity] = useState([0, -10, 0]);
 
   console.log('Scene');
 
@@ -103,10 +105,24 @@ const Scene = props => {
     };
   }, []);
 
+  useFrame(state => {
+    const [x, y, z] = playerStore.getState().position;
+    const gravityX = x < -10 ? 10 : x > 10 ? -10 : x * -1;
+    const gravityY = y < -10 ? 10 : y > 10 ? -10 : y * -1;
+    const gravityZ = z < -10 ? 10 : z > 10 ? -10 : z * -1;
+    setGravity([gravityX, gravityY, gravityZ]);
+
+    // console.log('[gravityX, gravityY, gravityZ]', [
+    //   gravityX,
+    //   gravityY,
+    //   gravityZ,
+    // ]);
+  });
+
   return (
     <>
       <pointLight position={[10, 10, -10]} decay={10} intensity={2} />
-      <Physics gravity={[0, -10, 0]} tolerance={0.1}>
+      <Physics gravity={gravity} tolerance={0.1}>
         {/* <Block ref={ref} position={animPosition} /> */}
         <Player
           color="red"

@@ -15,7 +15,7 @@ import { sigmoid, degToRad } from '../helpers';
 
 const Tail = props => {
   const tailRef = useRef();
-  const vec3 = new THREE.Vector3();
+  // const vec3 = new THREE.Vector3();
 
   useFrame(state => {
     const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
@@ -24,9 +24,7 @@ const Tail = props => {
     tailRef.current.rotation.set(
       0,
       degToRad(
-        Math.sin(
-          (velocityY + velocityX) * 0.5 + state.clock.getElapsedTime() * 2
-        )
+        Math.sin(velocityY + velocityX + state.clock.getElapsedTime() * 4)
       ) * 35,
       0
     );
@@ -97,7 +95,12 @@ const EyeBall = props => {
 };
 
 const Player = props => {
-  const [ref, api] = useBox(() => ({ mass: 1, position: [0, 5, 0], ...props }));
+  const [ref, api] = useBox(() => ({
+    mass: 1,
+    position: [0, 0, 0],
+    linearDamping: 0.5,
+    ...props,
+  }));
   const leftFinRef = useRef();
   const rightFinRef = useRef();
   const vec3 = new THREE.Vector3();
@@ -131,10 +134,10 @@ const Player = props => {
     // const [rotationX, rotationY, rotationZ] = playerStore.getState().rotation;
 
     if (props.up) {
-      api.velocity.set(velocityX, velocityY + 1, velocityZ);
+      api.velocity.set(velocityX, velocityY + 0.2, velocityZ);
     }
 
-    props.down && api.velocity.set(velocityX, velocityY - 1, velocityZ);
+    props.down && api.velocity.set(velocityX, velocityY - 0.2, velocityZ);
 
     props.right && api.velocity.set(velocityX + 1, velocityY, velocityZ);
 
@@ -153,16 +156,14 @@ const Player = props => {
     // const wobble = Math.sin(state.clock.getElapsedTime() * 10) * 5;
 
     const wobble =
-      Math.sin(
-        (velocityY + velocityX) * 0.5 + state.clock.getElapsedTime() * 2
-      ) * -10;
+      Math.sin(velocityY + velocityX + state.clock.getElapsedTime() * 4) * -10;
 
     const lerpOutput = vec3.lerp(
       vec3.set(
         0,
-        degToRad((sigmoid(velocityX) * 0.5 - 0.5) * 180 + wobble),
+        degToRad((sigmoid(velocityX * 0.25) * 0.5 - 0.5) * 180 + wobble),
         // degToRad(velocityX >= 0 ? rotationX * 0.9 : 180),
-        degToRad(sigmoid(velocityY / 10) * 45)
+        degToRad(sigmoid(velocityY / 5) * 60)
       ),
       0.1
     );

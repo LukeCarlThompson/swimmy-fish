@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import styled from 'styled-components';
 import { useSpring, a } from '@react-spring/three';
@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import Scene from './threejs/components/Scene';
 import Effects from './threejs/components/Effects';
 import playerStore from './stores/playerStore';
+import Grass from './threejs/components/Grass';
 
 const SceneStyles = styled.div`
   width: 100vw;
@@ -26,7 +27,7 @@ const CameraMovement = () => {
     // console.log('lerpOutput -->', lerpOutput);
     // state.camera.position.y = lerpOutput.y;
     state.camera.position.x = lerpOutput.x;
-    state.camera.position.z = 30;
+    state.camera.position.z = 20;
     // sigmoid(THREE.MathUtils.lerp(state.camera.position.y, y, 0.5)) * 20;
     // THREE.MathUtils.lerp(state.camera.position.y, y, 1);
 
@@ -52,7 +53,7 @@ const App = () => {
         shadows
         colorManagement
         camera={{
-          position: [4.5, -10, 50],
+          position: [0, 0, 20],
           fov: 35,
           far: 300,
           near: 0.1,
@@ -76,6 +77,9 @@ const App = () => {
           distance={10000}
         />
         {/* <fog attach="fog" args={['#547f91', 30, 200]} /> */}
+        <Suspense fallback={null}>
+          <Grass />
+        </Suspense>
         <CameraMovement />
         {/* <Effects /> */}
       </Canvas>
