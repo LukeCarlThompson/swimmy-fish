@@ -25,7 +25,7 @@ const PostProcessing = () => {
 
   return (
     <EffectComposer>
-      <SSAO
+      {/* <SSAO
         blendFunction={BlendFunction.MULTIPLY}
         samples={30}
         rings={4}
@@ -35,7 +35,7 @@ const PostProcessing = () => {
         distanceThreshold={0.9}
         bias={0.5}
         color="#000"
-      />
+      /> */}
       <ToneMapping
         blendFunction={BlendFunction.NORMAL} // blend mode
         adaptive={false} // toggle adaptive luminance map usage
@@ -50,31 +50,31 @@ const PostProcessing = () => {
         brightness={-0.1} // brightness. min: -1, max: 1
         contrast={-0.12} // contrast: min -1, max: 1
       /> */}
-      <Bloom
-        intensity={0.2}
+      {/* <Bloom
+        intensity={0.3}
         luminanceThreshold={0.2}
         luminanceSmoothing={1}
         height={800}
-      />
-      <Bloom
+      /> */}
+      {/* <Bloom
         intensity={0.1}
         luminanceThreshold={0.2}
         luminanceSmoothing={1}
         height={500}
-      />
-      <ChromaticAberration
+      /> */}
+      {/* <ChromaticAberration
         blendFunction={BlendFunction.NORMAL} // blend mode
         offset={[0.001, 0.001]} // color offset
-      />
-      <Vignette eskil={false} offset={0.01} darkness={0.5} />
+      /> */}
+      {/* <Vignette eskil={false} offset={0.01} darkness={0.5} /> */}
       <DepthOfField
         ref={dofRef}
-        focusDistance={0.17}
+        focusDistance={0.05}
         focalLength={0.3}
-        bokehScale={4}
+        bokehScale={2}
         height={480}
       />
-      <Noise opacity={0.15} premultiply blendFunction={BlendFunction.NORMAL} />
+      {/* <Noise opacity={0.15} premultiply blendFunction={BlendFunction.NORMAL} /> */}
     </EffectComposer>
   );
 };

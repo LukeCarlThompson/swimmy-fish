@@ -33,7 +33,8 @@ const Scene = props => {
   const [pressingDown, setPressingDown] = useState(false);
   const [pressingLeft, setPressingLeft] = useState(false);
   const [pressingRight, setPressingRight] = useState(false);
-  const gravityRef = useRef([0, -10, 0]);
+  const [applyForce, setApplyForce] = useState(false);
+  const mousePositionRef = useRef([0, 0, 0]);
   const [gravity, setGravity] = useState([0, -10, 0]);
 
   console.log('Scene');
@@ -81,11 +82,17 @@ const Scene = props => {
     };
 
     const mouseDownHandler = () => {
-      setPressingUp(true);
+      // setPressingUp(true);
+      // const [x, y, z] = mousePositionRef.current;
+      // playerStore.setState({ velocity: [x, y, z] });
+
+      // console.log('mousePositionRef.current -->', mousePositionRef.current);
+      setApplyForce(true);
     };
 
     const mouseUpHandler = () => {
-      setPressingUp(false);
+      // setPressingUp(false);
+      setApplyForce(false);
     };
 
     window.addEventListener('keydown', keydownHandler);
@@ -105,12 +112,27 @@ const Scene = props => {
     };
   }, []);
 
+  //   useFrame(({ mouse: { x, y }, viewport: { height, width } }) =>
+  //   position.set((x * width) / 2, (y * height) / 2, 0),
+  // )
+
   useFrame(state => {
+    const { mouse, viewport } = state;
     const [x, y, z] = playerStore.getState().position;
     const gravityX = x < -10 ? 10 : x > 10 ? -10 : x * -1;
     const gravityY = y < -10 ? 10 : y > 10 ? -10 : y * -1;
     const gravityZ = z < -10 ? 10 : z > 10 ? -10 : z * -1;
-    setGravity([gravityX, gravityY, gravityZ]);
+    // This causes too many rerenders try and find a way around setting state
+    // setGravity([gravityX, gravityY, gravityZ]);
+
+    const mousePositionX = (mouse.x * viewport.width) / 2;
+    const mousePositionY = (mouse.y * viewport.height) / 2;
+
+    mousePositionRef.current = [mousePositionX, mousePositionY, 0];
+
+    playerStore.setState({
+      mousePosition: [mousePositionX, mousePositionY, 0],
+    });
 
     // console.log('[gravityX, gravityY, gravityZ]', [
     //   gravityX,
@@ -122,7 +144,8 @@ const Scene = props => {
   return (
     <>
       <pointLight position={[10, 10, -10]} decay={10} intensity={2} />
-      <Physics gravity={gravity} tolerance={0.1}>
+      {/* <Physics gravity={gravity} tolerance={0.1}> */}
+      <Physics gravity={[0, 0, 0]} tolerance={0.1}>
         {/* <Block ref={ref} position={animPosition} /> */}
         <Player
           color="red"
@@ -130,6 +153,7 @@ const Scene = props => {
           down={pressingDown}
           left={pressingLeft}
           right={pressingRight}
+          applyForce={applyForce}
         />
         <Plane />
       </Physics>

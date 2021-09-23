@@ -69,11 +69,11 @@ const App = () => {
         <pointLight position={[10, 10, 10]} />
         <Scene />
         <Sky
-          azimuth={0.1}
+          azimuth={0}
           turbidity={5}
           rayleigh={0}
-          inclination={0.6}
-          sunPosition={[0.1, 0, -5]}
+          inclination={0.8}
+          sunPosition={[0.1, 10, -5]}
           distance={10000}
         />
         {/* <fog attach="fog" args={['#547f91', 30, 200]} /> */}
@@ -81,7 +81,7 @@ const App = () => {
           <Grass />
         </Suspense>
         <CameraMovement />
-        {/* <Effects /> */}
+        <Effects />
       </Canvas>
     </SceneStyles>
   );

@@ -131,6 +131,7 @@ const Player = props => {
 
   useFrame(state => {
     const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
+    const [mouseX, mouseY] = playerStore.getState().mousePosition;
     // const [rotationX, rotationY, rotationZ] = playerStore.getState().rotation;
 
     if (props.up) {
@@ -142,6 +143,15 @@ const Player = props => {
     props.right && api.velocity.set(velocityX + 1, velocityY, velocityZ);
 
     props.left && api.velocity.set(velocityX - 1, velocityY, velocityZ);
+
+    if (props.applyForce) {
+      api.velocity.set(
+        velocityX + mouseX * 0.1,
+        velocityY + mouseY * 0.1,
+        velocityZ
+      );
+      // api.applyImpulse([mouseX * 0.1, mouseY * 0.1, 0], [0, 0, 0]);
+    }
 
     // console.log('turning -->', sigmoid(velocityX / 10) * 180);
 
