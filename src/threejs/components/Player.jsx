@@ -125,6 +125,8 @@ const Player = props => {
     mass: 1,
     position: [0, 0, 0],
     linearDamping: 0.5,
+    linearFactor: [1, 1, 0],
+    angularFactor: [1, 1, 0],
     ...props,
   }));
   const leftFinRef = useRef();
@@ -159,6 +161,7 @@ const Player = props => {
     const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
     const [mouseX, mouseY] = playerStore.getState().mousePosition;
     // const [rotationX, rotationY, rotationZ] = playerStore.getState().rotation;
+    // const [positionX, positionY, positionZ] = playerStore.getState().position;
 
     if (props.up) {
       api.velocity.set(velocityX, velocityY + 0.2, velocityZ);
@@ -178,6 +181,9 @@ const Player = props => {
       );
       // api.applyImpulse([mouseX * 0.1, mouseY * 0.1, 0], [0, 0, 0]);
     }
+
+    // Lock position in place on z-axis
+    // api.position.set(positionX, positionY, 0);
 
     // console.log('turning -->', sigmoid(velocityX / 10) * 180);
 

@@ -12,6 +12,7 @@ import { Physics, useBox, usePlane, useSpring } from '@react-three/cannon';
 import playerStore from '../../stores/playerStore';
 import { sigmoid, degToRad } from '../helpers';
 import Player from './Player';
+import Ball from './Ball';
 
 const Plane = props => {
   const [ref] = usePlane(() => ({
@@ -155,6 +156,17 @@ const Scene = props => {
           right={pressingRight}
           applyForce={applyForce}
         />
+        <Ball position={[5, 0, 0]} size={0.75} />
+        <Ball position={[6, 2, 0]} size={0.25} />
+        <Ball position={[6, 2, 0]} size={0.25} />
+        <Ball position={[6, 2, 0]} size={0.25} />
+        <Ball position={[6, 2, 0]} size={0.2} />
+        <Ball position={[6, 2, 0]} size={0.15} />
+        <Ball position={[6, 2, 0]} size={0.35} />
+        <Ball position={[6, 2, 0]} size={0.25} />
+        <Ball position={[-2, -5, 0]} />
+        <Ball position={[-3, -3, 0]} size={1.2} />
+        <Ball position={[-7, -5, 0]} size={0.8} />
         <Plane />
       </Physics>
     </>
