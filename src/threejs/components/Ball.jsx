@@ -34,19 +34,20 @@ const Ball = props => {
     ...props,
   }));
 
-  const sprerePositionRef = useRef(props.position);
+  // const velocityRef = useRef([0, 0, 0]);
 
   console.log('Ball');
 
-  useFrame(state => {
-    // Lock it in position on the z-plane
-    // api.position.subscribe(p => (sprerePositionRef.current = p));
-    // api.position.set(
-    //   sprerePositionRef.current[0],
-    //   sprerePositionRef.current[1],
-    //   0
-    // );
-  });
+  // useFrame(state => {
+
+  //   api.velocity.subscribe(v => (velocityRef.current = v));
+
+  //   const [x, y, z] = velocityRef.current;
+
+  //   const wobble = Math.sin(state.clock.getElapsedTime() * 0.5) * 0.1;
+
+  //   api.velocity.set(x, y + wobble, 0);
+  // });
 
   return (
     <group ref={ref}>

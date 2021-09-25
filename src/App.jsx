@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import styled from 'styled-components';
 import { useSpring, a } from '@react-spring/three';
@@ -21,14 +21,19 @@ const CameraMovement = () => {
 
   useFrame(state => {
     const [x, y, z] = playerStore.getState().position;
-    // state.camera.position.y = y;
-    const lerpOutput = vec3.lerp(vec3.set(x, y, z), 0.05);
+    const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
+    // TODO: try using react spring for this instead of the lerp function. I think I'm using the lerp function incorrectly by having it in a loop here
+    const lerpOutput = vec3.lerp(
+      vec3.set(x - velocityX * 0.2, y - velocityY * 0.2, z),
+      1
+    );
     state.camera.lookAt(lerpOutput);
     // state.camera.position = lerpOutput;
     // console.log('lerpOutput -->', lerpOutput);
-    // state.camera.position.y = lerpOutput.y;
+    state.camera.position.y = lerpOutput.y * 0.25;
     state.camera.position.x = lerpOutput.x;
     state.camera.position.z = 20;
+
     // sigmoid(THREE.MathUtils.lerp(state.camera.position.y, y, 0.5)) * 20;
     // THREE.MathUtils.lerp(state.camera.position.y, y, 1);
 

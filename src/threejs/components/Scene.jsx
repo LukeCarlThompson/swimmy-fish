@@ -119,10 +119,10 @@ const Scene = props => {
 
   useFrame(state => {
     const { mouse, viewport } = state;
-    const [x, y, z] = playerStore.getState().position;
-    const gravityX = x < -10 ? 10 : x > 10 ? -10 : x * -1;
-    const gravityY = y < -10 ? 10 : y > 10 ? -10 : y * -1;
-    const gravityZ = z < -10 ? 10 : z > 10 ? -10 : z * -1;
+    // const [x, y, z] = playerStore.getState().position;
+    // const gravityX = x < -10 ? 10 : x > 10 ? -10 : x * -1;
+    // const gravityY = y < -10 ? 10 : y > 10 ? -10 : y * -1;
+    // const gravityZ = z < -10 ? 10 : z > 10 ? -10 : z * -1;
     // This causes too many rerenders try and find a way around setting state
     // setGravity([gravityX, gravityY, gravityZ]);
 
