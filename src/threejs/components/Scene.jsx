@@ -148,7 +148,7 @@ const Scene = props => {
       <Physics gravity={[0, 0, 0]} tolerance={0.1}>
         {/* <Block ref={ref} position={animPosition} /> */}
         <Player
-          color="red"
+          color="#e65b05"
           up={pressingUp}
           down={pressingDown}
           left={pressingLeft}

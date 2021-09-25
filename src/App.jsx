@@ -54,7 +54,7 @@ const App = () => {
         colorManagement
         camera={{
           position: [0, 0, 20],
-          fov: 35,
+          fov: 45,
           far: 300,
           near: 0.1,
         }}
@@ -65,8 +65,8 @@ const App = () => {
           minDistance={20}
           maxDistance={60}
         /> */}
-        <ambientLight />
-        <pointLight position={[10, 10, 10]} />
+        <ambientLight intensity={0.75} />
+        <pointLight position={[0, 100, -20]} />
         <Scene />
         <Sky
           azimuth={0}
@@ -76,12 +76,12 @@ const App = () => {
           sunPosition={[0.1, 10, -5]}
           distance={10000}
         />
-        {/* <fog attach="fog" args={['#547f91', 30, 200]} /> */}
-        <Suspense fallback={null}>
+        <fog attach="fog" args={['#547f91', 10, 200]} />
+        {/* <Suspense fallback={null}>
           <Grass />
-        </Suspense>
+        </Suspense> */}
         <CameraMovement />
-        <Effects />
+        {/* <Effects /> */}
       </Canvas>
     </SceneStyles>
   );

@@ -13,51 +13,73 @@ import * as THREE from 'three';
 import playerStore from '../../stores/playerStore';
 import { sigmoid, degToRad } from '../helpers';
 
+const BodyMaterial = props => (
+  <meshPhongMaterial
+    attach="material"
+    flatShading={false}
+    specular="#eff41c"
+    color={props.color || 'purple'}
+  />
+);
+
 const Tail = props => {
   const tailRef = useRef();
+  const tailSecondRef = useRef();
+  const tailThirdRef = useRef();
   // const vec3 = new THREE.Vector3();
 
   useFrame(state => {
     const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
 
     // tail movement
-    tailRef.current.rotation.set(
-      0,
-      degToRad(
-        Math.sin(velocityY + velocityX + state.clock.getElapsedTime() * 4)
-      ) * 35,
-      0
+    const sideToSide = degToRad(
+      Math.sin(velocityY + velocityX + state.clock.getElapsedTime() * 4)
     );
+    tailRef.current.rotation.set(0, sideToSide * 10, 0);
+    tailSecondRef.current.rotation.set(0, sideToSide * 20, 0);
+    tailThirdRef.current.rotation.set(0, sideToSide * 20, 0);
   });
 
   return (
-    <group ref={tailRef} position={[-1, 0, 0]}>
+    <group ref={tailRef}>
       <RoundedBox
-        args={[0.6, 0.6, 0.2]}
-        position={[-0.2, 0, 0]}
-        radius={0.05}
-        smoothness={2}
+        args={[1, 0.75, 0.6]}
+        position={[-0.5, 0.05, 0]}
+        radius={0.2}
+        smoothness={4}
       >
-        <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
+        <BodyMaterial color={props.color} />
       </RoundedBox>
-      <RoundedBox
-        args={[0.75, 0.4, 0.1]}
-        position={[-0.6, 0.15, 0]}
-        radius={0.05}
-        smoothness={2}
-        rotation={[0, 0, -10]}
-      >
-        <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
-      </RoundedBox>
-      <RoundedBox
-        args={[0.75, 0.4, 0.1]}
-        position={[-0.6, -0.15, 0]}
-        radius={0.05}
-        smoothness={2}
-        rotation={[0, 0, 10]}
-      >
-        <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
-      </RoundedBox>
+      <group ref={tailSecondRef} position={[-1, 0, 0]}>
+        <RoundedBox
+          args={[0.6, 0.6, 0.3]}
+          position={[-0.1, 0, 0]}
+          radius={0.05}
+          smoothness={4}
+        >
+          <BodyMaterial color={props.color} />
+        </RoundedBox>
+        <group ref={tailThirdRef} position={[-0.4, 0, 0]}>
+          <RoundedBox
+            args={[0.75, 0.4, 0.1]}
+            position={[-0.1, 0.15, 0]}
+            radius={0.05}
+            smoothness={4}
+            rotation={[0, 0, -10]}
+          >
+            <BodyMaterial color={props.color} />
+          </RoundedBox>
+          <RoundedBox
+            args={[0.75, 0.4, 0.1]}
+            position={[-0.1, -0.15, 0]}
+            radius={0.05}
+            smoothness={4}
+            rotation={[0, 0, 10]}
+          >
+            <BodyMaterial color={props.color} />
+          </RoundedBox>
+        </group>
+      </group>
     </group>
   );
 };
@@ -81,10 +103,14 @@ const EyeBall = props => {
   return (
     <group {...props} ref={ref}>
       <Sphere position={[0, 0, 0]} args={[0.3]}>
-        <meshPhongMaterial attach="material" color="#f3f3f3" />
+        <BodyMaterial
+          translate={[0, 10, 0.25]}
+          attach="material"
+          color="#f3f3f3"
+        />
       </Sphere>
       <Sphere position={[0, 0, 0.25]} args={[0.1]}>
-        <meshPhongMaterial
+        <BodyMaterial
           translate={[0, 10, 0.25]}
           attach="material"
           color="black"
@@ -181,11 +207,11 @@ const Player = props => {
 
     // Side fins rotation
     leftFinRef.current.setRotationFromAxisAngle(
-      vec3.lerp(vec3.set(sigmoid(velocityY * 0.5), -0.8, 0), 0.25),
+      vec3.lerp(vec3.set(sigmoid(velocityY * 1), -1, 0), 0.25),
       0.5
     );
     rightFinRef.current.setRotationFromAxisAngle(
-      vec3.lerp(vec3.set(sigmoid(velocityY * 0.5) * -1, 0.8, 0), 0.25),
+      vec3.lerp(vec3.set(sigmoid(velocityY * 1) * -1, 1, 0), 0.25),
       0.5
     );
   });
@@ -196,36 +222,36 @@ const Player = props => {
         args={[1.5, 1.2, 0.8]}
         position={[0.25, 0.1, 0]}
         radius={0.2}
-        smoothness={2}
+        smoothness={4}
       >
-        <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
+        <BodyMaterial color={props.color} />
       </RoundedBox>
-      <RoundedBox
+      {/* <RoundedBox
         args={[1, 0.75, 0.6]}
         position={[-0.5, 0.05, 0]}
         radius={0.2}
-        smoothness={2}
+        smoothness={4}
       >
-        <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
-      </RoundedBox>
+        <BodyMaterial color={props.color} />
+      </RoundedBox> */}
       <RoundedBox
         args={[0.7, 0.5, 0.8]}
         position={[0.8, -0.25, 0]}
         rotation={[0, 0, 0]}
         radius={0.1}
-        smoothness={2}
+        smoothness={6}
       >
-        <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
+        <BodyMaterial color={props.color} />
       </RoundedBox>
       {/* Dorsal fin */}
       <RoundedBox
         args={[0.5, 0.5, 0.05]}
         position={[0.25, 0.7, 0]}
         radius={0.05}
-        smoothness={2}
+        smoothness={4}
         rotation={[0, 0, 10]}
       >
-        <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
+        <BodyMaterial color={props.color} />
       </RoundedBox>
       {/* Side fins */}
       <RoundedBox
@@ -233,27 +259,27 @@ const Player = props => {
         args={[0.5, 0.1, 0.6]}
         position={[-0, -0.25, 0.4]}
         radius={0.05}
-        smoothness={2}
+        smoothness={4}
       >
-        <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
+        <BodyMaterial color={props.color} />
       </RoundedBox>
       <RoundedBox
         ref={rightFinRef}
         args={[0.5, 0.1, 0.6]}
         position={[-0, -0.25, -0.4]}
         radius={0.05}
-        smoothness={2}
+        smoothness={4}
       >
-        <meshPhongMaterial attach="material" color={props?.color || 'purple'} />
+        <BodyMaterial color={props.color} />
       </RoundedBox>
       {/* lips */}
       <RoundedBox
         args={[0.1, 0.1, 0.5]}
         position={[1.15, -0.4, 0]}
         radius={0.05}
-        smoothness={2}
+        smoothness={4}
       >
-        <meshPhongMaterial attach="material" color="black" />
+        <meshPhysicalMaterial attach="material" color="black" />
       </RoundedBox>
       {/* Eyeball */}
       <EyeBall position={[0.6, 0.1, 0.35]} />
