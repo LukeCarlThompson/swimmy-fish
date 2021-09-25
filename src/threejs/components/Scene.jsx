@@ -38,6 +38,8 @@ const Scene = props => {
   const mousePositionRef = useRef([0, 0, 0]);
   const [gravity, setGravity] = useState([0, -10, 0]);
 
+  // TODO: consider mooving all these props to the playerSTore to avoid re-renders
+
   console.log('Scene');
 
   useEffect(() => {
