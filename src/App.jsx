@@ -8,6 +8,7 @@ import Scene from './threejs/components/Scene';
 import Effects from './threejs/components/Effects';
 import playerStore from './stores/playerStore';
 import Grass from './threejs/components/Grass';
+import { sigmoid, degToRad } from './threejs/helpers';
 
 const SceneStyles = styled.div`
   width: 100vw;
@@ -16,33 +17,21 @@ const SceneStyles = styled.div`
 `;
 
 const CameraMovement = () => {
-  const vec3 = new THREE.Vector3();
+  // const vec3 = new THREE.Vector3();
   console.log('Camera movement');
 
   useFrame(state => {
     const [x, y, z] = playerStore.getState().position;
     const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
-    // TODO: try using react spring for this instead of the lerp function. I think I'm using the lerp function incorrectly by having it in a loop here
-    const lerpOutput = vec3.lerp(
-      vec3.set(x - velocityX * 0.2, y - velocityY * 0.2, z),
-      1
-    );
-    state.camera.lookAt(lerpOutput);
-    // state.camera.position = lerpOutput;
-    // console.log('lerpOutput -->', lerpOutput);
-    state.camera.position.y = lerpOutput.y * 0.25;
-    state.camera.position.x = lerpOutput.x;
+
+    const lerpedX = x + velocityX * 0.1;
+    const lerpedY = y + velocityY * 0.1;
+
+    state.camera.lookAt(lerpedX, lerpedY * 0.65, 0);
+
+    state.camera.position.y = lerpedY * 0.25;
+    state.camera.position.x = lerpedX;
     state.camera.position.z = 20;
-
-    // sigmoid(THREE.MathUtils.lerp(state.camera.position.y, y, 0.5)) * 20;
-    // THREE.MathUtils.lerp(state.camera.position.y, y, 1);
-
-    // console.log(
-    //   'camera lerp result -->',
-    //   (sigmoid(THREE.MathUtils.lerp(0, y, 0.5)) + 0) * 20
-    // );
-
-    // console.log('state camera y -->', state.camera.position.y);
 
     state.camera.updateProjectionMatrix();
   });
