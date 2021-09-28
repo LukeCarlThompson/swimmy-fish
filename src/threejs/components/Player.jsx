@@ -30,14 +30,22 @@ const Tail = props => {
 
   useFrame(state => {
     const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
+    const [positionX, positionY, positionZ] = playerStore.getState().position;
 
     // tail movement
     const sideToSide = degToRad(
-      Math.sin(velocityY + velocityX + state.clock.getElapsedTime() * 4)
+      Math.sin(
+        Math.abs(velocityY) +
+          Math.abs(positionY) +
+          Math.abs(velocityX) +
+          Math.abs(positionX) +
+          state.clock.getElapsedTime() * 4
+      )
     );
+
     tailRef.current.rotation.set(0, sideToSide * 10, 0);
-    tailSecondRef.current.rotation.set(0, sideToSide * 20, 0);
-    tailThirdRef.current.rotation.set(0, sideToSide * 20, 0);
+    tailSecondRef.current.rotation.set(0, sideToSide * 25, 0);
+    tailThirdRef.current.rotation.set(0, sideToSide * 25, 0);
   });
 
   return (
@@ -161,7 +169,7 @@ const Player = props => {
     const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
     const [mouseX, mouseY] = playerStore.getState().mousePosition;
     // const [rotationX, rotationY, rotationZ] = playerStore.getState().rotation;
-    // const [positionX, positionY, positionZ] = playerStore.getState().position;
+    const [positionX, positionY, positionZ] = playerStore.getState().position;
 
     if (props.up) {
       api.velocity.set(velocityX, velocityY + 0.2, velocityZ);
@@ -169,9 +177,9 @@ const Player = props => {
 
     props.down && api.velocity.set(velocityX, velocityY - 0.2, velocityZ);
 
-    props.right && api.velocity.set(velocityX + 1, velocityY, velocityZ);
+    props.right && api.velocity.set(velocityX + 0.5, velocityY, velocityZ);
 
-    props.left && api.velocity.set(velocityX - 1, velocityY, velocityZ);
+    props.left && api.velocity.set(velocityX - 0.5, velocityY, velocityZ);
 
     if (props.applyForce) {
       api.velocity.set(
@@ -182,33 +190,27 @@ const Player = props => {
       // api.applyImpulse([mouseX * 0.1, mouseY * 0.1, 0], [0, 0, 0]);
     }
 
-    // Lock position in place on z-axis
-    // api.position.set(positionX, positionY, 0);
-
-    // console.log('turning -->', sigmoid(velocityX / 10) * 180);
-
-    // TODO: try setting impulse instead of velocity api.applyImpulse([0, 5, -10], [1, 1, 1])
-
     // Main player body rotation
     // TODO: Change direction based on input not velocity and lerp or spring to the new direction.
-    // api.rotation.set(0, 0, degToRad(sigmoid(velocityY / 10) * 45));
-
-    // console.log('rotationX -->', rotationX);
-
-    // const wobble = Math.sin(state.clock.getElapsedTime() * 10) * 5;
 
     const wobble =
-      Math.sin(velocityY + velocityX + state.clock.getElapsedTime() * 4) * -10;
+      Math.sin(
+        Math.abs(velocityY) +
+          Math.abs(positionY) +
+          Math.abs(velocityX) +
+          Math.abs(positionX) +
+          state.clock.getElapsedTime() * 4
+      ) * -10;
 
     const lerpOutput = vec3.lerp(
       vec3.set(
         0,
-        degToRad((sigmoid(velocityX * 0.25) * 0.5 - 0.5) * 180 + wobble),
-        // degToRad(velocityX >= 0 ? rotationX * 0.9 : 180),
-        degToRad(sigmoid(velocityY / 5) * 60)
+        degToRad((sigmoid(velocityX * 0.2) * 0.5 - 0.5) * 180 + wobble),
+        degToRad(sigmoid(velocityY * 0.2) * 90)
       ),
       0.1
     );
+
     api.rotation.set(0, lerpOutput.y, lerpOutput.z);
 
     // Side fins rotation

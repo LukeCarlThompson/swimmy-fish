@@ -2,7 +2,7 @@ import React, { Suspense, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import styled from 'styled-components';
 import { useSpring, a } from '@react-spring/three';
-import { OrbitControls, Sky } from '@react-three/drei';
+import { OrbitControls, Sky, Stats } from '@react-three/drei';
 import * as THREE from 'three';
 import Scene from './threejs/components/Scene';
 import Effects from './threejs/components/Effects';
@@ -77,6 +77,11 @@ const App = () => {
         </Suspense> */}
         <CameraMovement />
         {/* <Effects /> */}
+        <Stats
+          showPanel={0} // Start-up panel (default=0)
+          className="stats" // Optional className to add to the stats container dom element
+          // All stats.js props are valid
+        />
       </Canvas>
     </SceneStyles>
   );
