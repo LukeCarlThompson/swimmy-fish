@@ -36,7 +36,7 @@ const PostProcessing = () => {
         bias={0.5}
         color="#000"
       /> */}
-      <ToneMapping
+      {/* <ToneMapping
         blendFunction={BlendFunction.NORMAL} // blend mode
         adaptive={false} // toggle adaptive luminance map usage
         resolution={256} // texture resolution of the luminance map
@@ -46,9 +46,9 @@ const PostProcessing = () => {
         adaptationRate={0.5} // luminance adaptation rate
       />
 
-      {/* <BrightnessContrast
-        brightness={-0.1} // brightness. min: -1, max: 1
-        contrast={-0.12} // contrast: min -1, max: 1
+      <BrightnessContrast
+        brightness={-0.05} // brightness. min: -1, max: 1
+        contrast={-0.07} // contrast: min -1, max: 1
       /> */}
       {/* <Bloom
         intensity={0.3}
@@ -74,7 +74,7 @@ const PostProcessing = () => {
         bokehScale={2}
         height={480}
       />
-      {/* <Noise opacity={0.15} premultiply blendFunction={BlendFunction.NORMAL} /> */}
+      <Noise opacity={0.15} premultiply blendFunction={BlendFunction.NORMAL} />
     </EffectComposer>
   );
 };

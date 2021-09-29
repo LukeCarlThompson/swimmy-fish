@@ -8,11 +8,19 @@ import React, {
 } from 'react';
 // import { useSpring, a } from '@react-spring/three';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Physics, useBox, usePlane, useSpring } from '@react-three/cannon';
+import {
+  Physics,
+  useBox,
+  usePlane,
+  useSpring,
+  useSphere,
+} from '@react-three/cannon';
+import { Sphere } from '@react-three/drei';
 import playerStore from '../../stores/playerStore';
 import { sigmoid, degToRad } from '../helpers';
 import Player from './Player';
 import Ball from './Ball';
+import Background from './Background';
 
 const Plane = props => {
   const [ref] = usePlane(() => ({
@@ -26,6 +34,46 @@ const Plane = props => {
       <shadowMaterial attach="material" color="#171717" />
       <meshStandardMaterial color="#615637" />
     </mesh>
+  );
+};
+
+const FishBowl = props => {
+  const [ref, api] = useSphere(() => ({
+    mass: 1,
+    position: [7, 3, 0],
+    linearDamping: 0.9,
+    linearFactor: [1, 1, 0],
+    args: 3,
+    ...props,
+  }));
+
+  const materialProps = {
+    transparent: true,
+    thickness: { value: 5, min: 0, max: 20 },
+    roughness: { value: 1, min: 0, max: 1, step: 0.1 },
+    clearcoat: { value: 1, min: 0, max: 1, step: 0.1 },
+    clearcoatRoughness: { value: 0, min: 0, max: 1, step: 0.1 },
+    transmission: { value: 1, min: 0.9, max: 1, step: 0.01 },
+    ior: { value: 1.25, min: 1, max: 2.3, step: 0.05 },
+    envMapIntensity: { value: 25, min: 0, max: 100, step: 1 },
+    color: '#ffffff',
+    attenuationTint: '#ffe79e',
+    attenuationDistance: { value: 0, min: 0, max: 1 },
+  };
+
+  return (
+    <group ref={ref}>
+      <Sphere position={[0, 0, 0]} args={[3]}>
+        <meshPhysicalMaterial {...materialProps} />
+        {/* <meshPhongMaterial
+          attach="material"
+          flatShading={false}
+          specular="#eff41c"
+          color={props.color || 'purple'}
+          translate={[0, 0, 0]}
+        /> */}
+      </Sphere>
+    </group>
   );
 };
 
@@ -115,10 +163,6 @@ const Scene = props => {
     };
   }, []);
 
-  //   useFrame(({ mouse: { x, y }, viewport: { height, width } }) =>
-  //   position.set((x * width) / 2, (y * height) / 2, 0),
-  // )
-
   useFrame(state => {
     const { mouse, viewport } = state;
     // const [x, y, z] = playerStore.getState().position;
@@ -136,20 +180,11 @@ const Scene = props => {
     playerStore.setState({
       mousePosition: [mousePositionX, mousePositionY, 0],
     });
-
-    // console.log('[gravityX, gravityY, gravityZ]', [
-    //   gravityX,
-    //   gravityY,
-    //   gravityZ,
-    // ]);
   });
 
   return (
     <>
-      <pointLight position={[10, 10, -10]} decay={10} intensity={2} />
-      {/* <Physics gravity={gravity} tolerance={0.1}> */}
       <Physics gravity={[0, 0, 0]} tolerance={0.1}>
-        {/* <Block ref={ref} position={animPosition} /> */}
         <Player
           color="#e65b05"
           up={pressingUp}
@@ -169,6 +204,7 @@ const Scene = props => {
         <Ball position={[-2, -5, 0]} />
         <Ball position={[-3, -3, 0]} size={1.2} />
         <Ball position={[-7, -5, 0]} size={0.8} />
+        <Background />
         <Plane />
       </Physics>
     </>

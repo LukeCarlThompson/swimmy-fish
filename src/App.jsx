@@ -59,20 +59,28 @@ const App = () => {
           minDistance={20}
           maxDistance={60}
         /> */}
-        <ambientLight intensity={0.75} />
-        <pointLight position={[0, 100, -20]} />
+        <ambientLight intensity={0.5} />
+        <spotLight
+          position={[0, 100, -100]}
+          angle={0.4}
+          intensity={4}
+          distance={300}
+          penumbra={1}
+        />
+        <pointLight position={[0, 100, -10]} decay={10} intensity={1} />
         <Scene />
-        <Sky
+        {/* <Sky
           azimuth={0}
           turbidity={5}
           rayleigh={0}
           inclination={0.8}
           sunPosition={[0.1, 10, -5]}
           distance={10000}
-        />
+        /> */}
         <fog attach="fog" args={['#547f91', 10, 200]} />
+        <color attach="background" args="#547f91" />
         <CameraMovement />
-        <Effects />
+        {/* <Effects /> */}
         <Stats
           showPanel={0} // Start-up panel (default=0)
           className="stats" // Optional className to add to the stats container dom element
