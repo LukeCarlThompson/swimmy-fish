@@ -7,7 +7,6 @@ import * as THREE from 'three';
 import Scene from './threejs/components/Scene';
 import Effects from './threejs/components/Effects';
 import playerStore from './stores/playerStore';
-import Grass from './threejs/components/Grass';
 import { sigmoid, degToRad } from './threejs/helpers';
 
 const SceneStyles = styled.div`
@@ -72,11 +71,8 @@ const App = () => {
           distance={10000}
         />
         <fog attach="fog" args={['#547f91', 10, 200]} />
-        {/* <Suspense fallback={null}>
-          <Grass />
-        </Suspense> */}
         <CameraMovement />
-        {/* <Effects /> */}
+        <Effects />
         <Stats
           showPanel={0} // Start-up panel (default=0)
           className="stats" // Optional className to add to the stats container dom element
