@@ -158,6 +158,7 @@ const Player = props => {
     });
 
     return () => {
+      console.log('unsubscribed');
       unsubscribeVelocity();
       unsubscribePosition();
       unsubscribeRotation();
@@ -234,14 +235,6 @@ const Player = props => {
       >
         <BodyMaterial color={props.color} />
       </RoundedBox>
-      {/* <RoundedBox
-        args={[1, 0.75, 0.6]}
-        position={[-0.5, 0.05, 0]}
-        radius={0.2}
-        smoothness={4}
-      >
-        <BodyMaterial color={props.color} />
-      </RoundedBox> */}
       <RoundedBox
         args={[0.7, 0.5, 0.8]}
         position={[0.8, -0.25, 0]}

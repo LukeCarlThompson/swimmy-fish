@@ -1,17 +1,7 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  createRef,
-} from 'react';
-// import { useSpring, a } from '@react-spring/three';
+import React from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useSphere } from '@react-three/cannon';
-import { Plane, Sphere, RoundedBox } from '@react-three/drei';
-import * as THREE from 'three';
-import playerStore from '../../stores/playerStore';
-import { sigmoid, degToRad } from '../helpers';
+import { Sphere } from '@react-three/drei';
 
 const BodyMaterial = props => (
   <meshPhongMaterial
@@ -34,20 +24,7 @@ const Ball = props => {
     ...props,
   }));
 
-  // const velocityRef = useRef([0, 0, 0]);
-
   console.log('Ball');
-
-  // useFrame(state => {
-
-  //   api.velocity.subscribe(v => (velocityRef.current = v));
-
-  //   const [x, y, z] = velocityRef.current;
-
-  //   const wobble = Math.sin(state.clock.getElapsedTime() * 0.5) * 0.1;
-
-  //   api.velocity.set(x, y + wobble, 0);
-  // });
 
   return (
     <group ref={ref}>
