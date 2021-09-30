@@ -144,6 +144,7 @@ const Player = props => {
   console.log('Player');
 
   useEffect(() => {
+    console.count('subscribed');
     // Subscribe the velovity and position from Cannon to the player state object
     const unsubscribeVelocity = api.velocity.subscribe(v => {
       playerStore.setState({ velocity: v });
@@ -158,7 +159,7 @@ const Player = props => {
     });
 
     return () => {
-      console.log('unsubscribed');
+      console.count('unsubscribed');
       unsubscribeVelocity();
       unsubscribePosition();
       unsubscribeRotation();
@@ -171,18 +172,19 @@ const Player = props => {
     const [mouseX, mouseY] = playerStore.getState().mousePosition;
     // const [rotationX, rotationY, rotationZ] = playerStore.getState().rotation;
     const [positionX, positionY, positionZ] = playerStore.getState().position;
+    const { controls } = playerStore.getState();
 
-    if (props.up) {
+    if (controls.up) {
       api.velocity.set(velocityX, velocityY + 0.2, velocityZ);
     }
 
-    props.down && api.velocity.set(velocityX, velocityY - 0.2, velocityZ);
+    controls.down && api.velocity.set(velocityX, velocityY - 0.2, velocityZ);
 
-    props.right && api.velocity.set(velocityX + 0.5, velocityY, velocityZ);
+    controls.right && api.velocity.set(velocityX + 0.5, velocityY, velocityZ);
 
-    props.left && api.velocity.set(velocityX - 0.5, velocityY, velocityZ);
+    controls.left && api.velocity.set(velocityX - 0.5, velocityY, velocityZ);
 
-    if (props.applyForce) {
+    if (controls.mouse) {
       api.velocity.set(
         velocityX + mouseX * 0.1,
         velocityY + mouseY * 0.1,

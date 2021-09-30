@@ -6,6 +6,13 @@ const playerStore = create(set => ({
   velocity: [0, 0, 0],
   rotation: [0, 0, 0],
   mousePosition: [0, 0, 0],
+  controls: {
+    up: false,
+    down: false,
+    left: false,
+    right: false,
+    mouse: false,
+  },
 }));
 
 export default playerStore;

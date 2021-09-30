@@ -24,19 +24,19 @@ const PostProcessing = () => {
   });
 
   return (
-    <EffectComposer>
+    <EffectComposer smaa>
       {/* <SSAO
         blendFunction={BlendFunction.MULTIPLY}
         samples={30}
         rings={4}
         radius={5}
-        intensity={30}
-        luminanceInfluence={0.7}
-        distanceThreshold={0.9}
+        intensity={60}
+        luminanceInfluence={0.5}
+        distanceThreshold={1}
         bias={0.5}
         color="#000"
       /> */}
-      {/* <ToneMapping
+      <ToneMapping
         blendFunction={BlendFunction.NORMAL} // blend mode
         adaptive={false} // toggle adaptive luminance map usage
         resolution={256} // texture resolution of the luminance map
@@ -49,19 +49,13 @@ const PostProcessing = () => {
       <BrightnessContrast
         brightness={-0.05} // brightness. min: -1, max: 1
         contrast={-0.07} // contrast: min -1, max: 1
-      /> */}
-      {/* <Bloom
-        intensity={0.3}
-        luminanceThreshold={0.2}
-        luminanceSmoothing={1}
-        height={800}
-      /> */}
-      {/* <Bloom
-        intensity={0.1}
-        luminanceThreshold={0.2}
-        luminanceSmoothing={1}
+      />
+      <Bloom
+        intensity={0.75}
+        luminanceThreshold={0.3}
+        luminanceSmoothing={0.9}
         height={500}
-      /> */}
+      />
       {/* <ChromaticAberration
         blendFunction={BlendFunction.NORMAL} // blend mode
         offset={[0.001, 0.001]} // color offset

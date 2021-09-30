@@ -5,9 +5,9 @@ import { useSpring, a } from '@react-spring/three';
 import { OrbitControls, Sky, Stats } from '@react-three/drei';
 import * as THREE from 'three';
 import Scene from './threejs/components/Scene';
+import Controls from './threejs/components/Controls';
 import Effects from './threejs/components/Effects';
 import playerStore from './stores/playerStore';
-import { sigmoid, degToRad } from './threejs/helpers';
 
 const SceneStyles = styled.div`
   width: 100vw;
@@ -16,7 +16,6 @@ const SceneStyles = styled.div`
 `;
 
 const CameraMovement = () => {
-  // const vec3 = new THREE.Vector3();
   console.log('Camera movement');
 
   useFrame(state => {
@@ -80,6 +79,7 @@ const App = () => {
         <fog attach="fog" args={['#547f91', 10, 200]} />
         <color attach="background" args="#547f91" />
         <CameraMovement />
+        <Controls />
         {/* <Effects /> */}
         <Stats
           showPanel={0} // Start-up panel (default=0)
