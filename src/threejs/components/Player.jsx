@@ -182,11 +182,17 @@ const Player = props => {
       api.velocity.set(velocityX, velocityY + 0.2, velocityZ);
     }
 
-    controls.down && api.velocity.set(velocityX, velocityY - 0.2, velocityZ);
+    if (controls.down) {
+      api.velocity.set(velocityX, velocityY - 0.2, velocityZ);
+    }
 
-    controls.right && api.velocity.set(velocityX + 0.5, velocityY, velocityZ);
+    if (controls.right) {
+      api.velocity.set(velocityX + 0.5, velocityY, velocityZ);
+    }
 
-    controls.left && api.velocity.set(velocityX - 0.5, velocityY, velocityZ);
+    if (controls.left) {
+      api.velocity.set(velocityX - 0.5, velocityY, velocityZ);
+    }
 
     if (controls.mouse) {
       api.velocity.set(

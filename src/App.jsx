@@ -6,6 +6,7 @@ import { OrbitControls, Sky, Stats } from '@react-three/drei';
 import * as THREE from 'three';
 import Scene from './threejs/components/Scene';
 import Controls from './threejs/components/Controls';
+import Lighting from './threejs/components/Lighting';
 import Effects from './threejs/components/Effects';
 import playerStore from './stores/playerStore';
 
@@ -58,15 +59,7 @@ const App = () => {
           minDistance={20}
           maxDistance={60}
         /> */}
-        <ambientLight intensity={0.5} />
-        <spotLight
-          position={[0, 100, -100]}
-          angle={0.4}
-          intensity={4}
-          distance={300}
-          penumbra={1}
-        />
-        <pointLight position={[0, 100, -10]} decay={10} intensity={1} />
+        <Lighting />
         <Scene />
         {/* <Sky
           azimuth={0}
@@ -76,7 +69,7 @@ const App = () => {
           sunPosition={[0.1, 10, -5]}
           distance={10000}
         /> */}
-        <fog attach="fog" args={['#547f91', 10, 200]} />
+        <fog attach="fog" args={['#547f91', 0, 200]} />
         <color attach="background" args="#547f91" />
         <CameraMovement />
         <Controls />
