@@ -78,6 +78,7 @@ const Scene = props => {
     // const gravityZ = z < -10 ? 10 : z > 10 ? -10 : z * -1;
     // This causes too many rerenders try and find a way around setting state
     // setGravity([gravityX, gravityY, gravityZ]);
+    console.log('mouse -->', mouse);
 
     const mousePositionX = (mouse.x * viewport.width) / 2;
     const mousePositionY = (mouse.y * viewport.height) / 2;

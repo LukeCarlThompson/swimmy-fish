@@ -18,7 +18,6 @@ const Pillar = props => {
 
   return (
     <mesh {...props} scale={1}>
-      {/* <boxGeometry args={[10, 1000, 10]} /> */}
       <coneGeometry args={[randomRef.current, randomRef.current * 100, 5]} />
       <Material />
     </mesh>
@@ -33,17 +32,18 @@ const Background = props => {
       Math.random(),
     ])
   );
-  console.log('coordsRef -->', coordsRef);
+  // console.log('coordsRef -->', coordsRef);
 
   return (
     <group>
-      {coordsRef.current.map(item => {
+      {coordsRef.current.map((item, i) => {
         const positionX = item[0] * 100;
         const positionZ = item[1] * -100 + 10;
         const rotationY = item[2];
 
         return (
           <Pillar
+            key={i}
             position={[positionX, 0, positionZ]}
             rotation={[0, rotationY, 0]}
           />

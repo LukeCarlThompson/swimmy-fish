@@ -140,22 +140,25 @@ const Player = props => {
   const leftFinRef = useRef();
   const rightFinRef = useRef();
   const vec3 = new THREE.Vector3();
+  const velocityRef = useRef([0, 0, 0]);
+  const positionRef = useRef([0, 0, 0]);
+  const rotationRef = useRef([0, 0, 0]);
 
   console.log('Player');
 
   useEffect(() => {
     console.count('subscribed');
-    // Subscribe the velovity and position from Cannon to the player state object
+    // Subscribe the velocity, position and rotation from Cannon to some local refs
     const unsubscribeVelocity = api.velocity.subscribe(v => {
-      playerStore.setState({ velocity: v });
+      velocityRef.current = v;
     });
 
     const unsubscribePosition = api.position.subscribe(p => {
-      playerStore.setState({ position: p });
+      positionRef.current = p;
     });
 
     const unsubscribeRotation = api.rotation.subscribe(r => {
-      playerStore.setState({ rotation: r });
+      rotationRef.current = r;
     });
 
     return () => {
@@ -168,11 +171,12 @@ const Player = props => {
   }, []);
 
   useFrame(state => {
-    const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
+    const { controls } = playerStore.getState();
+
+    const [velocityX, velocityY, velocityZ] = velocityRef.current;
     const [mouseX, mouseY] = playerStore.getState().mousePosition;
     // const [rotationX, rotationY, rotationZ] = playerStore.getState().rotation;
-    const [positionX, positionY, positionZ] = playerStore.getState().position;
-    const { controls } = playerStore.getState();
+    const [positionX, positionY, positionZ] = positionRef.current;
 
     if (controls.up) {
       api.velocity.set(velocityX, velocityY + 0.2, velocityZ);
@@ -214,7 +218,13 @@ const Player = props => {
       0.1
     );
 
+    // Set the player main rotation
     api.rotation.set(0, lerpOutput.y, lerpOutput.z);
+
+    // Sync state from local refs back to the global state
+    playerStore.setState({ rotation: rotationRef.current });
+    playerStore.setState({ velocity: velocityRef.current });
+    playerStore.setState({ position: positionRef.current });
 
     // Side fins rotation
     leftFinRef.current.setRotationFromAxisAngle(
