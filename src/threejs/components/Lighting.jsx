@@ -5,7 +5,7 @@ const Lighting = () => {
 
   return (
     <>
-      <ambientLight intensity={0.5} color="#bfefff" />
+      <ambientLight intensity={0.3} color="#bfefff" />
       <spotLight
         position={[0, 100, -200]}
         angle={0.2}
@@ -16,8 +16,8 @@ const Lighting = () => {
         color="#fffb8a"
       />
       <pointLight
-        position={[0, 100, -10]}
-        decay={10}
+        position={[0, 1000, -1000]}
+        decay={0}
         color="#fffb8a"
         intensity={1}
       />

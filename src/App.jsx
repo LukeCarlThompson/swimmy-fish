@@ -9,6 +9,7 @@ import Controls from './threejs/components/Controls';
 import Lighting from './threejs/components/Lighting';
 import Effects from './threejs/components/Effects';
 import playerStore from './stores/playerStore';
+import Particles from './threejs/components/Particles';
 
 const SceneStyles = styled.div`
   width: 100vw;
@@ -69,8 +70,9 @@ const App = () => {
           sunPosition={[0.1, 10, -5]}
           distance={10000}
         /> */}
-        <fog attach="fog" args={['#547f91', 0, 200]} />
-        <color attach="background" args="#547f91" />
+        <Particles count={1000} mouse={{ current: [0, 0] }} />
+        <fog attach="fog" args={['#a9e7ff', 0, 200]} />
+        <color attach="background" args="#a9e7ff" />
         <CameraMovement />
         <Controls />
         {/* <Effects /> */}

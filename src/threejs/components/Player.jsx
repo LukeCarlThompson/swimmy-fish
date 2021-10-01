@@ -1,7 +1,7 @@
 import React, {
-  useState,
   useRef,
   useEffect,
+  useLayoutEffect,
   useCallback,
   createRef,
 } from 'react';
@@ -26,7 +26,6 @@ const Tail = props => {
   const tailRef = useRef();
   const tailSecondRef = useRef();
   const tailThirdRef = useRef();
-  // const vec3 = new THREE.Vector3();
 
   useFrame(state => {
     const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
@@ -98,12 +97,14 @@ const EyeBall = props => {
 
   useFrame(state => {
     const [x, y, z] = playerStore.getState().velocity;
-    const lerpOutput = vec3.lerp(
-      vec3.set(sigmoid(y * -0.1), sigmoid(y * -1) * 0.1 + 0.5, 0),
-      0.25
+
+    const direction = vec3.set(
+      sigmoid(y * -0.1),
+      sigmoid(y * -1) * 0.1 + 0.5,
+      0
     );
     ref.current.setRotationFromAxisAngle(
-      lerpOutput.normalize(),
+      direction.normalize(),
       props.mirror ? -10 : 0.5
     );
   });
@@ -146,7 +147,7 @@ const Player = props => {
 
   console.log('Player');
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     console.count('subscribed');
     // Subscribe the velocity, position and rotation from Cannon to some local refs
     const unsubscribeVelocity = api.velocity.subscribe(v => {
@@ -215,17 +216,13 @@ const Player = props => {
           state.clock.getElapsedTime() * 4
       ) * -10;
 
-    const lerpOutput = vec3.lerp(
-      vec3.set(
-        0,
-        degToRad((sigmoid(velocityX * 0.2) * 0.5 - 0.5) * 180 + wobble),
-        degToRad(sigmoid(velocityY * 0.2) * 90)
-      ),
-      0.1
-    );
+    const direction = {
+      y: degToRad((sigmoid(velocityX * 0.5) * 0.5 - 0.5) * 180 + wobble),
+      z: degToRad(sigmoid(velocityY * 0.2) * 90),
+    };
 
     // Set the player main rotation
-    api.rotation.set(0, lerpOutput.y, lerpOutput.z);
+    api.rotation.set(0, direction.y, direction.z);
 
     // Sync state from local refs back to the global state
     playerStore.setState({ rotation: rotationRef.current });

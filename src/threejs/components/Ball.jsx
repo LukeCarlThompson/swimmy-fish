@@ -4,11 +4,13 @@ import { useSphere } from '@react-three/cannon';
 import { Sphere } from '@react-three/drei';
 
 const BodyMaterial = props => (
-  <meshLambertMaterial
+  <meshPhongMaterial
     attach="material"
     flatShading={false}
-    specular="#eff41c"
+    specular="#80ffec"
     color={props.color || 'purple'}
+    transparent
+    opacity={props.opacity || 0.75}
   />
 );
 
@@ -29,7 +31,7 @@ const Ball = props => {
   return (
     <group ref={ref}>
       <Sphere position={[0, 0, 0]} args={[size]}>
-        <BodyMaterial translate={[0, 0, 0]} attach="material" color="#dd9beb" />
+        <BodyMaterial translate={[0, 0, 0]} attach="material" color="#0068b3" />
       </Sphere>
     </group>
   );

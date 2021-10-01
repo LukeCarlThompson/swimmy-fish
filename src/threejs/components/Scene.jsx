@@ -31,9 +31,29 @@ const Plane = props => {
   return (
     <mesh ref={ref} receiveShadow>
       <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
-      <shadowMaterial attach="material" color="#171717" />
-      <meshStandardMaterial color="#615637" />
+      <shadowMaterial attach="material" color="#163f61" />
+      <meshLambertMaterial color="#163f61" acc />
     </mesh>
+  );
+};
+
+const Boundary = props => {
+  const [ref, api] = useSphere(() => ({
+    mass: 1,
+    position: [0, 0, 0],
+    linearDamping: 0.9,
+    linearFactor: [1, 1, 0],
+    args: [50, 50, 50],
+    ...props,
+  }));
+
+  console.log('Boundary');
+  return (
+    <group ref={ref}>
+      <Sphere position={[0, 0, 0]} args={[50, 50, 50]}>
+        <meshStandardMaterial color="#615637" />
+      </Sphere>
+    </group>
   );
 };
 
@@ -83,7 +103,7 @@ const Scene = props => {
   return (
     <>
       <Physics gravity={[0, 0, 0]} tolerance={0.1}>
-        <Player color="#e65b05" />
+        <Player color="#eb7a17" />
         <Ball position={[5, 0, 0]} size={0.75} />
         <Ball position={[6, 2, 0]} size={0.25} />
         <Ball position={[6, 2, 0]} size={0.25} />
