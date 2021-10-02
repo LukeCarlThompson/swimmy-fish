@@ -14,10 +14,15 @@ import playerStore from '../../stores/playerStore';
 import { sigmoid, degToRad } from '../helpers';
 
 const BodyMaterial = props => (
-  <meshPhongMaterial
+  <meshPhysicalMaterial
     attach="material"
     flatShading={false}
     specular="#eff41c"
+    rougness={0.7}
+    reflectivity={1}
+    metalness={1}
+    clearcoat={1}
+    clearcoatRoughness={0.2}
     color={props.color || 'purple'}
   />
 );
@@ -54,6 +59,8 @@ const Tail = props => {
         position={[-0.5, 0.05, 0]}
         radius={0.2}
         smoothness={4}
+        receiveShadow
+        castShadow
       >
         <BodyMaterial color={props.color} />
       </RoundedBox>
@@ -63,6 +70,8 @@ const Tail = props => {
           position={[-0.1, 0, 0]}
           radius={0.05}
           smoothness={4}
+          receiveShadow
+          castShadow
         >
           <BodyMaterial color={props.color} />
         </RoundedBox>
@@ -73,6 +82,8 @@ const Tail = props => {
             radius={0.05}
             smoothness={4}
             rotation={[0, 0, -10]}
+            receiveShadow
+            castShadow
           >
             <BodyMaterial color={props.color} />
           </RoundedBox>
@@ -82,6 +93,8 @@ const Tail = props => {
             radius={0.05}
             smoothness={4}
             rotation={[0, 0, 10]}
+            receiveShadow
+            castShadow
           >
             <BodyMaterial color={props.color} />
           </RoundedBox>
@@ -111,14 +124,14 @@ const EyeBall = props => {
 
   return (
     <group {...props} ref={ref}>
-      <Sphere position={[0, 0, 0]} args={[0.3]}>
+      <Sphere position={[0, 0, 0]} args={[0.3]} receiveShadow castShadow>
         <BodyMaterial
           translate={[0, 10, 0.25]}
           attach="material"
           color="#f3f3f3"
         />
       </Sphere>
-      <Sphere position={[0, 0, 0.25]} args={[0.1]}>
+      <Sphere position={[0, 0, 0.25]} args={[0.1]} receiveShadow castShadow>
         <BodyMaterial
           translate={[0, 10, 0.25]}
           attach="material"
@@ -247,6 +260,8 @@ const Player = props => {
         position={[0.25, 0.1, 0]}
         radius={0.2}
         smoothness={4}
+        receiveShadow
+        castShadow
       >
         <BodyMaterial color={props.color} />
       </RoundedBox>
@@ -254,8 +269,10 @@ const Player = props => {
         args={[0.7, 0.5, 0.8]}
         position={[0.8, -0.25, 0]}
         rotation={[0, 0, 0]}
-        radius={0.1}
+        radius={0.2}
         smoothness={6}
+        receiveShadow
+        castShadow
       >
         <BodyMaterial color={props.color} />
       </RoundedBox>
@@ -266,6 +283,8 @@ const Player = props => {
         radius={0.05}
         smoothness={4}
         rotation={[0, 0, 10]}
+        receiveShadow
+        castShadow
       >
         <BodyMaterial color={props.color} />
       </RoundedBox>
@@ -276,6 +295,8 @@ const Player = props => {
         position={[-0, -0.25, 0.4]}
         radius={0.05}
         smoothness={4}
+        receiveShadow
+        castShadow
       >
         <BodyMaterial color={props.color} />
       </RoundedBox>
@@ -285,6 +306,8 @@ const Player = props => {
         position={[-0, -0.25, -0.4]}
         radius={0.05}
         smoothness={4}
+        receiveShadow
+        castShadow
       >
         <BodyMaterial color={props.color} />
       </RoundedBox>
@@ -294,6 +317,8 @@ const Player = props => {
         position={[1.15, -0.4, 0]}
         radius={0.05}
         smoothness={4}
+        receiveShadow
+        castShadow
       >
         <meshPhysicalMaterial attach="material" color="black" />
       </RoundedBox>

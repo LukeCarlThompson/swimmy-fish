@@ -15,7 +15,7 @@ import {
   useSpring,
   useSphere,
 } from '@react-three/cannon';
-import { Sphere } from '@react-three/drei';
+import { Sphere, softShadows } from '@react-three/drei';
 import playerStore from '../../stores/playerStore';
 import { sigmoid, degToRad } from '../helpers';
 import Player from './Player';
@@ -31,8 +31,7 @@ const Plane = props => {
   return (
     <mesh ref={ref} receiveShadow>
       <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
-      <shadowMaterial attach="material" color="#163f61" />
-      <meshLambertMaterial color="#163f61" acc />
+      <meshPhongMaterial shininess={30} color="#163f61" />
     </mesh>
   );
 };
@@ -57,53 +56,13 @@ const Boundary = props => {
   );
 };
 
-const FishBowl = props => {
-  const [ref, api] = useSphere(() => ({
-    mass: 1,
-    position: [7, 3, 0],
-    linearDamping: 0.9,
-    linearFactor: [1, 1, 0],
-    args: 3,
-    ...props,
-  }));
-
-  const materialProps = {
-    transparent: true,
-    thickness: { value: 5, min: 0, max: 20 },
-    roughness: { value: 1, min: 0, max: 1, step: 0.1 },
-    clearcoat: { value: 1, min: 0, max: 1, step: 0.1 },
-    clearcoatRoughness: { value: 0, min: 0, max: 1, step: 0.1 },
-    transmission: { value: 1, min: 0.9, max: 1, step: 0.01 },
-    ior: { value: 1.25, min: 1, max: 2.3, step: 0.05 },
-    envMapIntensity: { value: 25, min: 0, max: 100, step: 1 },
-    color: '#ffffff',
-    attenuationTint: '#ffe79e',
-    attenuationDistance: { value: 0, min: 0, max: 1 },
-  };
-
-  return (
-    <group ref={ref}>
-      <Sphere position={[0, 0, 0]} args={[3]}>
-        <meshPhysicalMaterial {...materialProps} />
-        {/* <meshPhongMaterial
-          attach="material"
-          flatShading={false}
-          specular="#eff41c"
-          color={props.color || 'purple'}
-          translate={[0, 0, 0]}
-        /> */}
-      </Sphere>
-    </group>
-  );
-};
-
 const Scene = props => {
   console.log('Scene');
 
   return (
     <>
       <Physics gravity={[0, 0, 0]} tolerance={0.1}>
-        <Player color="#eb7a17" />
+        <Player color="#e07e28" />
         <Ball position={[5, 0, 0]} size={0.75} />
         <Ball position={[6, 2, 0]} size={0.25} />
         <Ball position={[6, 2, 0]} size={0.25} />

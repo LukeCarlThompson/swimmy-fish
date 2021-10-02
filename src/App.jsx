@@ -2,7 +2,7 @@ import React, { Suspense, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import styled from 'styled-components';
 import { useSpring, a } from '@react-spring/three';
-import { OrbitControls, Sky, Stats } from '@react-three/drei';
+import { OrbitControls, Sky, Stats, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import Scene from './threejs/components/Scene';
 import Controls from './threejs/components/Controls';
@@ -46,6 +46,7 @@ const App = () => {
       <Canvas
         // frameloop="demand"
         shadows
+        shadowMap
         colorManagement
         camera={{
           position: [0, 0, 20],
@@ -60,9 +61,13 @@ const App = () => {
           minDistance={20}
           maxDistance={60}
         /> */}
-        <Lighting />
-        <Scene />
-        {/* <Sky
+        <Suspense fallback={null}>
+          <Environment preset="forest" />
+        </Suspense>
+        <Suspense fallback={null}>
+          <Lighting />
+          <Scene />
+          {/* <Sky
           azimuth={0}
           turbidity={5}
           rayleigh={0}
@@ -70,7 +75,8 @@ const App = () => {
           sunPosition={[0.1, 10, -5]}
           distance={10000}
         /> */}
-        <Particles count={1000} mouse={{ current: [0, 0] }} />
+          <Particles count={1000} mouse={{ current: [0, 0] }} />
+        </Suspense>
         <fog attach="fog" args={['#a9e7ff', 0, 200]} />
         <color attach="background" args="#a9e7ff" />
         <CameraMovement />
