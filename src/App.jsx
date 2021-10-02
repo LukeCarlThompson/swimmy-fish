@@ -77,8 +77,8 @@ const App = () => {
         /> */}
           <Particles count={1000} mouse={{ current: [0, 0] }} />
         </Suspense>
-        <fog attach="fog" args={['#a9e7ff', 0, 200]} />
-        <color attach="background" args="#a9e7ff" />
+        <fog attach="fog" args={['#34d1a2', 0, 200]} />
+        <color attach="background" args="#34d1a2" />
         <CameraMovement />
         <Controls />
         {/* <Effects /> */}

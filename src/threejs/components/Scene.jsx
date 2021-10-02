@@ -21,6 +21,7 @@ import { sigmoid, degToRad } from '../helpers';
 import Player from './Player';
 import Ball from './Ball';
 import Background from './Background';
+import Seaweed from './Seaweed';
 
 const Plane = props => {
   const [ref] = usePlane(() => ({
@@ -61,7 +62,19 @@ const Scene = props => {
 
   return (
     <>
-      <Physics gravity={[0, 0, 0]} tolerance={0.1}>
+      <Physics
+        gravity={[0, 0, 0]}
+        iterations={20}
+        defaultContactMaterial={{
+          friction: 0.9,
+          restitution: 0.7,
+          contactEquationStiffness: 1e7,
+          contactEquationRelaxation: 1,
+          frictionEquationStiffness: 1e7,
+          frictionEquationRelaxation: 2,
+        }}
+        tolerance={0.001}
+      >
         <Player color="#e07e28" />
         <Ball position={[5, 0, 0]} size={0.75} />
         <Ball position={[6, 2, 0]} size={0.25} />
@@ -74,7 +87,8 @@ const Scene = props => {
         <Ball position={[-2, -5, 0]} />
         <Ball position={[-3, -3, 0]} size={1.2} />
         <Ball position={[-7, -5, 0]} size={0.8} />
-        <Background />
+        {/* <Background /> */}
+        <Seaweed />
         <Plane />
       </Physics>
     </>

@@ -18,7 +18,7 @@ const BodyMaterial = props => (
     attach="material"
     flatShading={false}
     specular="#eff41c"
-    rougness={0.7}
+    roughness={0.7}
     reflectivity={1}
     metalness={1}
     clearcoat={1}
@@ -314,13 +314,13 @@ const Player = props => {
       {/* lips */}
       <RoundedBox
         args={[0.1, 0.1, 0.5]}
-        position={[1.15, -0.4, 0]}
+        position={[1.11, -0.3, 0]}
         radius={0.05}
         smoothness={4}
         receiveShadow
         castShadow
       >
-        <meshPhysicalMaterial attach="material" color="black" />
+        <BodyMaterial color="#2e2929" />
       </RoundedBox>
       {/* Eyeball */}
       <EyeBall position={[0.6, 0.1, 0.35]} />

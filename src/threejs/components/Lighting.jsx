@@ -8,11 +8,11 @@ const Lighting = () => {
     <>
       <ambientLight intensity={0.3} color="#bfefff" />
       <spotLight
-        position={[0, 100, -200]}
+        position={[0, 200, -300]}
         angle={0.2}
         intensity={5}
-        distance={300}
-        decay={1}
+        distance={1000}
+        decay={3}
         penumbra={1}
         color="#fffb8a"
         castShadow
