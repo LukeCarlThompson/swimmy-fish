@@ -17,7 +17,7 @@ export default function Particles({ count, mouse }) {
       const factor = 10 + Math.random();
       const speed = 0.01;
       const xFactor = -100 + Math.random() * 200;
-      const yFactor = -20 + Math.random() * 50;
+      const yFactor = Math.random() * 12 - 10;
       const zFactor = -100 + Math.random() * 150;
       temp.push({ t, factor, speed, xFactor, yFactor, zFactor, mx: 0, my: 0 });
     }
@@ -61,8 +61,18 @@ export default function Particles({ count, mouse }) {
   return (
     <>
       <instancedMesh ref={mesh} args={[null, null, count]}>
-        <planeGeometry args={[0.2, 0.1]} />
-        <meshPhongMaterial color="#8ff8ff" />
+        <sphereGeometry args={[0.05]} />
+        {/* <meshPhongMaterial color="#395e4a" /> */}
+        <meshPhongMaterial
+          attach="material"
+          flatShading={false}
+          specular="#80ffec"
+          color="#395e4a"
+          shininess={1}
+          reflectivity={0.5}
+          transparent
+          opacity={0.75}
+        />
       </instancedMesh>
     </>
   );

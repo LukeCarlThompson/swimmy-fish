@@ -24,7 +24,7 @@ const Lighting = () => {
         position={[50, 150, -50]}
         intensity={1}
         distance={200}
-        angle={0.8}
+        angle={2}
         attenuation={200}
         anglePower={10}
         color="#fffb8a"
