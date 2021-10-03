@@ -16,19 +16,6 @@ const Material = props => (
     transparent
     opacity={props.opacity || 0.5}
   />
-  // <meshPhysicalMaterial
-  //   attach="material"
-  //   flatShading={false}
-  //   specular="#eff41c"
-  //   rougness={0.7}
-  //   reflectivity={1}
-  //   metalness={1}
-  //   clearcoat={1}
-  //   clearcoatRoughness={0.2}
-  //   transparent
-  //   opacity={props.opacity || 0.5}
-  //   color={props.color || 'green'}
-  // />
 );
 
 const Pillar = props => {
