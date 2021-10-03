@@ -3,66 +3,17 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { Tube } from '@react-three/drei';
 import * as THREE from 'three';
 
-const Material = props => (
-  // <meshPhongMaterial
-  //   attach="material"
-  //   flatShading={false}
-  //   specular="#eff41c"
-  //   color={props.color || 'green'}
-  //   transparent
-  //   opacity={props.opacity || 0.5}
-  // />
-  <meshPhysicalMaterial
-    attach="material"
-    flatShading={false}
-    specular="#eff41c"
-    rougness={0.7}
-    reflectivity={1}
-    metalness={1}
-    clearcoat={1}
-    clearcoatRoughness={0.2}
-    transparent
-    opacity={props.opacity || 0.5}
-    color={props.color || 'green'}
-  />
-);
+const Material = props => <meshPhongMaterial shininess={10} color="#0f2a40" />;
 
 const Block = props => {
-  const randomRef = useRef(Math.random() * 10);
-
-  console.log('Pillar');
+  console.log('Block');
 
   return (
     <>
       <group>
         <mesh {...props} scale={1} receiveShadow castShadow>
-          <icosahedronGeometry args={randomRef.current} />
-          <Material opacity={1} color="#163f61" />
-        </mesh>
-      </group>
-    </>
-  );
-};
-
-const Pillar = props => {
-  const randomRef = useRef(Math.random() + 0.5);
-
-  console.log('Pillar');
-
-  return (
-    <>
-      <group>
-        <mesh {...props} scale={1} receiveShadow castShadow>
-          <coneGeometry
-            args={[randomRef.current * 0.8, randomRef.current * 100, 5]}
-          />
-          <Material opacity={1} color="#275e5c" />
-        </mesh>
-        <mesh {...props} scale={1}>
-          <coneGeometry
-            args={[randomRef.current, randomRef.current * 100, 5]}
-          />
-          <Material color="#3e8045" opacity={0.25} />
+          <sphereGeometry args={(Math.random() * 0.5 + 0.75) * 8} />
+          <Material />
         </mesh>
       </group>
     </>
@@ -91,14 +42,10 @@ const Background = props => {
             <Block
               position={[
                 positionX * (Math.random() + 0.5),
-                -10,
+                -15,
                 positionZ * (Math.random() + 0.75),
               ]}
               rotation={[rotationY, rotationY, 0]}
-            />
-            <Pillar
-              position={[positionX, 0, positionZ]}
-              rotation={[0, rotationY, 0]}
             />
           </group>
         );

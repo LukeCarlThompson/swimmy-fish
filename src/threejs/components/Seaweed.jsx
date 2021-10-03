@@ -8,39 +8,34 @@ import {
 import * as THREE from 'three';
 
 const Material = props => (
-  // <meshPhongMaterial
-  //   attach="material"
-  //   flatShading={false}
-  //   specular="#eff41c"
-  //   color={props.color || 'green'}
-  //   transparent
-  //   opacity={props.opacity || 0.5}
-  // />
-  <meshPhysicalMaterial
+  <meshPhongMaterial
     attach="material"
     flatShading={false}
     specular="#eff41c"
-    rougness={0.7}
-    reflectivity={1}
-    metalness={1}
-    clearcoat={1}
-    clearcoatRoughness={0.2}
+    color={props.color || 'green'}
     transparent
     opacity={props.opacity || 0.5}
-    color={props.color || 'green'}
   />
+  // <meshPhysicalMaterial
+  //   attach="material"
+  //   flatShading={false}
+  //   specular="#eff41c"
+  //   rougness={0.7}
+  //   reflectivity={1}
+  //   metalness={1}
+  //   clearcoat={1}
+  //   clearcoatRoughness={0.2}
+  //   transparent
+  //   opacity={props.opacity || 0.5}
+  //   color={props.color || 'green'}
+  // />
 );
 
 const Pillar = props => {
-  const randomRef = useRef(Math.random() + 0.5);
-
   console.log('Pillar');
-
   return (
     <>
-      <coneGeometry
-        args={[randomRef.current * 0.5, randomRef.current * 60, 5]}
-      />
+      <coneGeometry args={[0.5, 15, 7]} />
       <Material opacity={1} color="#275e5c" />
     </>
   );
@@ -70,13 +65,15 @@ const Seaweed = props => {
   useLayoutEffect(() => {
     positions.current.forEach((item, i) => {
       const { positionX, positionZ, rotationY } = item;
+      const randomHeight = Math.random() * 0.5 + 0.5;
       dummy.current.position.set(
         positionX,
-        0,
+        randomHeight * 15 * 0.5 + -10,
         positionZ > -1 && positionZ < 2
           ? positionZ
           : positionZ - Math.random() * 100
       );
+      dummy.current.scale.set(1, randomHeight, 1);
       dummy.current.rotation.set(0, rotationY, 0);
       dummy.current.updateMatrix();
       mesh.current.setMatrixAt(i, dummy.current.matrix);

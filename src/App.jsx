@@ -27,9 +27,9 @@ const CameraMovement = () => {
     const lerpedX = x + velocityX * 0.1;
     const lerpedY = y + velocityY * 0.1;
 
-    state.camera.lookAt(lerpedX, lerpedY * 0.65, 0);
+    state.camera.lookAt(lerpedX, lerpedY, 0);
 
-    state.camera.position.y = lerpedY * 0.25;
+    state.camera.position.y = lerpedY > 11 ? 11 : lerpedY > -9 ? lerpedY : -9;
     state.camera.position.x = lerpedX;
     state.camera.position.z = 20;
 
@@ -67,18 +67,18 @@ const App = () => {
         <Suspense fallback={null}>
           <Lighting />
           <Scene />
-          {/* <Sky
-          azimuth={0}
-          turbidity={5}
-          rayleigh={0}
-          inclination={0.8}
-          sunPosition={[0.1, 10, -5]}
-          distance={10000}
-        /> */}
+          <Sky
+            azimuth={0}
+            turbidity={5}
+            rayleigh={0}
+            inclination={0.8}
+            sunPosition={[0.1, 5, -5]}
+            distance={10000}
+          />
           <Particles count={1000} mouse={{ current: [0, 0] }} />
         </Suspense>
         <fog attach="fog" args={['#34d1a2', 0, 200]} />
-        <color attach="background" args="#34d1a2" />
+        {/* <color attach="background" args="#34d1a2" /> */}
         <CameraMovement />
         <Controls />
         {/* <Effects /> */}
