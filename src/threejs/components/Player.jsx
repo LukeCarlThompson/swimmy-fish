@@ -146,7 +146,7 @@ const Player = props => {
   const [ref, api] = useBox(() => ({
     mass: 1,
     position: [0, 0, 0],
-    linearDamping: 0.5,
+    linearDamping: 0.75,
     linearFactor: [1, 1, 0],
     angularFactor: [1, 1, 0],
     ...props,
@@ -161,8 +161,13 @@ const Player = props => {
   console.log('Player');
 
   useLayoutEffect(() => {
-    console.count('subscribed');
+    // Save the player uuid to state
+    playerStore.setState({ uuid: ref.current.uuid });
+    // Save the player cannon api to state
+    playerStore.setState({ cannonApi: api });
+
     // Subscribe the velocity, position and rotation from Cannon to some local refs
+    console.count('subscribed');
     const unsubscribeVelocity = api.velocity.subscribe(v => {
       velocityRef.current = v;
     });
@@ -185,36 +190,54 @@ const Player = props => {
   }, []);
 
   useFrame(state => {
-    const { controls } = playerStore.getState();
+    const { controls, isUnderWater } = playerStore.getState();
 
     const [velocityX, velocityY, velocityZ] = velocityRef.current;
     const [mouseX, mouseY] = playerStore.getState().mousePosition;
     // const [rotationX, rotationY, rotationZ] = playerStore.getState().rotation;
     const [positionX, positionY, positionZ] = positionRef.current;
 
-    if (controls.up) {
+    if (controls.up && isUnderWater) {
       api.velocity.set(velocityX, velocityY + 0.2, velocityZ);
     }
 
-    if (controls.down) {
+    if (controls.down && isUnderWater) {
       api.velocity.set(velocityX, velocityY - 0.2, velocityZ);
     }
 
-    if (controls.right) {
+    if (controls.right && isUnderWater) {
       api.velocity.set(velocityX + 0.5, velocityY, velocityZ);
     }
 
-    if (controls.left) {
+    if (controls.left && isUnderWater) {
       api.velocity.set(velocityX - 0.5, velocityY, velocityZ);
     }
 
-    if (controls.mouse) {
+    if (controls.mouse && isUnderWater) {
       api.velocity.set(
         velocityX + mouseX * 0.1,
         velocityY + mouseY * 0.1,
         velocityZ
       );
       // api.applyImpulse([mouseX * 0.1, mouseY * 0.1, 0], [0, 0, 0]);
+    }
+
+    // Set maximum downward velocity when underwater
+    if (isUnderWater && velocityY < -15) {
+      api.velocity.set(velocityX, -15, velocityZ);
+    }
+
+    // Adjust movemnt damping when underwater
+    api.linearDamping.set(isUnderWater ? 0.75 : 0.01);
+
+    if (!isUnderWater && positionY > 10.25) {
+      api.applyImpulse([0, -0.5, 0], [0, 0, 0]);
+    }
+
+    // Additional check for bug when slowly breaching the water
+    if (positionY < 9 && !isUnderWater) {
+      playerStore.setState({ isUnderWater: true });
+      console.log('not underwater');
     }
 
     // Main player body rotation

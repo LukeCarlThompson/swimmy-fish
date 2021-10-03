@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useCallback,
   createRef,
+  useLayoutEffect,
 } from 'react';
 // import { useSpring, a } from '@react-spring/three';
 import { useFrame, useThree } from '@react-three/fiber';
@@ -24,24 +25,71 @@ import Ball from './Ball';
 import Background from './Background';
 import Seaweed from './Seaweed';
 
-const Ceiling = props => (
-  <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 10, 0]}>
-    <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
-    {/* <meshPhongMaterial shininess={100} color="#356375" /> */}
-    <meshPhysicalMaterial
-      attach="material"
-      flatShading={false}
-      specular="#9afcec"
-      roughness={0.2}
-      reflectivity={1}
-      metalness={0.5}
-      clearcoat={1}
-      clearcoatRoughness={0.15}
-      color="#87e5ff"
-      side={THREE.DoubleSide}
-    />
-  </mesh>
-);
+const WaterSurface = props => {
+  const [ref] = usePlane(() => ({
+    rotation: [-Math.PI / 2, 0, 0],
+    position: [0, 10, 0],
+    isTrigger: true,
+    onCollide: e => {
+      const { body } = e;
+      const playerUuid = playerStore.getState().uuid;
+      if (body.uuid === playerUuid) {
+        playerStore.setState({ isUnderWater: true });
+        // console.log('player entered water', e);
+      }
+    },
+    ...props,
+  }));
+  console.log('Ceiling');
+  return (
+    <mesh ref={ref}>
+      <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
+      <meshBasicMaterial attach="material" transparent opacity={0} />
+    </mesh>
+  );
+};
+
+const Ceiling = props => {
+  const [ref] = usePlane(() => ({
+    rotation: [-Math.PI / -2, 0, 0],
+    position: [0, 10, 0],
+    isTrigger: true,
+    onCollide: e => {
+      const { body, contact } = e;
+      const playerUuid = playerStore.getState().uuid;
+      const playerApi = playerStore.getState().cannonApi;
+      const { velocity } = playerStore.getState();
+      if (body.uuid === playerUuid) {
+        playerStore.setState({ isUnderWater: false });
+        playerApi.applyImpulse(
+          [velocity[0] * 0.5, velocity[1] * 0.25, 0],
+          [0, 0, 0]
+        );
+        // console.log('player left water', e);
+      }
+    },
+    ...props,
+  }));
+  console.log('Ceiling');
+  return (
+    <mesh ref={ref}>
+      <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
+      {/* <meshPhongMaterial shininess={100} color="#356375" /> */}
+      <meshPhysicalMaterial
+        attach="material"
+        flatShading={false}
+        specular="#9afcec"
+        roughness={0.2}
+        reflectivity={1}
+        metalness={0.5}
+        clearcoat={1}
+        clearcoatRoughness={0.15}
+        color="#87e5ff"
+        side={THREE.DoubleSide}
+      />
+    </mesh>
+  );
+};
 
 const UnderwaterBackground = props => (
   <mesh rotation={[degToRad(0), 0, 0]} position={[0, 0, -200]}>
@@ -99,7 +147,6 @@ const Scene = props => {
 
   return (
     <>
-      <Ceiling />
       <Physics
         gravity={[0, 0, 0]}
         iterations={20}
@@ -113,6 +160,8 @@ const Scene = props => {
         }}
         tolerance={0.001}
       >
+        <WaterSurface />
+        <Ceiling />
         <Player color="#e07e28" />
         <Ball position={[5, 0, 0]} size={0.75} />
         <Ball position={[6, 2, 0]} size={0.25} />
