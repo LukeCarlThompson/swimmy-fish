@@ -41,10 +41,10 @@ const Ball = props => {
 
     if (isTouchedRef.current) {
       material.current.color.lerpHSL(touchedColorRef.current, 0.05);
-      material.current.distort = 1;
+      // material.current.distort = 1;
     } else {
       material.current.color.lerpHSL(initialColorRef.current, 0.05);
-      material.current.distort = 0.5;
+      // material.current.distort = 0.5;
     }
   });
 
@@ -55,6 +55,7 @@ const Ball = props => {
       <Sphere position={[0, 0, 0]} args={[size]} receiveShadow castShadow>
         {/* <BodyMaterial translate={[0, 0, 0]} attach="material" color="#0068b3" /> */}
         <MeshDistortMaterial
+          ref={material}
           attach="material"
           color={`hsl(${340}, ${88}%, ${60}%)`}
           // transparent
@@ -65,7 +66,6 @@ const Ball = props => {
           reflectivity={1}
           clearcoat={1}
           clearcoatRoughness={0.2}
-          ref={material}
         />
       </Sphere>
     </group>

@@ -15,11 +15,8 @@ const Lighting = () => {
         decay={3}
         penumbra={1}
         color="#fffb8a"
-        castShadow
-        shadow-mapSize-height={2048}
-        shadow-mapSize-width={2048}
       />
-      <SpotLight
+      {/* <SpotLight
         penumbra={0.5}
         position={[50, 150, -50]}
         intensity={1}
@@ -28,7 +25,7 @@ const Lighting = () => {
         attenuation={200}
         anglePower={10}
         color="#fffb8a"
-      />
+      /> */}
       {/* <pointLight
         position={[0, 1000, -1000]}
         decay={0}

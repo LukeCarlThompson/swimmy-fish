@@ -3,17 +3,15 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { Tube } from '@react-three/drei';
 import * as THREE from 'three';
 
-const Material = props => <meshPhongMaterial shininess={10} color="#0f2a40" />;
-
 const Block = props => {
   console.log('Block');
 
   return (
     <>
       <group>
-        <mesh {...props} scale={1} receiveShadow castShadow>
+        <mesh {...props} scale={1}>
           <sphereGeometry args={(Math.random() * 0.5 + 0.75) * 8} />
-          <Material />
+          <meshLambertMaterial attach="material" color="#275e5c" />
         </mesh>
       </group>
     </>

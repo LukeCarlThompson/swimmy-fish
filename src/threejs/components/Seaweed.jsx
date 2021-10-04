@@ -7,23 +7,12 @@ import {
 } from '@react-three/drei';
 import * as THREE from 'three';
 
-const Material = props => (
-  <meshPhongMaterial
-    attach="material"
-    flatShading={false}
-    specular="#eff41c"
-    color={props.color || 'green'}
-    transparent
-    opacity={props.opacity || 0.5}
-  />
-);
-
 const Pillar = props => {
   console.log('Pillar');
   return (
     <>
       <coneGeometry args={[0.5, 15, 7]} />
-      <Material opacity={1} color="#275e5c" />
+      <meshLambertMaterial attach="material" color="#275e5c" />
     </>
   );
 };
@@ -70,12 +59,7 @@ const Seaweed = props => {
   }, []);
 
   return (
-    <instancedMesh
-      ref={mesh}
-      receiveShadow
-      castShadow
-      args={[null, null, positions.current.length]}
-    >
+    <instancedMesh ref={mesh} args={[null, null, positions.current.length]}>
       <Pillar />
     </instancedMesh>
   );

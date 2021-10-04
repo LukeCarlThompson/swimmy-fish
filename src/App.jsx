@@ -45,13 +45,11 @@ const App = () => {
     <SceneStyles>
       <Canvas
         // frameloop="demand"
-        shadows
-        shadowMap
         colorManagement
         camera={{
           position: [0, 0, 20],
           fov: 45,
-          far: 300,
+          far: 230,
           near: 0.1,
         }}
       >

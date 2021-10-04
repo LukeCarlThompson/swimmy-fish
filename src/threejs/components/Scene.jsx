@@ -16,7 +16,6 @@ import {
   useSpring,
   useSphere,
 } from '@react-three/cannon';
-import { Sphere, softShadows } from '@react-three/drei';
 import * as THREE from 'three';
 import playerStore from '../../stores/playerStore';
 import { sigmoid, degToRad } from '../helpers';
@@ -105,42 +104,32 @@ const Floor = props => {
     ...props,
   }));
   return (
-    <mesh ref={ref} receiveShadow>
+    <mesh ref={ref}>
       <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
-      <meshPhongMaterial shininess={10} color="#0f2a40" />
-      {/* <meshPhysicalMaterial
-        attach="material"
-        flatShading={false}
-        specular="#163f61"
-        roughness={1}
-        reflectivity={0.5}
-        metalness={0}
-        clearcoat={0}
-        color="#051a17"
-      /> */}
+      <meshLambertMaterial attach="material" color="#275e5c" />
     </mesh>
   );
 };
 
-const Boundary = props => {
-  const [ref, api] = useSphere(() => ({
-    mass: 1,
-    position: [0, 0, 0],
-    linearDamping: 0.9,
-    linearFactor: [1, 1, 0],
-    args: [50, 50, 50],
-    ...props,
-  }));
+// const Boundary = props => {
+//   const [ref, api] = useSphere(() => ({
+//     mass: 1,
+//     position: [0, 0, 0],
+//     linearDamping: 0.9,
+//     linearFactor: [1, 1, 0],
+//     args: [50, 50, 50],
+//     ...props,
+//   }));
 
-  console.log('Boundary');
-  return (
-    <group ref={ref}>
-      <Sphere position={[0, 0, 0]} args={[50, 50, 50]}>
-        <meshStandardMaterial color="#615637" />
-      </Sphere>
-    </group>
-  );
-};
+//   console.log('Boundary');
+//   return (
+//     <group ref={ref}>
+//       <Sphere position={[0, 0, 0]} args={[50, 50, 50]}>
+//         <meshStandardMaterial color="#615637" />
+//       </Sphere>
+//     </group>
+//   );
+// };
 
 const Scene = props => {
   console.log('Scene');
