@@ -1,5 +1,4 @@
 import React, { useRef } from 'react';
-import { SpotLight } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import playerStore from '../../stores/playerStore';
@@ -30,16 +29,6 @@ const Lighting = () => {
         penumbra={1}
         color="#fffb8a"
       />
-      {/* <SpotLight
-        penumbra={0.5}
-        position={[50, 150, -50]}
-        intensity={1}
-        distance={200}
-        angle={2}
-        attenuation={200}
-        anglePower={10}
-        color="#fffb8a"
-      /> */}
       {/* <pointLight
         position={[0, 1000, -1000]}
         decay={0}
