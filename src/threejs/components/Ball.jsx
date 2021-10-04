@@ -4,17 +4,6 @@ import { useSphere } from '@react-three/cannon';
 import { MeshDistortMaterial, Sphere } from '@react-three/drei';
 import * as THREE from 'three';
 
-const BodyMaterial = props => (
-  <meshPhongMaterial
-    attach="material"
-    flatShading={false}
-    specular="#80ffec"
-    color={props.color || 'purple'}
-    transparent
-    opacity={props.opacity || 0.75}
-  />
-);
-
 const Ball = props => {
   const material = useRef();
   const randomRef = useRef(Math.random());
@@ -53,7 +42,7 @@ const Ball = props => {
   return (
     <group ref={ref}>
       <Sphere position={[0, 0, 0]} args={[size]} receiveShadow castShadow>
-        {/* <BodyMaterial translate={[0, 0, 0]} attach="material" color="#0068b3" /> */}
+        {/* <meshLambertMaterial ref={material} attach="material" color="#275e5c" /> */}
         <MeshDistortMaterial
           ref={material}
           attach="material"
@@ -63,8 +52,8 @@ const Ball = props => {
           metalness={1}
           specular="#0068b3"
           roughness={0.7}
-          reflectivity={1}
-          clearcoat={1}
+          reflectivity={0.5}
+          clearcoat={0.5}
           clearcoatRoughness={0.2}
         />
       </Sphere>
