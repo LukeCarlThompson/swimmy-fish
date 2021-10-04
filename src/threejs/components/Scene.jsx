@@ -51,7 +51,7 @@ const WaterSurface = props => {
 const Ceiling = props => {
   const [ref] = usePlane(() => ({
     rotation: [-Math.PI / -2, 0, 0],
-    position: [0, 10, 0],
+    position: [0, 10, -125],
     isTrigger: true,
     onCollide: e => {
       const { body, contact } = e;
@@ -71,9 +71,13 @@ const Ceiling = props => {
   }));
   console.log('Ceiling');
   return (
-    <mesh ref={ref}>
-      <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
-      {/* <meshPhongMaterial shininess={100} color="#356375" /> */}
+    <mesh ref={ref} position={[0, 10, -100]}>
+      <planeBufferGeometry attach="geometry" args={[1000, 300]} />
+      {/* <meshPhongMaterial
+        shininess={100}
+        color="#356375"
+        side={THREE.DoubleSide}
+      /> */}
       <meshPhysicalMaterial
         attach="material"
         flatShading={false}
@@ -93,7 +97,7 @@ const Ceiling = props => {
 const UnderwaterBackground = props => (
   <mesh rotation={[degToRad(0), 0, 0]} position={[0, 0, -200]}>
     <planeBufferGeometry attach="geometry" args={[1000, 20]} />
-    <meshPhongMaterial shininess={100} color="#356375" />
+    <meshBasicMaterial color="#356375" />
   </mesh>
 );
 
