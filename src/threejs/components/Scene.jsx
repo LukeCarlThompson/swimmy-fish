@@ -110,7 +110,10 @@ const Floor = props => {
   return (
     <mesh ref={ref}>
       <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
-      <meshLambertMaterial attach="material" color="#275e5c" />
+      <meshLambertMaterial
+        attach="material"
+        color={worldStore.groundBaseColor}
+      />
     </mesh>
   );
 };

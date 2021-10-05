@@ -1,5 +1,6 @@
 import React, {
   useRef,
+  useMemo,
   useEffect,
   useLayoutEffect,
   useCallback,
@@ -12,8 +13,6 @@ import { Plane, Sphere, RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
 import playerStore from '../../stores/playerStore';
 import { sigmoid, degToRad } from '../helpers';
-
-let playerPosition = [0, 0, 0];
 
 const BodyMaterial = props => (
   <meshPhysicalMaterial
@@ -37,10 +36,10 @@ const Tail = props => {
   console.log('Tail');
 
   useFrame(state => {
-    // const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
-    // const [positionX, positionY, positionZ] = playerStore.getState().position;
-    const [velocityX, velocityY, velocityZ] = playerStore.velocity;
-    const [positionX, positionY, positionZ] = playerStore.position;
+    const { velocity, position } = playerStore;
+
+    const [velocityX, velocityY, velocityZ] = velocity;
+    const [positionX, positionY, positionZ] = position;
 
     // console.log('playerPosition -->', playerPosition);
 
@@ -162,9 +161,6 @@ const Player = props => {
   const leftFinRef = useRef();
   const rightFinRef = useRef();
   const vec3 = new THREE.Vector3();
-  const velocityRef = useRef([0, 0, 0]);
-  const positionRef = useRef([0, 0, 0]);
-  const rotationRef = useRef([0, 0, 0]);
 
   console.log('Player');
 
@@ -177,16 +173,15 @@ const Player = props => {
     // Subscribe the velocity, position and rotation from Cannon to some local refs
     console.count('subscribed');
     const unsubscribeVelocity = api.velocity.subscribe(v => {
-      velocityRef.current = v;
+      playerStore.velocity = v;
     });
 
     const unsubscribePosition = api.position.subscribe(p => {
-      positionRef.current = p;
-      playerPosition = p;
+      playerStore.position = p;
     });
 
     const unsubscribeRotation = api.rotation.subscribe(r => {
-      rotationRef.current = r;
+      playerStore.rotation = r;
     });
 
     return () => {
@@ -199,12 +194,19 @@ const Player = props => {
   }, []);
 
   useFrame(state => {
-    let { controls, isUnderWater } = playerStore;
+    let {
+      controls,
+      isUnderWater,
+      position,
+      rotation,
+      velocity,
+      mousePosition,
+    } = playerStore;
 
-    const [velocityX, velocityY, velocityZ] = velocityRef.current;
-    const [mouseX, mouseY] = playerStore.mousePosition;
-    // const [rotationX, rotationY, rotationZ] = playerStore.getState().rotation;
-    const [positionX, positionY, positionZ] = positionRef.current;
+    const [velocityX, velocityY, velocityZ] = velocity;
+    const [mouseX, mouseY] = mousePosition;
+    // const [rotationX, rotationY, rotationZ] = rotation;
+    const [positionX, positionY, positionZ] = position;
 
     if (controls.up && isUnderWater) {
       api.velocity.set(velocityX, velocityY + 0.2, velocityZ);
@@ -268,11 +270,6 @@ const Player = props => {
 
     // Set the player main rotation
     api.rotation.set(0, direction.y, direction.z);
-
-    // Sync state from local refs back to the global state
-    playerStore.rotation = rotationRef.current;
-    playerStore.velocity = velocityRef.current;
-    playerStore.position = positionRef.current;
 
     // Side fins rotation
     leftFinRef.current.setRotationFromAxisAngle(
