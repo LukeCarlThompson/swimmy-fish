@@ -22,22 +22,13 @@ const Lighting = () => {
       <ambientLight ref={ambientLightRef} intensity={0.1} color="white" />
       <spotLight
         position={[0, 200, -300]}
-        angle={0.2}
-        intensity={2}
-        distance={700}
+        angle={0.3}
+        intensity={10}
+        distance={500}
         decay={3}
         penumbra={1}
-        color="#fffb8a"
+        color="white"
       />
-      {/* <pointLight
-        position={[0, 1000, -1000]}
-        decay={0}
-        color="#fffb8a"
-        intensity={1}
-        castShadow
-        shadow-mapSize-height={1024}
-        shadow-mapSize-width={1024}
-      /> */}
     </>
   );
 };
