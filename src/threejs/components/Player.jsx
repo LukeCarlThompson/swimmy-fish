@@ -209,33 +209,38 @@ const Player = props => {
     const [positionX, positionY, positionZ] = position;
 
     if (controls.up && isUnderWater) {
-      api.velocity.set(velocityX, velocityY + 0.2, velocityZ);
+      // api.velocity.set(velocityX, velocityY + 0.2, velocityZ);
+      api.applyImpulse([0, 0.2, 0], [0, 0, 0]);
     }
 
     if (controls.down && isUnderWater) {
-      api.velocity.set(velocityX, velocityY - 0.2, velocityZ);
+      // api.velocity.set(velocityX, velocityY - 0.2, velocityZ);
+      api.applyImpulse([0, -0.2, 0], [0, 0, 0]);
     }
 
     if (controls.right && isUnderWater) {
-      api.velocity.set(velocityX + 0.5, velocityY, velocityZ);
+      // api.velocity.set(velocityX + 0.5, velocityY, velocityZ);
+      api.applyImpulse([0.2, 0, 0], [0, 0, 0]);
     }
 
     if (controls.left && isUnderWater) {
-      api.velocity.set(velocityX - 0.5, velocityY, velocityZ);
+      // api.velocity.set(velocityX - 0.5, velocityY, velocityZ);
+      api.applyImpulse([-0.2, 0, 0], [0, 0, 0]);
     }
 
     if (controls.mouse && isUnderWater) {
-      api.velocity.set(
-        velocityX + mouseX * 0.1,
-        velocityY + mouseY * 0.1,
-        velocityZ
-      );
-      // api.applyImpulse([mouseX * 0.1, mouseY * 0.1, 0], [0, 0, 0]);
+      // api.velocity.set(
+      //   velocityX + mouseX * 0.1,
+      //   velocityY + mouseY * 0.1,
+      //   velocityZ
+      // );
+      api.applyImpulse([mouseX * 0.1, mouseY * 0.1, 0], [0, 0, 0]);
     }
 
     // Set maximum downward velocity when underwater
     if (isUnderWater && velocityY < -15) {
-      api.velocity.set(velocityX, -15, velocityZ);
+      // api.velocity.set(velocityX, -15, velocityZ);
+      api.applyImpulse([0, 1, 0], [0, 0, 0]);
     }
 
     // Adjust movement damping when underwater
@@ -248,7 +253,7 @@ const Player = props => {
     // Additional check for bug when slowly breaching the water
     if (positionY < 9 && !isUnderWater) {
       isUnderWater = true;
-      console.log('not underwater');
+      // console.log('not underwater');
     }
 
     // Main player body rotation
