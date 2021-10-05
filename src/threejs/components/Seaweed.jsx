@@ -48,7 +48,7 @@ const Seaweed = props => {
           ? positionZ
           : positionZ - Math.random() * 100
       );
-      dummy.current.scale.set(1, randomHeight, 1);
+      dummy.current.scale.set(randomHeight, randomHeight, 1);
       dummy.current.rotation.set(0, rotationY, 0);
       dummy.current.updateMatrix();
       mesh.current.setMatrixAt(i, dummy.current.matrix);
