@@ -1,18 +1,17 @@
 import React, { useRef, useMemo, useLayoutEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import {
-  MeshDistortMaterial,
-  MeshWobbleMaterial,
-  Sphere,
-} from '@react-three/drei';
 import * as THREE from 'three';
+import worldStore from '../../stores/worldStore';
 
 const Pillar = props => {
   console.log('Pillar');
   return (
     <>
       <coneGeometry args={[0.5, 15, 7]} />
-      <meshLambertMaterial attach="material" color="#275e5c" />
+      <meshLambertMaterial
+        attach="material"
+        color={worldStore.groundBaseColor}
+      />
     </>
   );
 };

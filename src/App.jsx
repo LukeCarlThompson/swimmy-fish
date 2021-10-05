@@ -9,6 +9,7 @@ import Controls from './threejs/components/Controls';
 import Lighting from './threejs/components/Lighting';
 import Effects from './threejs/components/Effects';
 import playerStore from './stores/playerStore';
+import worldStore from './stores/worldStore';
 import Particles from './threejs/components/Particles';
 
 const SceneStyles = styled.div`
@@ -75,7 +76,7 @@ const App = () => {
           />
           <Particles count={1000} mouse={{ current: [0, 0] }} />
         </Suspense>
-        <fog attach="fog" args={['#34d1a2', 0, 200]} />
+        <fog attach="fog" args={[worldStore.fogColor, 0, 200]} />
         {/* <color attach="background" args="#34d1a2" /> */}
         <CameraMovement />
         <Controls />

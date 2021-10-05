@@ -1,5 +1,6 @@
 import React, { useRef, useLayoutEffect } from 'react';
 import * as THREE from 'three';
+import worldStore from '../../stores/worldStore';
 
 const Sphere = props => {
   console.log('Sphere');
@@ -7,12 +8,15 @@ const Sphere = props => {
   return (
     <>
       <sphereGeometry args={(Math.random() * 0.5 + 0.75) * 8} />
-      <meshLambertMaterial attach="material" color="#275e5c" />
+      <meshLambertMaterial
+        attach="material"
+        color={worldStore.groundBaseColor}
+      />
     </>
   );
 };
 
-const Background = props => {
+const BackgroundMounds = props => {
   const mesh = useRef();
   const coordsRef = useRef(
     Array.from(Array(20)).map(item => [
@@ -57,4 +61,4 @@ const Background = props => {
   );
 };
 
-export default Background;
+export default BackgroundMounds;

@@ -21,8 +21,9 @@ import playerStore from '../../stores/playerStore';
 import { sigmoid, degToRad } from '../helpers';
 import Player from './Player';
 import Ball from './Ball';
-import Background from './Background';
+import BackgroundMounds from './BackgroundMounds';
 import Seaweed from './Seaweed';
+import worldStore from '../../stores/worldStore';
 
 const WaterSurface = props => {
   const [ref] = usePlane(() => ({
@@ -39,7 +40,7 @@ const WaterSurface = props => {
     },
     ...props,
   }));
-  console.log('Ceiling');
+  console.log('Water surface');
   return (
     <mesh ref={ref}>
       <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
@@ -80,14 +81,13 @@ const Ceiling = props => {
       /> */}
       <meshPhysicalMaterial
         attach="material"
-        flatShading={false}
-        specular="#9afcec"
-        roughness={0.2}
+        specular="white"
+        roughness={0.3}
         reflectivity={1}
         metalness={0.5}
         clearcoat={1}
         clearcoatRoughness={0.15}
-        color="#87e5ff"
+        color={worldStore.groundBaseColor}
         side={THREE.DoubleSide}
       />
     </mesh>
@@ -167,7 +167,7 @@ const Scene = props => {
         <Ball position={[-2, -5, 0]} />
         <Ball position={[-3, -3, 0]} size={1.2} />
         <Ball position={[-7, -5, 0]} size={0.8} />
-        <Background />
+        <BackgroundMounds />
         <Seaweed />
         <UnderwaterBackground />
         <Floor />
