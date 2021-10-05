@@ -13,6 +13,8 @@ import * as THREE from 'three';
 import playerStore from '../../stores/playerStore';
 import { sigmoid, degToRad } from '../helpers';
 
+let playerPosition = [0, 0, 0];
+
 const BodyMaterial = props => (
   <meshPhysicalMaterial
     attach="material"
@@ -32,9 +34,15 @@ const Tail = props => {
   const tailSecondRef = useRef();
   const tailThirdRef = useRef();
 
+  console.log('Tail');
+
   useFrame(state => {
-    const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
-    const [positionX, positionY, positionZ] = playerStore.getState().position;
+    // const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
+    // const [positionX, positionY, positionZ] = playerStore.getState().position;
+    const [velocityX, velocityY, velocityZ] = playerStore.velocity;
+    const [positionX, positionY, positionZ] = playerStore.position;
+
+    // console.log('playerPosition -->', playerPosition);
 
     // tail movement
     const sideToSide = degToRad(
@@ -109,7 +117,7 @@ const EyeBall = props => {
   const vec3 = new THREE.Vector3();
 
   useFrame(state => {
-    const [x, y, z] = playerStore.getState().velocity;
+    const [x, y, z] = playerStore.velocity;
 
     const direction = vec3.set(
       sigmoid(y * -0.1),
@@ -162,9 +170,9 @@ const Player = props => {
 
   useLayoutEffect(() => {
     // Save the player uuid to state
-    playerStore.setState({ uuid: ref.current.uuid });
+    playerStore.uuid = ref.current.uuid;
     // Save the player cannon api to state
-    playerStore.setState({ cannonApi: api });
+    playerStore.cannonApi = api;
 
     // Subscribe the velocity, position and rotation from Cannon to some local refs
     console.count('subscribed');
@@ -174,6 +182,7 @@ const Player = props => {
 
     const unsubscribePosition = api.position.subscribe(p => {
       positionRef.current = p;
+      playerPosition = p;
     });
 
     const unsubscribeRotation = api.rotation.subscribe(r => {
@@ -190,10 +199,10 @@ const Player = props => {
   }, []);
 
   useFrame(state => {
-    const { controls, isUnderWater } = playerStore.getState();
+    let { controls, isUnderWater } = playerStore;
 
     const [velocityX, velocityY, velocityZ] = velocityRef.current;
-    const [mouseX, mouseY] = playerStore.getState().mousePosition;
+    const [mouseX, mouseY] = playerStore.mousePosition;
     // const [rotationX, rotationY, rotationZ] = playerStore.getState().rotation;
     const [positionX, positionY, positionZ] = positionRef.current;
 
@@ -227,7 +236,7 @@ const Player = props => {
       api.velocity.set(velocityX, -15, velocityZ);
     }
 
-    // Adjust movemnt damping when underwater
+    // Adjust movement damping when underwater
     api.linearDamping.set(isUnderWater ? 0.75 : 0.01);
 
     if (!isUnderWater && positionY > 10.25) {
@@ -236,7 +245,7 @@ const Player = props => {
 
     // Additional check for bug when slowly breaching the water
     if (positionY < 9 && !isUnderWater) {
-      playerStore.setState({ isUnderWater: true });
+      isUnderWater = true;
       console.log('not underwater');
     }
 
@@ -261,9 +270,9 @@ const Player = props => {
     api.rotation.set(0, direction.y, direction.z);
 
     // Sync state from local refs back to the global state
-    playerStore.setState({ rotation: rotationRef.current });
-    playerStore.setState({ velocity: velocityRef.current });
-    playerStore.setState({ position: positionRef.current });
+    playerStore.rotation = rotationRef.current;
+    playerStore.velocity = velocityRef.current;
+    playerStore.position = positionRef.current;
 
     // Side fins rotation
     leftFinRef.current.setRotationFromAxisAngle(
@@ -277,7 +286,7 @@ const Player = props => {
   });
 
   return (
-    <group ref={ref}>
+    <group ref={ref} name="player">
       <RoundedBox
         args={[1.5, 1.2, 0.8]}
         position={[0.25, 0.1, 0]}

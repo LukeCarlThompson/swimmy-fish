@@ -7,19 +7,21 @@ const Scene = props => {
   console.log('Controls');
 
   useEffect(() => {
+    const { controls } = playerStore;
+
     const keydownHandler = e => {
       if (e.keyCode === 38 || e.keyCode === 87 || e.keyCode === 32) {
         // up
-        playerStore.setState({ controls: { up: true } });
+        controls.up = true;
       } else if (e.keyCode === 37 || e.keyCode === 65) {
         // left
-        playerStore.setState({ controls: { left: true } });
+        controls.left = true;
       } else if (e.keyCode === 39 || e.keyCode === 68) {
         // right
-        playerStore.setState({ controls: { right: true } });
+        controls.right = true;
       } else if (e.keyCode === 40 || e.keyCode === 83) {
         // down
-        playerStore.setState({ controls: { down: true } });
+        controls.down = true;
       } else if (e.keyCode === 32) {
         // space
       }
@@ -28,29 +30,27 @@ const Scene = props => {
     const keyupHandler = e => {
       if (e.keyCode === 38 || e.keyCode === 87 || e.keyCode === 32) {
         // up
-        playerStore.setState({ controls: { up: false } });
-
-        // moveActiveTetromino('up');
+        controls.up = false;
       } else if (e.keyCode === 37 || e.keyCode === 65) {
         // left
-        playerStore.setState({ controls: { left: false } });
+        controls.left = false;
       } else if (e.keyCode === 39 || e.keyCode === 68) {
         // right
-        playerStore.setState({ controls: { right: false } });
+        controls.right = false;
       } else if (e.keyCode === 40 || e.keyCode === 83) {
         // down
-        playerStore.setState({ controls: { down: false } });
+        controls.down = false;
       } else if (e.keyCode === 32) {
         // space
       }
     };
 
     const mouseDownHandler = () => {
-      playerStore.setState({ controls: { mouse: true } });
+      controls.mouse = true;
     };
 
     const mouseUpHandler = () => {
-      playerStore.setState({ controls: { mouse: false } });
+      controls.mouse = false;
     };
 
     window.addEventListener('keydown', keydownHandler);
@@ -76,9 +76,7 @@ const Scene = props => {
     const mousePositionX = (mouse.x * viewport.width) / 2;
     const mousePositionY = (mouse.y * viewport.height) / 2;
 
-    playerStore.setState({
-      mousePosition: [mousePositionX, mousePositionY, 0],
-    });
+    playerStore.mousePosition = [mousePositionX, mousePositionY, 0];
   });
 
   return null;

@@ -31,9 +31,9 @@ const WaterSurface = props => {
     isTrigger: true,
     onCollide: e => {
       const { body } = e;
-      const playerUuid = playerStore.getState().uuid;
+      const playerUuid = playerStore.uuid;
       if (body.uuid === playerUuid) {
-        playerStore.setState({ isUnderWater: true });
+        playerStore.isUnderWater = true;
         // console.log('player entered water', e);
       }
     },
@@ -55,11 +55,11 @@ const Ceiling = props => {
     isTrigger: true,
     onCollide: e => {
       const { body, contact } = e;
-      const playerUuid = playerStore.getState().uuid;
-      const playerApi = playerStore.getState().cannonApi;
-      const { velocity } = playerStore.getState();
+      const playerUuid = playerStore.uuid;
+      const playerApi = playerStore.cannonApi;
+      const { velocity } = playerStore;
       if (body.uuid === playerUuid) {
-        playerStore.setState({ isUnderWater: false });
+        playerStore.isUnderWater = false;
         playerApi.applyImpulse(
           [velocity[0] * 0.5, velocity[1] * 0.25, 0],
           [0, 0, 0]

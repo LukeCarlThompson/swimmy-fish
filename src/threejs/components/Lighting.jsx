@@ -8,7 +8,7 @@ const Lighting = () => {
   const ambientLightRef = useRef();
 
   useFrame(() => {
-    const { isUnderWater } = playerStore.getState();
+    const { isUnderWater } = playerStore;
 
     ambientLightRef.current.intensity = THREE.MathUtils.lerp(
       ambientLightRef.current.intensity,

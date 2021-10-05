@@ -21,8 +21,8 @@ const CameraMovement = () => {
   console.log('Camera movement');
 
   useFrame(state => {
-    const [x, y, z] = playerStore.getState().position;
-    const [velocityX, velocityY, velocityZ] = playerStore.getState().velocity;
+    const [x, y, z] = playerStore.position;
+    const [velocityX, velocityY, velocityZ] = playerStore.velocity;
 
     const lerpedX = x + velocityX * 0.1;
     const lerpedY = y + velocityY * 0.1;
