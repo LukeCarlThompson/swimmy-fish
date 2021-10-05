@@ -55,9 +55,48 @@ const BackgroundMounds = props => {
   }, []);
 
   return (
-    <instancedMesh ref={mesh} args={[null, null, positions.current.length]}>
-      <Sphere />
-    </instancedMesh>
+    <group>
+      <instancedMesh ref={mesh} args={[null, null, positions.current.length]}>
+        <Sphere />
+      </instancedMesh>
+      <mesh position={[-30, -13, -100]} rotation={[0, 0, 0]}>
+        <icosahedronGeometry args={25} />
+        <meshLambertMaterial
+          attach="material"
+          color={worldStore.groundBaseColor}
+        />
+      </mesh>
+      <mesh
+        position={[-40, -15, -40]}
+        rotation={[Math.random() * 10, Math.random() * 10, Math.random() * 10]}
+      >
+        <icosahedronGeometry args={15} />
+        <meshLambertMaterial
+          attach="material"
+          color={worldStore.groundBaseColor}
+        />
+      </mesh>
+      <mesh
+        position={[10, -10, -10]}
+        rotation={[Math.random() * 10, Math.random() * 10, Math.random() * 10]}
+      >
+        <icosahedronGeometry args={5} />
+        <meshLambertMaterial
+          attach="material"
+          color={worldStore.groundBaseColor}
+        />
+      </mesh>
+      <mesh
+        position={[20, -10, -25]}
+        rotation={[Math.random() * 10, Math.random() * 10, Math.random() * 10]}
+      >
+        <dodecahedronGeometry args={5} />
+        <meshLambertMaterial
+          attach="material"
+          color={worldStore.groundBaseColor}
+        />
+      </mesh>
+    </group>
   );
 };
 
