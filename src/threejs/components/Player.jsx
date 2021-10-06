@@ -283,6 +283,8 @@ const Player = props => {
       z: degToRad(sigmoid(velocityY * 0.2) * 90),
     };
 
+    // TODO: Tween the player rotation towards the mouse location instead of calculating the direction
+
     // Set the player main rotation
     api.rotation.set(0, direction.y, direction.z);
 

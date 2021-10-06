@@ -62,7 +62,7 @@ const Ceiling = props => {
       if (body.uuid === playerUuid) {
         playerStore.isUnderWater = false;
         playerApi.applyImpulse(
-          [velocity[0] * 0.5, velocity[1] * 0.25, 0],
+          [velocity[0] * 0.2, velocity[1] * 0.2, 0],
           [0, 0, 0]
         );
         // console.log('player left water', e);
