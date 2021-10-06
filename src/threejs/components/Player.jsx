@@ -156,6 +156,7 @@ const Player = props => {
     linearDamping: 0.75,
     linearFactor: [1, 1, 0],
     angularFactor: [1, 1, 0],
+    allowSleep: false,
     ...props,
   }));
   const leftFinRef = useRef();
@@ -173,11 +174,18 @@ const Player = props => {
     // Subscribe the velocity, position and rotation from Cannon to some local refs
     console.count('subscribed');
     const unsubscribeVelocity = api.velocity.subscribe(v => {
-      playerStore.velocity = v;
+      const velocity = [
+        Number(v[0]).toFixed(4),
+        Number(v[1]).toFixed(4),
+        Number(v[2]).toFixed(4),
+      ];
+      playerStore.velocity = velocity;
+      // console.log('velocity -->', velocity);
     });
 
     const unsubscribePosition = api.position.subscribe(p => {
       playerStore.position = p;
+      // console.log('position -->', p);
     });
 
     const unsubscribeRotation = api.rotation.subscribe(r => {
@@ -275,6 +283,12 @@ const Player = props => {
 
     // Set the player main rotation
     api.rotation.set(0, direction.y, direction.z);
+    // ref.current.setRotationFromAxisAngle(vec3.set(0, direction.y, direction.z));
+    // ref.current.rotation.y = direction.y;
+    // ref.current.rotation.z = direction.z;
+    // ref.current.matrixAutoUpdate = true;
+
+    // console.log('player ref -->', ref.current);
 
     // Side fins rotation
     leftFinRef.current.setRotationFromAxisAngle(

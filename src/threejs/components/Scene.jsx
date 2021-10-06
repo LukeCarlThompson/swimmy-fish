@@ -145,16 +145,18 @@ const Scene = props => {
     <>
       <Physics
         gravity={[0, 0, 0]}
-        iterations={20}
+        iterations={5}
         defaultContactMaterial={{
           friction: 0.9,
-          restitution: 0.7,
+          restitution: 0.3,
           contactEquationStiffness: 1e7,
           contactEquationRelaxation: 1,
           frictionEquationStiffness: 1e7,
           frictionEquationRelaxation: 2,
         }}
-        tolerance={0.001}
+        broadphase="SAP"
+        allowSleep
+        tolerance={0.1}
       >
         <WaterSurface />
         <Ceiling />

@@ -19,6 +19,8 @@ const Ball = props => {
     linearDamping: 0.7,
     linearFactor: [1, 1, 0],
     args: size,
+    allowSleep: true,
+    sleepSpeedLimit: 0.25,
     onCollide: e => {
       isTouchedRef.current = !isTouchedRef.current;
     },
