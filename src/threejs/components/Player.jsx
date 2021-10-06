@@ -60,7 +60,7 @@ const Tail = props => {
   });
 
   return (
-    <group ref={tailRef}>
+    <group ref={tailRef} name="tail">
       <RoundedBox
         args={[1, 0.75, 0.6]}
         position={[-0.5, 0.05, 0]}
@@ -130,7 +130,7 @@ const EyeBall = props => {
   });
 
   return (
-    <group {...props} ref={ref}>
+    <group {...props} ref={ref} name="eyeball">
       <Sphere position={[0, 0, 0]} args={[0.3]} receiveShadow castShadow>
         <BodyMaterial
           translate={[0, 10, 0.25]}
@@ -192,11 +192,16 @@ const Player = props => {
       playerStore.rotation = r;
     });
 
+    const unsubscribeDamping = api.linearDamping.subscribe(d => {
+      playerStore.damping = d;
+    });
+
     return () => {
       console.count('unsubscribed');
       unsubscribeVelocity();
       unsubscribePosition();
       unsubscribeRotation();
+      unsubscribeDamping();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -209,6 +214,7 @@ const Player = props => {
       rotation,
       velocity,
       mousePosition,
+      damping,
     } = playerStore;
 
     const [velocityX, velocityY, velocityZ] = velocity;
@@ -218,22 +224,22 @@ const Player = props => {
 
     if (controls.up && isUnderWater) {
       // api.velocity.set(velocityX, velocityY + 0.2, velocityZ);
-      api.applyImpulse([0, 0.2, 0], [0, 0, 0]);
+      api.applyImpulse([0, 0.4, 0], [0, 0, 0]);
     }
 
     if (controls.down && isUnderWater) {
       // api.velocity.set(velocityX, velocityY - 0.2, velocityZ);
-      api.applyImpulse([0, -0.2, 0], [0, 0, 0]);
+      api.applyImpulse([0, -0.4, 0], [0, 0, 0]);
     }
 
     if (controls.right && isUnderWater) {
       // api.velocity.set(velocityX + 0.5, velocityY, velocityZ);
-      api.applyImpulse([0.2, 0, 0], [0, 0, 0]);
+      api.applyImpulse([0.4, 0, 0], [0, 0, 0]);
     }
 
     if (controls.left && isUnderWater) {
       // api.velocity.set(velocityX - 0.5, velocityY, velocityZ);
-      api.applyImpulse([-0.2, 0, 0], [0, 0, 0]);
+      api.applyImpulse([-0.4, 0, 0], [0, 0, 0]);
     }
 
     if (controls.mouse && isUnderWater) {
@@ -245,14 +251,10 @@ const Player = props => {
       api.applyImpulse([mouseX * 0.1, mouseY * 0.1, 0], [0, 0, 0]);
     }
 
-    // Set maximum downward velocity when underwater
-    if (isUnderWater && velocityY < -15) {
-      // api.velocity.set(velocityX, -15, velocityZ);
-      api.applyImpulse([0, 1, 0], [0, 0, 0]);
-    }
-
-    // Adjust movement damping when underwater
-    api.linearDamping.set(isUnderWater ? 0.75 : 0.01);
+    // Apply some damping if underwater and moving too fast downwards
+    const newDamping =
+      (isUnderWater && velocityY) < -10 ? 0.99 : isUnderWater ? 0.75 : 0.01;
+    api.linearDamping.set(THREE.MathUtils.lerp(damping, newDamping, 0.5));
 
     if (!isUnderWater && positionY > 10.25) {
       api.applyImpulse([0, -0.5, 0], [0, 0, 0]);
@@ -283,12 +285,6 @@ const Player = props => {
 
     // Set the player main rotation
     api.rotation.set(0, direction.y, direction.z);
-    // ref.current.setRotationFromAxisAngle(vec3.set(0, direction.y, direction.z));
-    // ref.current.rotation.y = direction.y;
-    // ref.current.rotation.z = direction.z;
-    // ref.current.matrixAutoUpdate = true;
-
-    // console.log('player ref -->', ref.current);
 
     // Side fins rotation
     leftFinRef.current.setRotationFromAxisAngle(
@@ -327,6 +323,7 @@ const Player = props => {
       {/* Dorsal fin */}
       <RoundedBox
         args={[0.5, 0.5, 0.05]}
+        name="dorsal-fin"
         position={[0.25, 0.7, 0]}
         radius={0.05}
         smoothness={4}
@@ -339,6 +336,7 @@ const Player = props => {
       {/* Side fins */}
       <RoundedBox
         ref={leftFinRef}
+        name="right-fin"
         args={[0.5, 0.1, 0.6]}
         position={[-0, -0.25, 0.4]}
         radius={0.05}
@@ -350,6 +348,7 @@ const Player = props => {
       </RoundedBox>
       <RoundedBox
         ref={rightFinRef}
+        name="left-fin"
         args={[0.5, 0.1, 0.6]}
         position={[-0, -0.25, -0.4]}
         radius={0.05}
@@ -361,6 +360,7 @@ const Player = props => {
       </RoundedBox>
       {/* lips */}
       <RoundedBox
+        name="lips"
         args={[0.1, 0.1, 0.5]}
         position={[1.11, -0.3, 0]}
         radius={0.05}

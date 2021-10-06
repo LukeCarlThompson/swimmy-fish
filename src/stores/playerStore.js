@@ -11,6 +11,7 @@ const playerStore = {
     mouse: false,
   },
   isUnderWater: true,
+  damping: 0.75,
   uuid: '',
   cannonApi: null,
   // velocityUp: () => {
