@@ -86,6 +86,16 @@ const App = () => {
           className="stats" // Optional className to add to the stats container dom element
           // All stats.js props are valid
         />
+        <Stats
+          showPanel={1} // Start-up panel (default=0)
+          className="stats-02" // Optional className to add to the stats container dom element
+          // All stats.js props are valid
+        />
+        <Stats
+          showPanel={2} // Start-up panel (default=0)
+          className="stats-03" // Optional className to add to the stats container dom element
+          // All stats.js props are valid
+        />
       </Canvas>
     </SceneStyles>
   );
