@@ -27,8 +27,6 @@ const Ball = props => {
   }));
 
   useFrame(({ clock }) => {
-    // const sin = Math.abs(Math.sin(clock.getElapsedTime())) * 0.5 + 0.5;
-
     if (isTouchedRef.current) {
       material.current.color.lerpHSL(touchedColorRef.current, 0.05);
       // material.current.distort = 1;

@@ -4,22 +4,23 @@ import { useFrame } from '@react-three/fiber';
 
 export default function Particles({ count, mouse }) {
   const mesh = useRef();
+  const { sin, cos, random } = Math;
 
   const dummy = useMemo(() => new Object3D(), []);
   // Generate some random positions, speed factors and timings
   const particles = useMemo(() => {
     const temp = [];
     for (let i = 0; i < count; i++) {
-      const t = Math.random() * 100;
-      const factor = 10 + Math.random();
+      const t = random() * 100;
+      const factor = 10 + random();
       const speed = 0.01;
-      const xFactor = -100 + Math.random() * 200;
-      const yFactor = Math.random() * 12 - 10;
-      const zFactor = -100 + Math.random() * 150;
+      const xFactor = -100 + random() * 200;
+      const yFactor = random() * 12 - 10;
+      const zFactor = -100 + random() * 150;
       temp.push({ t, factor, speed, xFactor, yFactor, zFactor, mx: 0, my: 0 });
     }
     return temp;
-  }, [count]);
+  }, [count, random]);
   // The innards of this hook will run every frame
   useFrame(state => {
     // Run through the randomized data to calculate some movement
@@ -33,12 +34,12 @@ export default function Particles({ count, mouse }) {
       dummy.position.set(
         (particle.mx / 10) * 1 +
           xFactor +
-          Math.cos(state.clock.elapsedTime * 0.05) +
-          Math.sin(state.clock.elapsedTime * 0.05) * 10,
+          cos(state.clock.elapsedTime * 0.05) +
+          sin(state.clock.elapsedTime * 0.05) * 10,
         particle.my / 10 +
           yFactor +
-          Math.sin(t * 0.01 * factor) +
-          (Math.cos(t * 0.5) * factor) / 10,
+          sin(t * 0.01 * factor) +
+          (cos(t * 0.5) * factor) / 10,
         zFactor
       );
       // dummy.rotation.set(s * 5, s * 5, s * 5);

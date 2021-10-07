@@ -27,6 +27,8 @@ const Tail = props => {
   const tailSecondRef = useRef();
   const tailThirdRef = useRef();
 
+  const { abs, sin } = Math;
+
   console.log('Tail');
 
   useFrame(state => {
@@ -35,15 +37,13 @@ const Tail = props => {
     const [velocityX, velocityY, velocityZ] = velocity;
     const [positionX, positionY, positionZ] = position;
 
-    // console.log('playerPosition -->', playerPosition);
-
     // tail movement
     const sideToSide = degToRad(
-      Math.sin(
-        Math.abs(velocityY) +
-          Math.abs(positionY) +
-          Math.abs(velocityX) +
-          Math.abs(positionX) +
+      sin(
+        abs(velocityY) +
+          abs(positionY) +
+          abs(velocityX) +
+          abs(positionX) +
           state.clock.getElapsedTime() * 4
       )
     );
@@ -156,6 +156,7 @@ const Player = props => {
   const leftFinRef = useRef();
   const rightFinRef = useRef();
   const vec3 = new Vector3();
+  const { abs, sin } = Math;
 
   console.log('Player');
 
@@ -262,11 +263,11 @@ const Player = props => {
     // TODO: Change direction based on input not velocity and lerp or spring to the new direction.
 
     const wobble =
-      Math.sin(
-        Math.abs(velocityY) +
-          Math.abs(positionY) +
-          Math.abs(velocityX) +
-          Math.abs(positionX) +
+      sin(
+        abs(velocityY) +
+          abs(positionY) +
+          abs(velocityX) +
+          abs(positionX) +
           state.clock.getElapsedTime() * 4
       ) * -10;
 

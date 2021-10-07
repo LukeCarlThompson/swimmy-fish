@@ -68,7 +68,6 @@ const App = () => {
       <Canvas
         // frameloop="demand"
         mode="concurrent"
-        dpr={[1, 1]}
         colorManagement
         camera={{
           position: [0, 0, 20],
