@@ -1,16 +1,10 @@
-import React, {
-  useRef,
-  useMemo,
-  useEffect,
-  useLayoutEffect,
-  useCallback,
-  createRef,
-} from 'react';
+import React, { useRef, useLayoutEffect } from 'react';
 // import { useSpring, a } from '@react-spring/three';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { useBox } from '@react-three/cannon';
-import { Plane, Sphere, RoundedBox } from '@react-three/drei';
-import * as THREE from 'three';
+import { Sphere, RoundedBox } from '@react-three/drei';
+import { Vector3 } from 'three/src/math/Vector3.js';
+import * as MathUtils from 'three/src/math/MathUtils.js';
 import playerStore from '../../stores/playerStore';
 import { sigmoid, degToRad } from '../helpers';
 
@@ -113,7 +107,7 @@ const Tail = props => {
 
 const EyeBall = props => {
   const ref = useRef();
-  const vec3 = new THREE.Vector3();
+  const vec3 = new Vector3();
 
   useFrame(state => {
     const [x, y, z] = playerStore.velocity;
@@ -161,7 +155,7 @@ const Player = props => {
   }));
   const leftFinRef = useRef();
   const rightFinRef = useRef();
-  const vec3 = new THREE.Vector3();
+  const vec3 = new Vector3();
 
   console.log('Player');
 
@@ -174,13 +168,7 @@ const Player = props => {
     // Subscribe the velocity, position and rotation from Cannon to some local refs
     console.count('subscribed');
     const unsubscribeVelocity = api.velocity.subscribe(v => {
-      const velocity = [
-        Number(v[0]).toFixed(4),
-        Number(v[1]).toFixed(4),
-        Number(v[2]).toFixed(4),
-      ];
-      playerStore.velocity = velocity;
-      // console.log('velocity -->', velocity);
+      playerStore.velocity = v;
     });
 
     const unsubscribePosition = api.position.subscribe(p => {
@@ -219,7 +207,7 @@ const Player = props => {
 
     const [velocityX, velocityY, velocityZ] = velocity;
     const [mouseX, mouseY] = mousePosition;
-    // const [rotationX, rotationY, rotationZ] = rotation;
+    const [rotationX, rotationY, rotationZ] = rotation;
     const [positionX, positionY, positionZ] = position;
 
     if (controls.up && isUnderWater) {
@@ -254,7 +242,7 @@ const Player = props => {
     // Apply some damping if underwater and moving too fast downwards
     const newDamping =
       (isUnderWater && velocityY) < -10 ? 0.99 : isUnderWater ? 0.75 : 0.01;
-    api.linearDamping.set(THREE.MathUtils.lerp(damping, newDamping, 0.5));
+    api.linearDamping.set(MathUtils.lerp(damping, newDamping, 0.5));
 
     if (!isUnderWater && positionY > 10.25) {
       api.applyImpulse([0, -0.5, 0], [0, 0, 0]);
@@ -264,6 +252,10 @@ const Player = props => {
     if (positionY < 9 && !isUnderWater) {
       isUnderWater = true;
       // console.log('not underwater');
+    }
+
+    if (positionY < -9) {
+      api.applyImpulse([0, 0.05, 0], [0, 0, 0]);
     }
 
     // Main player body rotation
@@ -283,10 +275,30 @@ const Player = props => {
       z: degToRad(sigmoid(velocityY * 0.2) * 90),
     };
 
-    // TODO: Tween the player rotation towards the mouse location instead of calculating the direction
-
     // Set the player main rotation
     api.rotation.set(0, direction.y, direction.z);
+
+    // TODO: Tween the player rotation towards the mouse location instead of calculating the direction
+
+    // // Testing out calculating direction based on points
+    // const mouseYAngle = mouseX > 0 ? degToRad(1) : degToRad(-179);
+    // // console.log('mouse x -->', mouseX);
+    // const mouseZAngle = Math.atan2(mouseY, Math.abs(mouseX));
+
+    // const yAxisRotation = MathUtils.lerp(
+    //   rotationY,
+    //   controls.mouse ? mouseYAngle : direction.y,
+    //   // mouseYAngle,
+    //   0.1
+    // );
+    // const zAxisRotation = MathUtils.lerp(
+    //   rotationZ,
+    //   controls.mouse ? mouseZAngle : direction.z,
+    //   // mouseZAngle,
+    //   0.1
+    // );
+
+    // api.rotation.set(0, yAxisRotation, zAxisRotation);
 
     // Side fins rotation
     leftFinRef.current.setRotationFromAxisAngle(

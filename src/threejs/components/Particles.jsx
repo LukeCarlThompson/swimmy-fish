@@ -1,11 +1,11 @@
-import * as THREE from 'three';
+import { Object3D } from 'three/src/core/Object3D.js';
 import React, { useRef, useMemo } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 
 export default function Particles({ count, mouse }) {
   const mesh = useRef();
 
-  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const dummy = useMemo(() => new Object3D(), []);
   // Generate some random positions, speed factors and timings
   const particles = useMemo(() => {
     const temp = [];

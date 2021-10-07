@@ -1,5 +1,5 @@
 import React, { useRef, useLayoutEffect } from 'react';
-import * as THREE from 'three';
+import { Object3D } from 'three/src/core/Object3D.js';
 import worldStore from '../../stores/worldStore';
 
 const Sphere = props => {
@@ -25,7 +25,7 @@ const BackgroundMounds = props => {
       Math.random(),
     ])
   );
-  const dummy = useRef(new THREE.Object3D());
+  const dummy = useRef(new Object3D());
   const positions = useRef(
     coordsRef.current.map((item, i) => {
       const positionX = item[0] * 100;

@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useLayoutEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import * as THREE from 'three';
+import { Object3D } from 'three/src/core/Object3D.js';
 import worldStore from '../../stores/worldStore';
 
 const Pillar = props => {
@@ -25,7 +25,7 @@ const Seaweed = props => {
     ])
   );
   const mesh = useRef();
-  const dummy = useRef(new THREE.Object3D());
+  const dummy = useRef(new Object3D());
   const positions = useRef(
     coordsRef.current.map((item, i) => {
       const positionX = item[0] * 100;

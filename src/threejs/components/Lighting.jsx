@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import * as MathUtils from 'three/src/math/MathUtils.js';
 import playerStore from '../../stores/playerStore';
 
 const Lighting = () => {
@@ -10,7 +10,7 @@ const Lighting = () => {
   useFrame(() => {
     const { isUnderWater } = playerStore;
 
-    ambientLightRef.current.intensity = THREE.MathUtils.lerp(
+    ambientLightRef.current.intensity = MathUtils.lerp(
       ambientLightRef.current.intensity,
       isUnderWater ? 0.1 : 2,
       0.1

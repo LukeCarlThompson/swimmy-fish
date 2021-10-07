@@ -1,24 +1,10 @@
 /* eslint-disable no-nested-ternary */
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  createRef,
-  useLayoutEffect,
-} from 'react';
+import React from 'react';
 // import { useSpring, a } from '@react-spring/three';
-import { useFrame, useThree } from '@react-three/fiber';
-import {
-  Physics,
-  useBox,
-  usePlane,
-  useSpring,
-  useSphere,
-} from '@react-three/cannon';
-import * as THREE from 'three';
+// import { useFrame, useThree } from '@react-three/fiber';
+import { Physics, usePlane } from '@react-three/cannon';
 import playerStore from '../../stores/playerStore';
-import { sigmoid, degToRad } from '../helpers';
+import { degToRad } from '../helpers';
 import Player from './Player';
 import Ball from './Ball';
 import BackgroundMounds from './BackgroundMounds';
@@ -77,7 +63,7 @@ const Ceiling = props => {
       {/* <meshPhongMaterial
         shininess={100}
         color="#356375"
-        side={THREE.DoubleSide}
+        side={2}
       /> */}
       <meshPhysicalMaterial
         attach="material"
@@ -88,7 +74,7 @@ const Ceiling = props => {
         clearcoat={1}
         clearcoatRoughness={0.15}
         color={worldStore.groundBaseColor}
-        side={THREE.DoubleSide}
+        side={2}
       />
     </mesh>
   );
@@ -145,18 +131,12 @@ const Scene = props => {
     <>
       <Physics
         gravity={[0, 0, 0]}
-        iterations={5}
-        defaultContactMaterial={{
-          friction: 0.9,
-          restitution: 0.3,
-          contactEquationStiffness: 1e7,
-          contactEquationRelaxation: 1,
-          frictionEquationStiffness: 1e7,
-          frictionEquationRelaxation: 2,
-        }}
         broadphase="SAP"
+        defaultContactMaterial={{
+          contactEquationRelaxation: 4,
+          friction: 1e-3,
+        }}
         allowSleep
-        tolerance={0.1}
       >
         <WaterSurface />
         <Ceiling />

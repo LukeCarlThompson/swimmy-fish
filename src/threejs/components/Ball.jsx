@@ -1,15 +1,14 @@
 import React, { useRef } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { useSphere } from '@react-three/cannon';
 import { MeshDistortMaterial, Sphere } from '@react-three/drei';
-import * as THREE from 'three';
+import { Color } from 'three/src/math/Color.js';
 
 const Ball = props => {
   const material = useRef();
-  const randomRef = useRef(Math.random());
   const isTouchedRef = useRef(false);
-  const initialColorRef = useRef(new THREE.Color('hsl(340, 88%, 45%)'));
-  const touchedColorRef = useRef(new THREE.Color('hsl(220, 87%, 30%)'));
+  const initialColorRef = useRef(new Color('hsl(340, 88%, 45%)'));
+  const touchedColorRef = useRef(new Color('hsl(220, 87%, 30%)'));
 
   const size = props.size || 0.5;
 

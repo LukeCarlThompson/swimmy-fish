@@ -1,13 +1,13 @@
-import React, { Suspense, useRef } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import React, { Suspense } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
 import styled from 'styled-components';
-import { useSpring, a } from '@react-spring/three';
-import { OrbitControls, Sky, Stats, Environment } from '@react-three/drei';
-import * as THREE from 'three';
+// import { useSpring, a } from '@react-spring/three';
+import { Sky, Stats, Environment } from '@react-three/drei';
+import * as MathUtils from 'three/src/math/MathUtils.js';
 import Scene from './threejs/components/Scene';
 import Controls from './threejs/components/Controls';
 import Lighting from './threejs/components/Lighting';
-import Effects from './threejs/components/Effects';
+// import Effects from './threejs/components/Effects';
 import playerStore from './stores/playerStore';
 import worldStore from './stores/worldStore';
 import Particles from './threejs/components/Particles';
@@ -25,12 +25,33 @@ const CameraMovement = () => {
     const [x, y, z] = playerStore.position;
     const [velocityX, velocityY, velocityZ] = playerStore.velocity;
 
-    const lerpedX = x + velocityX * 0.1;
-    const lerpedY = y + velocityY * 0.1;
+    const lerpedX = MathUtils.lerp(
+      state.camera.position.x,
+      x + velocityX * 0.1,
+      0.7
+    );
+    const limitedY =
+      y + velocityY * 0.1 > 11
+        ? 11
+        : y + velocityY * 0.1 > -9
+        ? y + velocityY * 0.1
+        : -9;
 
-    state.camera.lookAt(lerpedX, lerpedY, 0);
+    const lerpedYPosition = MathUtils.lerp(
+      state.camera.position.y,
+      limitedY,
+      0.7
+    );
 
-    state.camera.position.y = lerpedY > 11 ? 11 : lerpedY > -9 ? lerpedY : -9;
+    const lerpedYLookAt = MathUtils.lerp(
+      state.camera.position.y,
+      y + velocityY * 0.1,
+      0.7
+    );
+
+    state.camera.lookAt(lerpedX, lerpedYLookAt, 0);
+
+    state.camera.position.y = lerpedYPosition;
     state.camera.position.x = lerpedX;
     state.camera.position.z = 20;
 
@@ -46,6 +67,8 @@ const App = () => {
     <SceneStyles>
       <Canvas
         // frameloop="demand"
+        mode="concurrent"
+        dpr={[1, 1]}
         colorManagement
         camera={{
           position: [0, 0, 20],
