@@ -156,7 +156,7 @@ const Player = props => {
   const leftFinRef = useRef();
   const rightFinRef = useRef();
   const vec3 = new Vector3();
-  const { abs, sin } = Math;
+  const { abs, sin, atan2 } = Math;
 
   console.log('Player');
 
@@ -260,8 +260,6 @@ const Player = props => {
     }
 
     // Main player body rotation
-    // TODO: Change direction based on input not velocity and lerp or spring to the new direction.
-
     const wobble =
       sin(
         abs(velocityY) +
@@ -279,12 +277,11 @@ const Player = props => {
     // Set the player main rotation
     api.rotation.set(0, direction.y, direction.z);
 
-    // TODO: Tween the player rotation towards the mouse location instead of calculating the direction
-
+    // TODO: Fix this logic to get more direct control over direction when holding the mouse down
     // // Testing out calculating direction based on points
     // const mouseYAngle = mouseX > 0 ? degToRad(1) : degToRad(-179);
     // // console.log('mouse x -->', mouseX);
-    // const mouseZAngle = Math.atan2(mouseY, Math.abs(mouseX));
+    // const mouseZAngle = atan2(mouseY, abs(mouseX));
 
     // const yAxisRotation = MathUtils.lerp(
     //   rotationY,
