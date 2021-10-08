@@ -1,7 +1,36 @@
-import React, { useRef, useMemo, useLayoutEffect } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import React, { useRef, useMemo, Suspense, useLayoutEffect } from 'react';
+import { useFrame, useThree, Canvas, useLoader } from '@react-three/fiber';
 import { Object3D } from 'three/src/core/Object3D.js';
+import { TextureLoader } from 'three/src/loaders/TextureLoader';
+import * as THREE from 'three';
 import worldStore from '../../stores/worldStore';
+import imgUrl from '../../images/seaweed-100w.png';
+
+const Plane = props => {
+  console.log('Plane');
+  const colorMap = useLoader(TextureLoader, imgUrl);
+  // This positions the txture on the plane. Puts the bottom center at the middle of the plane;
+  colorMap.offset.set(0, -1);
+  colorMap.repeat.set(1, 2);
+
+  return (
+    <>
+      <planeGeometry args={[3, 12]} />
+      <meshLambertMaterial
+        attach="material"
+        color={worldStore.groundBaseColor}
+        transparent
+        alphaTest={0.5}
+        // opacity={1}
+        map={colorMap}
+        // alphaMap={colorMap}
+        // normalMap={colorMap}
+        // roughnessMap={colorMap}
+        // aoMap={colorMap}
+      />
+    </>
+  );
+};
 
 const Pillar = props => {
   console.log('Pillar');
@@ -40,16 +69,20 @@ const Seaweed = props => {
   useLayoutEffect(() => {
     positions.current.forEach((item, i) => {
       const { positionX, positionZ, rotationY } = item;
-      const randomHeight = Math.random() * 0.5 + 0.5;
-      dummy.current.position.set(
+      const randomHeight = Math.random() * 2;
+      item.position = [
         positionX,
-        randomHeight * 15 * 0.5 + -10,
+        // randomHeight * 8 * 0.5 + -10,
+        -10,
         positionZ > -1 && positionZ < 2
           ? positionZ
-          : positionZ - Math.random() * 100
-      );
-      dummy.current.scale.set(randomHeight, randomHeight, 1);
-      dummy.current.rotation.set(0, rotationY, 0);
+          : positionZ - Math.random() * 100,
+      ];
+
+      dummy.current.position.set(...item.position);
+
+      item.scale = [randomHeight, randomHeight, 1];
+      dummy.current.scale.set(...item.scale);
       dummy.current.updateMatrix();
       mesh.current.setMatrixAt(i, dummy.current.matrix);
     });
@@ -57,9 +90,24 @@ const Seaweed = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { sin } = Math;
+
+  useFrame(state => {
+    positions.current.forEach((item, i) => {
+      const motion =
+        sin(state.clock.elapsedTime + item.position[0] * 0.03) * 0.1;
+      dummy.current.scale.set(...item.scale);
+      dummy.current.position.set(...item.position);
+      dummy.current.rotation.set(motion * 1, motion * -2, motion);
+      dummy.current.updateMatrix();
+      mesh.current.setMatrixAt(i, dummy.current.matrix);
+    });
+    mesh.current.instanceMatrix.needsUpdate = true;
+  });
+
   return (
     <instancedMesh ref={mesh} args={[null, null, positions.current.length]}>
-      <Pillar />
+      <Plane />
     </instancedMesh>
   );
 };

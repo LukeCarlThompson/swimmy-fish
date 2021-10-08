@@ -7,7 +7,7 @@ import * as MathUtils from 'three/src/math/MathUtils.js';
 import Scene from './threejs/components/Scene';
 import Controls from './threejs/components/Controls';
 import Lighting from './threejs/components/Lighting';
-// import Effects from './threejs/components/Effects';
+import Effects from './threejs/components/Effects';
 import playerStore from './stores/playerStore';
 import worldStore from './stores/worldStore';
 import Particles from './threejs/components/Particles';
