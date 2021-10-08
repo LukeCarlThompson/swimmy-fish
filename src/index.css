@@ -18,13 +18,6 @@ body {
 
 .stats {
   user-select: none;
-  pointer-events: none;
-}
-.stats-02 {
-  top: 48px !important;
-}
-.stats-03 {
-  top: 96px !important;
 }
 
 
