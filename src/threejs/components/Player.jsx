@@ -275,7 +275,9 @@ const Player = props => {
     };
 
     // Set the player main rotation
-    api.rotation.set(0, direction.y, direction.z);
+    const lerpedRotationY = MathUtils.lerp(rotationY, direction.y, 0.5);
+    const lerpedRotationZ = MathUtils.lerp(rotationZ, direction.z, 0.5);
+    api.rotation.set(0, lerpedRotationY, lerpedRotationZ);
 
     // TODO: Fix this logic to get more direct control over direction when holding the mouse down
     // // Testing out calculating direction based on points
