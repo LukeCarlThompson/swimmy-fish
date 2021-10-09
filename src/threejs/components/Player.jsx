@@ -6,7 +6,7 @@ import { Sphere, RoundedBox } from '@react-three/drei';
 import { Vector3 } from 'three/src/math/Vector3.js';
 import * as MathUtils from 'three/src/math/MathUtils.js';
 import playerStore from '../../stores/playerStore';
-import { sigmoid, degToRad } from '../helpers';
+import { sigmoid, degToRad, truncDec } from '../helpers';
 
 const BodyMaterial = props => (
   <meshPhysicalMaterial
@@ -157,6 +157,7 @@ const Player = props => {
   const rightFinRef = useRef();
   const vec3 = new Vector3();
   const { abs, sin, atan2 } = Math;
+  const velocityHistory = useRef({x: [0], y: [0]});
 
   console.log('Player');
 
@@ -170,6 +171,15 @@ const Player = props => {
     console.count('subscribed');
     const unsubscribeVelocity = api.velocity.subscribe(v => {
       playerStore.velocity = v;
+      // Add velocity to an array so we can get the average of it later
+      velocityHistory.current.x.push(v[0]);
+      if(velocityHistory.current.x.length > 10) {
+        velocityHistory.current.x.shift();
+      }
+      velocityHistory.current.y.push(v[1]);
+      if(velocityHistory.current.y.length > 10) {
+        velocityHistory.current.y.shift();
+      }
     });
 
     const unsubscribePosition = api.position.subscribe(p => {
@@ -212,31 +222,22 @@ const Player = props => {
     const [positionX, positionY, positionZ] = position;
 
     if (controls.up && isUnderWater) {
-      // api.velocity.set(velocityX, velocityY + 0.2, velocityZ);
       api.applyImpulse([0, 0.4, 0], [0, 0, 0]);
     }
 
     if (controls.down && isUnderWater) {
-      // api.velocity.set(velocityX, velocityY - 0.2, velocityZ);
       api.applyImpulse([0, -0.4, 0], [0, 0, 0]);
     }
 
     if (controls.right && isUnderWater) {
-      // api.velocity.set(velocityX + 0.5, velocityY, velocityZ);
       api.applyImpulse([0.4, 0, 0], [0, 0, 0]);
     }
 
     if (controls.left && isUnderWater) {
-      // api.velocity.set(velocityX - 0.5, velocityY, velocityZ);
       api.applyImpulse([-0.4, 0, 0], [0, 0, 0]);
     }
 
     if (controls.mouse && isUnderWater) {
-      // api.velocity.set(
-      //   velocityX + mouseX * 0.1,
-      //   velocityY + mouseY * 0.1,
-      //   velocityZ
-      // );
       api.applyImpulse([mouseX * 0.1, mouseY * 0.1, 0], [0, 0, 0]);
     }
 
@@ -259,25 +260,40 @@ const Player = props => {
       api.applyImpulse([0, 0.05, 0], [0, 0, 0]);
     }
 
-    // Main player body rotation
-    const wobble =
-      sin(
-        abs(velocityY) +
-          abs(positionY) +
-          abs(velocityX) +
-          abs(positionX) +
-          state.clock.getElapsedTime() * 4
-      ) * -10;
+    // Push swimmy back into his garden if he swims out
+    if(abs(positionX) > 100 ) {
+      api.applyImpulse([positionX * -0.01, 0, 0], [0, 0, 0]);
+    }
 
+    // Get average velocity measurements
+    const averageVelocityX = velocityHistory.current.x.reduce((a,b) => (a+b)) / velocityHistory.current.x.length;
+    const averageVelocityY = velocityHistory.current.y.reduce((a,b) => (a+b)) / velocityHistory.current.y.length;
+
+    // Velcoity factor for the head wobble
+    const velocityInput = abs(averageVelocityY) + abs(positionY) + abs(averageVelocityX) + abs(positionX);
+    // Main player body wobble when idle and when swimming
+    const wobble = sin(velocityInput + (state.clock.getElapsedTime() * 4)) * -10;
+
+    // TODO: Test to see if I can remove the averaging all together. Might have just been the trunc function that fixed the jitters, not entirely sure.
     const direction = {
-      y: degToRad((sigmoid(velocityX * 0.5) * 0.5 - 0.5) * 180 + wobble),
-      z: degToRad(sigmoid(velocityY * 0.2) * 90),
+      y: truncDec((sigmoid(averageVelocityX * 0.5) * 0.5 - 0.5) * 180 + wobble),
+      z: truncDec(sigmoid(averageVelocityY * 0.2) * 90),
     };
 
+    // TODO: Lerping t=seemed to break things. Maybe try again with truncated values;
     // Set the player main rotation
-    const lerpedRotationY = MathUtils.lerp(rotationY, direction.y, 0.5);
-    const lerpedRotationZ = MathUtils.lerp(rotationZ, direction.z, 0.5);
-    api.rotation.set(0, lerpedRotationY, lerpedRotationZ);
+    // const lerpedRotationY = MathUtils.lerp(
+    //   rotationY,
+    //   degToRad(direction.y),
+    //   0.5
+    // );
+
+    // const lerpedRotationZ = MathUtils.lerp(
+    //   rotationZ,
+    //   degToRad(direction.z),
+    //   0.5
+    // );
+    api.rotation.set(0, degToRad(direction.y), degToRad(direction.z));
 
     // TODO: Fix this logic to get more direct control over direction when holding the mouse down
     // // Testing out calculating direction based on points
