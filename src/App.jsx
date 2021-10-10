@@ -85,7 +85,7 @@ const App = () => {
         /> */}
         <Suspense fallback={null}>
           {/* <Environment preset="forest" /> */}
-          <Environment files={'/blue-env-02.hdr'} />
+          <Environment files={'./blue-env-02.hdr'} />
         </Suspense>
         <Suspense fallback={null}>
           <Lighting />
