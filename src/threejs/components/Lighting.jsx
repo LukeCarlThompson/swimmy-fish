@@ -21,7 +21,6 @@ const Lighting = () => {
       isUnderWater ? 0.1 : 0.5,
       0.1
     );
-    console.log('ambientLightRef.current -->', ambientLightRef.current);
 
     ambientLightRef.current.color.lerp(isUnderWater ? colorRef.current.set('#ffffff') : colorRef.current.set('#ffdb4a'), 0.1);
 
