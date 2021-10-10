@@ -158,6 +158,7 @@ const Player = props => {
   const vec3 = new Vector3();
   const { abs, sin, atan2 } = Math;
   const velocityHistory = useRef({x: [0], y: [0]});
+  const positionHistory = useRef({x: [0], y: [0]});
 
   console.log('Player');
 
@@ -185,6 +186,15 @@ const Player = props => {
     const unsubscribePosition = api.position.subscribe(p => {
       playerStore.position = p;
       // console.log('position -->', p);
+      // Add position to an array so we can get the average of it later
+      positionHistory.current.x.push(p[0]);
+      if(positionHistory.current.x.length > 10) {
+        positionHistory.current.x.shift();
+      }
+      positionHistory.current.y.push(p[1]);
+      if(positionHistory.current.y.length > 10) {
+        positionHistory.current.y.shift();
+      }
     });
 
     const unsubscribeRotation = api.rotation.subscribe(r => {
@@ -265,12 +275,16 @@ const Player = props => {
       api.applyImpulse([positionX * -0.01, 0, 0], [0, 0, 0]);
     }
 
+    // Get average position measurements
+    const averagePositionX = positionHistory.current.x.reduce((a,b) => (a+b)) / positionHistory.current.x.length;
+    const averagePositionY = positionHistory.current.y.reduce((a,b) => (a+b)) / positionHistory.current.y.length;
+
     // Get average velocity measurements
     const averageVelocityX = velocityHistory.current.x.reduce((a,b) => (a+b)) / velocityHistory.current.x.length;
     const averageVelocityY = velocityHistory.current.y.reduce((a,b) => (a+b)) / velocityHistory.current.y.length;
 
     // Velcoity factor for the head wobble
-    const velocityInput = abs(averageVelocityY) + abs(positionY) + abs(averageVelocityX) + abs(positionX);
+    const velocityInput = abs(averageVelocityY) + abs(averagePositionY) + abs(averageVelocityX) + abs(averagePositionX);
     // Main player body wobble when idle and when swimming
     const wobble = sin(velocityInput + (state.clock.getElapsedTime() * 4)) * -10;
 
