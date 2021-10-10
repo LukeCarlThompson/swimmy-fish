@@ -12,10 +12,10 @@ const BodyMaterial = props => (
   <meshPhysicalMaterial
     attach="material"
     flatShading={false}
-    specular="#eff41c"
+    specular="#ffffff"
     roughness={0.7}
-    reflectivity={1}
-    metalness={1}
+    reflectivity={0.3}
+    metalness={0.5}
     clearcoat={1}
     clearcoatRoughness={0.2}
     color={props.color || 'purple'}

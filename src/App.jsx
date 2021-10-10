@@ -11,6 +11,7 @@ import Effects from './threejs/components/Effects';
 import playerStore from './stores/playerStore';
 import worldStore from './stores/worldStore';
 import Particles from './threejs/components/Particles';
+// import envImgUrl from './images/blue-env.hdr';
 
 const SceneStyles = styled.div`
   width: 100vw;
@@ -83,7 +84,8 @@ const App = () => {
           maxDistance={60}
         /> */}
         <Suspense fallback={null}>
-          <Environment preset="forest" />
+          {/* <Environment preset="forest" /> */}
+          <Environment files={'/blue-env-02.hdr'} />
         </Suspense>
         <Suspense fallback={null}>
           <Lighting />

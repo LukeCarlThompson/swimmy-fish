@@ -8,8 +8,11 @@ import { degToRad } from '../helpers';
 import Player from './Player';
 import Ball from './Ball';
 import BackgroundMounds from './BackgroundMounds';
+import { TextureLoader } from 'three/src/loaders/TextureLoader';
+import imgUrl from '../../images/caustics-bw.png';
 import Seaweed from './Seaweed';
 import worldStore from '../../stores/worldStore';
+import { useFrame, useLoader } from '@react-three/fiber';
 
 const WaterSurface = props => {
   const [ref] = usePlane(() => ({
@@ -30,7 +33,7 @@ const WaterSurface = props => {
   return (
     <mesh ref={ref}>
       <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
-      <meshBasicMaterial attach="material" transparent opacity={0} />
+      <meshBasicMaterial attach="material" color="#303d75" transparent opacity={0.25} />
     </mesh>
   );
 };
@@ -56,16 +59,44 @@ const Ceiling = props => {
     },
     ...props,
   }));
+
+  const emissiveMap = useLoader(TextureLoader, imgUrl);
+  // This positions the txture on the plane. Puts the bottom center at the middle of the plane;
+  emissiveMap.offset.set(0, 1);
+  emissiveMap.repeat.set(100, 30);
+  console.log('emissiveMap -->', emissiveMap);
+
+  useFrame(({clock}) => {
+    const {geometry} = ref.current;
+    const { position } = geometry.attributes
+
+    const newPositions = position.array.map((item, i) => {
+      // Long array of coordinates made of of x, y, z, for each vertex. Get the x coord from each triplet to modify and leave the rest alone.
+      if ((i - 2) % 3 === 0) {
+        return item + (Math.sin((position.array[i + 1] * i || 0) + clock.getElapsedTime()) * 0.01);
+      }
+      return item;
+    });
+
+    position.array = newPositions;
+    position.needsUpdate = true
+    geometry.computeVertexNormals()
+  });
+
+
   console.log('Ceiling');
   return (
     <mesh ref={ref} position={[0, 10, -100]}>
-      <planeBufferGeometry attach="geometry" args={[1000, 300]} />
-      {/* <meshPhongMaterial
+      <planeBufferGeometry attach="geometry" args={[800, 300, 80, 30]}/>
+      <meshPhongMaterial
         shininess={100}
-        color="#356375"
+        color="#587fad"
+        emissive="#9aede5"
+        emissiveMap={emissiveMap}
+        emissiveIntensity={0.75}
         side={2}
-      /> */}
-      <meshPhysicalMaterial
+      />
+      {/* <meshPhysicalMaterial
         attach="material"
         specular="white"
         roughness={0.3}
@@ -75,7 +106,10 @@ const Ceiling = props => {
         clearcoatRoughness={0.15}
         color={worldStore.groundBaseColor}
         side={2}
-      />
+        emissive="#9aede5"
+        emissiveMap={emissiveMap}
+        emissiveIntensity={1}
+      /> */}
     </mesh>
   );
 };
