@@ -172,7 +172,7 @@ const Player = props => {
     console.count('subscribed');
     const unsubscribeVelocity = api.velocity.subscribe(v => {
       playerStore.velocity = v;
-      // Add velocity to an array so we can get the average of it later
+      // Add velocity to an array so we can get the median of it later
       velocityHistory.current.x.push(v[0]);
       if(velocityHistory.current.x.length > 10) {
         velocityHistory.current.x.shift();
@@ -186,7 +186,7 @@ const Player = props => {
     const unsubscribePosition = api.position.subscribe(p => {
       playerStore.position = p;
       // console.log('position -->', p);
-      // Add position to an array so we can get the average of it later
+      // Add position to an array so we can get the median of it later
       positionHistory.current.x.push(p[0]);
       if(positionHistory.current.x.length > 10) {
         positionHistory.current.x.shift();
@@ -214,6 +214,17 @@ const Player = props => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const median = (numbers) => {
+    const sorted = numbers.slice().sort((a, b) => a - b);
+    const middle = Math.floor(sorted.length / 2);
+
+    if (sorted.length % 2 === 0) {
+        return (sorted[middle - 1] + sorted[middle]) / 2;
+    }
+
+    return sorted[middle];
+  }
 
   useFrame(state => {
     let {
@@ -276,12 +287,12 @@ const Player = props => {
     }
 
     // Get average position measurements
-    const averagePositionX = positionHistory.current.x.reduce((a,b) => (a+b)) / positionHistory.current.x.length;
-    const averagePositionY = positionHistory.current.y.reduce((a,b) => (a+b)) / positionHistory.current.y.length;
+    const averagePositionX = median(positionHistory.current.x);
+    const averagePositionY = median(positionHistory.current.y);
 
     // Get average velocity measurements
-    const averageVelocityX = velocityHistory.current.x.reduce((a,b) => (a+b)) / velocityHistory.current.x.length;
-    const averageVelocityY = velocityHistory.current.y.reduce((a,b) => (a+b)) / velocityHistory.current.y.length;
+    const averageVelocityX = median(velocityHistory.current.x);
+    const averageVelocityY = median(velocityHistory.current.y);
 
     // Velcoity factor for the head wobble
     const velocityInput = abs(averageVelocityY) + abs(averagePositionY) + abs(averageVelocityX) + abs(averagePositionX);
