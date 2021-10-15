@@ -17,7 +17,7 @@ const Ball = props => {
     position: props.position,
     linearDamping: 0.7,
     linearFactor: [1, 1, 0],
-    args: size,
+    args: [size],
     allowSleep: true,
     sleepSpeedLimit: 0.25,
     onCollide: e => {
