@@ -138,26 +138,6 @@ const Floor = props => {
   );
 };
 
-// const Boundary = props => {
-//   const [ref, api] = useSphere(() => ({
-//     mass: 1,
-//     position: [0, 0, 0],
-//     linearDamping: 0.9,
-//     linearFactor: [1, 1, 0],
-//     args: [50, 50, 50],
-//     ...props,
-//   }));
-
-//   console.log('Boundary');
-//   return (
-//     <group ref={ref}>
-//       <Sphere position={[0, 0, 0]} args={[50, 50, 50]}>
-//         <meshStandardMaterial color="#615637" />
-//       </Sphere>
-//     </group>
-//   );
-// };
-
 const Scene = props => {
   console.log('Scene');
 
