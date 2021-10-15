@@ -1,7 +1,7 @@
 import React, { useRef, useLayoutEffect } from 'react';
 // import { useSpring, a } from '@react-spring/three';
 import { useFrame } from '@react-three/fiber';
-import { useBox } from '@react-three/cannon';
+import { useSphere } from '@react-three/cannon';
 import { Sphere, RoundedBox } from '@react-three/drei';
 import { Vector3 } from 'three/src/math/Vector3.js';
 import * as MathUtils from 'three/src/math/MathUtils.js';
@@ -144,17 +144,20 @@ const EyeBall = props => {
 };
 
 const Player = props => {
-  const [ref, api] = useBox(() => ({
+  const [playerPhysicsRef, api] = useSphere(() => ({
     mass: 1,
     position: [0, 0, 0],
     linearDamping: 0.75,
     linearFactor: [1, 1, 0],
-    angularFactor: [1, 1, 0],
+    angularFactor: [0, 0, 0],
+    // fixedRotation: true,
+    args: [1],
     allowSleep: false,
     ...props,
   }));
   const leftFinRef = useRef();
   const rightFinRef = useRef();
+  const playerBodyRef = useRef();
   const vec3 = new Vector3();
   const { abs, sin, atan2 } = Math;
   const velocityHistory = useRef({x: [0], y: [0]});
@@ -164,7 +167,7 @@ const Player = props => {
 
   useLayoutEffect(() => {
     // Save the player uuid to state
-    playerStore.uuid = ref.current.uuid;
+    playerStore.uuid = playerPhysicsRef.current.uuid;
     // Save the player cannon api to state
     playerStore.cannonApi = api;
 
@@ -287,38 +290,29 @@ const Player = props => {
     }
 
     // Get average position measurements
-    const averagePositionX = median(positionHistory.current.x);
-    const averagePositionY = median(positionHistory.current.y);
+    const medianPositionX = median(positionHistory.current.x);
+    const medianPositionY = median(positionHistory.current.y);
 
     // Get average velocity measurements
-    const averageVelocityX = median(velocityHistory.current.x);
-    const averageVelocityY = median(velocityHistory.current.y);
+    const medianVelocityX = median(velocityHistory.current.x);
+    const medianVelocityY = median(velocityHistory.current.y);
 
     // Velcoity factor for the head wobble
-    const velocityInput = abs(averageVelocityY) + abs(averagePositionY) + abs(averageVelocityX) + abs(averagePositionX);
+    const velocityInput = abs(medianVelocityY) + abs(medianPositionY) + abs(medianVelocityX) + abs(medianPositionX);
     // Main player body wobble when idle and when swimming
     const wobble = sin(velocityInput + (state.clock.getElapsedTime() * 4)) * -10;
 
-    // TODO: Test to see if I can remove the averaging all together. Might have just been the trunc function that fixed the jitters, not entirely sure.
     const direction = {
-      y: truncDec((sigmoid(averageVelocityX * 0.5) * 0.5 - 0.5) * 180 + wobble),
-      z: truncDec(sigmoid(averageVelocityY * 0.2) * 90),
+      y: truncDec((sigmoid(medianVelocityX * 0.5) * 0.5 - 0.5) * 180 + wobble),
+      z: truncDec(sigmoid(medianVelocityY * 0.2) * 90),
     };
 
-    // TODO: Lerping t=seemed to break things. Maybe try again with truncated values;
-    // Set the player main rotation
-    // const lerpedRotationY = MathUtils.lerp(
-    //   rotationY,
-    //   degToRad(direction.y),
-    //   0.5
-    // );
+    // console.log('direction -->', direction);
+    // api.rotation.set(0, degToRad(direction.y), degToRad(direction.z));
+    // api.rotation.set(0, degToRad(lerpedRotationY), degToRad(lerpedRotationZ));
 
-    // const lerpedRotationZ = MathUtils.lerp(
-    //   rotationZ,
-    //   degToRad(direction.z),
-    //   0.5
-    // );
-    api.rotation.set(0, degToRad(direction.y), degToRad(direction.z));
+    // Trying to roate the player body inside the physics object instad of the object itself
+    playerBodyRef.current.rotation.set(0, degToRad(direction.y), degToRad(direction.z));
 
     // TODO: Fix this logic to get more direct control over direction when holding the mouse down
     // // Testing out calculating direction based on points
@@ -353,83 +347,85 @@ const Player = props => {
   });
 
   return (
-    <group ref={ref} name="player">
-      <RoundedBox
-        args={[1.5, 1.2, 0.8]}
-        position={[0.25, 0.1, 0]}
-        radius={0.2}
-        smoothness={4}
-        receiveShadow
-        castShadow
-      >
-        <BodyMaterial color={props.color} />
-      </RoundedBox>
-      <RoundedBox
-        args={[0.7, 0.5, 0.8]}
-        position={[0.8, -0.25, 0]}
-        rotation={[0, 0, 0]}
-        radius={0.2}
-        smoothness={6}
-        receiveShadow
-        castShadow
-      >
-        <BodyMaterial color={props.color} />
-      </RoundedBox>
-      {/* Dorsal fin */}
-      <RoundedBox
-        args={[0.5, 0.5, 0.05]}
-        name="dorsal-fin"
-        position={[0.25, 0.7, 0]}
-        radius={0.05}
-        smoothness={4}
-        rotation={[0, 0, 10]}
-        receiveShadow
-        castShadow
-      >
-        <BodyMaterial color={props.color} />
-      </RoundedBox>
-      {/* Side fins */}
-      <RoundedBox
-        ref={leftFinRef}
-        name="right-fin"
-        args={[0.5, 0.1, 0.6]}
-        position={[-0, -0.25, 0.4]}
-        radius={0.05}
-        smoothness={4}
-        receiveShadow
-        castShadow
-      >
-        <BodyMaterial color={props.color} />
-      </RoundedBox>
-      <RoundedBox
-        ref={rightFinRef}
-        name="left-fin"
-        args={[0.5, 0.1, 0.6]}
-        position={[-0, -0.25, -0.4]}
-        radius={0.05}
-        smoothness={4}
-        receiveShadow
-        castShadow
-      >
-        <BodyMaterial color={props.color} />
-      </RoundedBox>
-      {/* lips */}
-      <RoundedBox
-        name="lips"
-        args={[0.1, 0.1, 0.5]}
-        position={[1.11, -0.3, 0]}
-        radius={0.05}
-        smoothness={4}
-        receiveShadow
-        castShadow
-      >
-        <BodyMaterial color="#2e2929" />
-      </RoundedBox>
-      {/* Eyeball */}
-      <EyeBall position={[0.6, 0.1, 0.35]} />
-      <EyeBall position={[0.6, 0.1, -0.35]} mirror />
-      {/* Tail */}
-      <Tail color={props.color} />
+    <group ref={playerPhysicsRef} name="player-physics-object">
+      <group ref={playerBodyRef} name="player-body-group">
+        <RoundedBox
+          args={[1.5, 1.2, 0.8]}
+          position={[0.25, 0.1, 0]}
+          radius={0.2}
+          smoothness={4}
+          receiveShadow
+          castShadow
+        >
+          <BodyMaterial color={props.color} />
+        </RoundedBox>
+        <RoundedBox
+          args={[0.7, 0.5, 0.8]}
+          position={[0.8, -0.25, 0]}
+          rotation={[0, 0, 0]}
+          radius={0.2}
+          smoothness={6}
+          receiveShadow
+          castShadow
+        >
+          <BodyMaterial color={props.color} />
+        </RoundedBox>
+        {/* Dorsal fin */}
+        <RoundedBox
+          args={[0.5, 0.5, 0.05]}
+          name="dorsal-fin"
+          position={[0.25, 0.7, 0]}
+          radius={0.05}
+          smoothness={4}
+          rotation={[0, 0, 10]}
+          receiveShadow
+          castShadow
+        >
+          <BodyMaterial color={props.color} />
+        </RoundedBox>
+        {/* Side fins */}
+        <RoundedBox
+          ref={leftFinRef}
+          name="right-fin"
+          args={[0.5, 0.1, 0.6]}
+          position={[-0, -0.25, 0.4]}
+          radius={0.05}
+          smoothness={4}
+          receiveShadow
+          castShadow
+        >
+          <BodyMaterial color={props.color} />
+        </RoundedBox>
+        <RoundedBox
+          ref={rightFinRef}
+          name="left-fin"
+          args={[0.5, 0.1, 0.6]}
+          position={[-0, -0.25, -0.4]}
+          radius={0.05}
+          smoothness={4}
+          receiveShadow
+          castShadow
+        >
+          <BodyMaterial color={props.color} />
+        </RoundedBox>
+        {/* lips */}
+        <RoundedBox
+          name="lips"
+          args={[0.1, 0.1, 0.5]}
+          position={[1.11, -0.3, 0]}
+          radius={0.05}
+          smoothness={4}
+          receiveShadow
+          castShadow
+        >
+          <BodyMaterial color="#2e2929" />
+        </RoundedBox>
+        {/* Eyeball */}
+        <EyeBall position={[0.6, 0.1, 0.35]} />
+        <EyeBall position={[0.6, 0.1, -0.35]} mirror />
+        {/* Tail */}
+        <Tail color={props.color} />
+      </group>
     </group>
   );
 };
