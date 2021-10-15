@@ -7,8 +7,8 @@ import { Color } from 'three/src/math/Color.js';
 const Ball = props => {
   const material = useRef();
   const isTouchedRef = useRef(false);
-  const initialColorRef = useRef(new Color('hsl(340, 88%, 45%)'));
-  const touchedColorRef = useRef(new Color('hsl(220, 87%, 30%)'));
+  const initialColorRef = useRef(new Color('hsl(50, 75%, 50%)'));
+  const touchedColorRef = useRef(new Color('hsl(190, 63%, 38%)'));
 
   const size = props.size || 0.5;
 
