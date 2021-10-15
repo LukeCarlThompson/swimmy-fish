@@ -8,19 +8,38 @@ import * as MathUtils from 'three/src/math/MathUtils.js';
 import playerStore from '../../stores/playerStore';
 import { sigmoid, degToRad, truncDec } from '../helpers';
 
-const BodyMaterial = props => (
-  <meshPhysicalMaterial
-    attach="material"
-    flatShading={false}
-    specular="#ffffff"
-    roughness={0.7}
-    reflectivity={0.3}
-    metalness={0.5}
-    clearcoat={1}
-    clearcoatRoughness={0.2}
-    color={props.color || 'purple'}
-  />
-);
+const BodyMaterial = props => {
+  const bodyMaterialRef = useRef();
+
+  useFrame(() => {
+    const { position } = playerStore;
+
+    // Modify player material appearance based on depth
+    bodyMaterialRef.current.envMapIntensity =
+      position[1] > 0 ? 1 : 1 + position[1] * 0.1;
+    bodyMaterialRef.current.clearcoat =
+      position[1] > 0 ? 1 : 1 + position[1] * 0.1;
+    bodyMaterialRef.current.reflectivity =
+      position[1] > 0 ? 0.3 : 0.3 + position[1] * 0.1;
+    bodyMaterialRef.current.roughness =
+      position[1] > -3 ? 0.7 : 0.7 - position[1] * 0.1;
+  });
+
+  return (
+    <meshPhysicalMaterial
+      ref={bodyMaterialRef}
+      attach="material"
+      flatShading={false}
+      specular="#ffffff"
+      roughness={0.7}
+      reflectivity={0.3}
+      metalness={0.5}
+      clearcoat={1}
+      clearcoatRoughness={0.2}
+      color={props.color || 'purple'}
+    />
+  );
+};
 
 const Tail = props => {
   const tailRef = useRef();
@@ -160,8 +179,6 @@ const Player = props => {
   const playerBodyRef = useRef();
   const vec3 = new Vector3();
   const { abs, sin, atan2 } = Math;
-  const velocityHistory = useRef({x: [0], y: [0]});
-  const positionHistory = useRef({x: [0], y: [0]});
 
   console.log('Player');
 
@@ -175,33 +192,10 @@ const Player = props => {
     console.count('subscribed');
     const unsubscribeVelocity = api.velocity.subscribe(v => {
       playerStore.velocity = v;
-      // Add velocity to an array so we can get the median of it later
-      velocityHistory.current.x.push(v[0]);
-      if(velocityHistory.current.x.length > 10) {
-        velocityHistory.current.x.shift();
-      }
-      velocityHistory.current.y.push(v[1]);
-      if(velocityHistory.current.y.length > 10) {
-        velocityHistory.current.y.shift();
-      }
     });
 
     const unsubscribePosition = api.position.subscribe(p => {
       playerStore.position = p;
-      // console.log('position -->', p);
-      // Add position to an array so we can get the median of it later
-      positionHistory.current.x.push(p[0]);
-      if(positionHistory.current.x.length > 10) {
-        positionHistory.current.x.shift();
-      }
-      positionHistory.current.y.push(p[1]);
-      if(positionHistory.current.y.length > 10) {
-        positionHistory.current.y.shift();
-      }
-    });
-
-    const unsubscribeRotation = api.rotation.subscribe(r => {
-      playerStore.rotation = r;
     });
 
     const unsubscribeDamping = api.linearDamping.subscribe(d => {
@@ -218,23 +212,22 @@ const Player = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const median = (numbers) => {
-    const sorted = numbers.slice().sort((a, b) => a - b);
-    const middle = Math.floor(sorted.length / 2);
+  // const median = (numbers) => {
+  //   const sorted = numbers.slice().sort((a, b) => a - b);
+  //   const middle = Math.floor(sorted.length / 2);
 
-    if (sorted.length % 2 === 0) {
-        return (sorted[middle - 1] + sorted[middle]) / 2;
-    }
+  //   if (sorted.length % 2 === 0) {
+  //       return (sorted[middle - 1] + sorted[middle]) / 2;
+  //   }
 
-    return sorted[middle];
-  }
+  //   return sorted[middle];
+  // }
 
   useFrame(state => {
     let {
       controls,
       isUnderWater,
       position,
-      rotation,
       velocity,
       mousePosition,
       damping,
@@ -242,7 +235,6 @@ const Player = props => {
 
     const [velocityX, velocityY, velocityZ] = velocity;
     const [mouseX, mouseY] = mousePosition;
-    const [rotationX, rotationY, rotationZ] = rotation;
     const [positionX, positionY, positionZ] = position;
 
     if (controls.up && isUnderWater) {
@@ -285,55 +277,50 @@ const Player = props => {
     }
 
     // Push swimmy back into his garden if he swims out
-    if(abs(positionX) > 100 ) {
+    if (abs(positionX) > 100) {
       api.applyImpulse([positionX * -0.01, 0, 0], [0, 0, 0]);
     }
 
-    // Get average position measurements
-    const medianPositionX = median(positionHistory.current.x);
-    const medianPositionY = median(positionHistory.current.y);
-
-    // Get average velocity measurements
-    const medianVelocityX = median(velocityHistory.current.x);
-    const medianVelocityY = median(velocityHistory.current.y);
-
     // Velcoity factor for the head wobble
-    const velocityInput = abs(medianVelocityY) + abs(medianPositionY) + abs(medianVelocityX) + abs(medianPositionX);
+    const velocityInput =
+      abs(velocityY) + abs(positionY) + abs(velocityX) + abs(positionX);
     // Main player body wobble when idle and when swimming
-    const wobble = sin(velocityInput + (state.clock.getElapsedTime() * 4)) * -10;
+    const wobble = sin(velocityInput + state.clock.getElapsedTime() * 4) * -10;
 
     const direction = {
-      y: truncDec((sigmoid(medianVelocityX * 0.5) * 0.5 - 0.5) * 180 + wobble),
-      z: truncDec(sigmoid(medianVelocityY * 0.2) * 90),
+      y: (sigmoid(velocityX * 0.5) * 0.5 - 0.5) * 180 + wobble,
+      z: sigmoid(velocityY * 0.2) * 90,
     };
 
-    // console.log('direction -->', direction);
-    // api.rotation.set(0, degToRad(direction.y), degToRad(direction.z));
-    // api.rotation.set(0, degToRad(lerpedRotationY), degToRad(lerpedRotationZ));
+    const { rotation } = playerBodyRef.current;
+    playerStore.rotation = [rotation.x, rotation.y, rotation.z];
 
-    // Trying to roate the player body inside the physics object instad of the object itself
-    playerBodyRef.current.rotation.set(0, degToRad(direction.y), degToRad(direction.z));
+    // Calculate the angle from the player to the mouse position
+    // If the mouse is close to the player use the angle oterh wise just flip it to left or right
+    const mouseYAngle =
+      abs(mouseX) < 3
+        ? atan2(mouseX, abs(mouseY)) - Math.PI * 0.5
+        : mouseX > 0
+        ? degToRad(1)
+        : degToRad(-179);
+    const mouseZAngle = atan2(mouseY, abs(mouseX));
 
-    // TODO: Fix this logic to get more direct control over direction when holding the mouse down
-    // // Testing out calculating direction based on points
-    // const mouseYAngle = mouseX > 0 ? degToRad(1) : degToRad(-179);
-    // // console.log('mouse x -->', mouseX);
-    // const mouseZAngle = atan2(mouseY, abs(mouseX));
+    // Lerp the player rotation to angles based on mouse position or velocity
+    const yAxisRotation = MathUtils.lerp(
+      rotation.y,
+      controls.mouse & isUnderWater
+        ? mouseYAngle + degToRad(wobble)
+        : degToRad(direction.y),
+      0.2
+    );
 
-    // const yAxisRotation = MathUtils.lerp(
-    //   rotationY,
-    //   controls.mouse ? mouseYAngle : direction.y,
-    //   // mouseYAngle,
-    //   0.1
-    // );
-    // const zAxisRotation = MathUtils.lerp(
-    //   rotationZ,
-    //   controls.mouse ? mouseZAngle : direction.z,
-    //   // mouseZAngle,
-    //   0.1
-    // );
+    const zAxisRotation = MathUtils.lerp(
+      rotation.z,
+      controls.mouse & isUnderWater ? mouseZAngle : degToRad(direction.z),
+      0.05
+    );
 
-    // api.rotation.set(0, yAxisRotation, zAxisRotation);
+    playerBodyRef.current.rotation.set(0, yAxisRotation, zAxisRotation);
 
     // Side fins rotation
     leftFinRef.current.setRotationFromAxisAngle(
@@ -350,6 +337,7 @@ const Player = props => {
     <group ref={playerPhysicsRef} name="player-physics-object">
       <group ref={playerBodyRef} name="player-body-group">
         <RoundedBox
+          name="player-body-main"
           args={[1.5, 1.2, 0.8]}
           position={[0.25, 0.1, 0]}
           radius={0.2}
@@ -360,6 +348,7 @@ const Player = props => {
           <BodyMaterial color={props.color} />
         </RoundedBox>
         <RoundedBox
+          name="player-body-mouth"
           args={[0.7, 0.5, 0.8]}
           position={[0.8, -0.25, 0]}
           rotation={[0, 0, 0]}
@@ -370,8 +359,8 @@ const Player = props => {
         >
           <BodyMaterial color={props.color} />
         </RoundedBox>
-        {/* Dorsal fin */}
         <RoundedBox
+          name="player-dorsal-fin"
           args={[0.5, 0.5, 0.05]}
           name="dorsal-fin"
           position={[0.25, 0.7, 0]}
@@ -383,10 +372,9 @@ const Player = props => {
         >
           <BodyMaterial color={props.color} />
         </RoundedBox>
-        {/* Side fins */}
         <RoundedBox
           ref={leftFinRef}
-          name="right-fin"
+          name="player-left-fin"
           args={[0.5, 0.1, 0.6]}
           position={[-0, -0.25, 0.4]}
           radius={0.05}
@@ -398,7 +386,7 @@ const Player = props => {
         </RoundedBox>
         <RoundedBox
           ref={rightFinRef}
-          name="left-fin"
+          name="player-right-fin"
           args={[0.5, 0.1, 0.6]}
           position={[-0, -0.25, -0.4]}
           radius={0.05}
@@ -408,9 +396,8 @@ const Player = props => {
         >
           <BodyMaterial color={props.color} />
         </RoundedBox>
-        {/* lips */}
         <RoundedBox
-          name="lips"
+          name="player-lips"
           args={[0.1, 0.1, 0.5]}
           position={[1.11, -0.3, 0]}
           radius={0.05}
@@ -420,11 +407,9 @@ const Player = props => {
         >
           <BodyMaterial color="#2e2929" />
         </RoundedBox>
-        {/* Eyeball */}
-        <EyeBall position={[0.6, 0.1, 0.35]} />
-        <EyeBall position={[0.6, 0.1, -0.35]} mirror />
-        {/* Tail */}
-        <Tail color={props.color} />
+        <EyeBall name="player-left-eye" position={[0.6, 0.1, 0.35]} />
+        <EyeBall name="player-right-eye" position={[0.6, 0.1, -0.35]} mirror />
+        <Tail name="player-tail-group" color={props.color} />
       </group>
     </group>
   );
