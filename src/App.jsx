@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import styled from 'styled-components';
 // import { useSpring, a } from '@react-spring/three';
@@ -29,7 +29,7 @@ const CameraMovement = () => {
     const lerpedX = MathUtils.lerp(
       state.camera.position.x,
       x + velocityX * 0.1,
-      0.7
+      0.5
     );
     const limitedY =
       y + velocityY * 0.1 > 11
@@ -41,7 +41,7 @@ const CameraMovement = () => {
     const lerpedYPosition = MathUtils.lerp(
       state.camera.position.y,
       limitedY,
-      0.7
+      0.5
     );
 
     const lerpedYLookAt = MathUtils.lerp(
@@ -59,6 +59,21 @@ const CameraMovement = () => {
     state.camera.updateProjectionMatrix();
   });
   return null;
+};
+
+const Fog = () => {
+  const fogRef = useRef();
+  const { waterHeight, fogColor } = worldStore;
+
+  useFrame(({ camera }) => {
+    if (camera.position.y > waterHeight) {
+      fogRef.current.far = 1000;
+    } else {
+      fogRef.current.far = 200;
+    }
+  });
+
+  return <fog ref={fogRef} attach="fog" args={[fogColor, 0, 200]} />;
 };
 
 const App = () => {
@@ -84,8 +99,7 @@ const App = () => {
           maxDistance={60}
         /> */}
         <Suspense fallback={null}>
-          {/* <Environment preset="forest" /> */}
-          <Environment files={'./blue-env-02.hdr'} />
+          <Environment files="./blue-env-02.hdr" />
         </Suspense>
         <Suspense fallback={null}>
           <Lighting />
@@ -100,8 +114,8 @@ const App = () => {
           />
           <Particles count={1000} mouse={{ current: [0, 0] }} />
         </Suspense>
-        <fog attach="fog" args={[worldStore.fogColor, 0, 200]} />
-        {/* <color attach="background" args="#34d1a2" /> */}
+        <Fog />
+        <color attach="background" args={worldStore.fogColor} />
         <CameraMovement />
         <Controls />
         {/* <Effects /> */}

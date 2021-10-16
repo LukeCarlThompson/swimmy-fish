@@ -206,22 +206,10 @@ const Player = props => {
       console.count('unsubscribed');
       unsubscribeVelocity();
       unsubscribePosition();
-      unsubscribeRotation();
       unsubscribeDamping();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // const median = (numbers) => {
-  //   const sorted = numbers.slice().sort((a, b) => a - b);
-  //   const middle = Math.floor(sorted.length / 2);
-
-  //   if (sorted.length % 2 === 0) {
-  //       return (sorted[middle - 1] + sorted[middle]) / 2;
-  //   }
-
-  //   return sorted[middle];
-  // }
 
   useFrame(state => {
     let {
@@ -272,6 +260,7 @@ const Player = props => {
       // console.log('not underwater');
     }
 
+    // Push swimmy back up from the ground
     if (positionY < -9) {
       api.applyImpulse([0, 0.05, 0], [0, 0, 0]);
     }

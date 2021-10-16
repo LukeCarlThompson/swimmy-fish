@@ -3,21 +3,21 @@ import React from 'react';
 // import { useSpring, a } from '@react-spring/three';
 // import { useFrame, useThree } from '@react-three/fiber';
 import { Physics, usePlane } from '@react-three/cannon';
+import { TextureLoader } from 'three/src/loaders/TextureLoader';
+import { useFrame, useLoader } from '@react-three/fiber';
 import playerStore from '../../stores/playerStore';
 import { degToRad } from '../helpers';
 import Player from './Player';
 import Ball from './Ball';
 import BackgroundMounds from './BackgroundMounds';
-import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import imgUrl from '../../images/caustics-bw.png';
 import Seaweed from './Seaweed';
 import worldStore from '../../stores/worldStore';
-import { useFrame, useLoader } from '@react-three/fiber';
 
 const WaterSurface = props => {
   const [ref] = usePlane(() => ({
     rotation: [-Math.PI / 2, 0, 0],
-    position: [0, 10, 0],
+    position: [0, worldStore.waterHeight, 0],
     isTrigger: true,
     onCollide: e => {
       const { body } = e;
@@ -33,7 +33,12 @@ const WaterSurface = props => {
   return (
     <mesh ref={ref}>
       <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
-      <meshBasicMaterial attach="material" color="#303d75" transparent opacity={0.25} />
+      <meshBasicMaterial
+        attach="material"
+        color="#303d75"
+        transparent
+        opacity={0.25}
+      />
     </mesh>
   );
 };
@@ -41,7 +46,7 @@ const WaterSurface = props => {
 const Ceiling = props => {
   const [ref] = usePlane(() => ({
     rotation: [-Math.PI / -2, 0, 0],
-    position: [0, 10, -125],
+    position: [0, worldStore.waterHeight, -125],
     isTrigger: true,
     onCollide: e => {
       const { body, contact } = e;
@@ -66,28 +71,31 @@ const Ceiling = props => {
   emissiveMap.repeat.set(100, 30);
   console.log('emissiveMap -->', emissiveMap);
 
-  useFrame(({clock}) => {
-    const {geometry} = ref.current;
-    const { position } = geometry.attributes
+  useFrame(({ clock }) => {
+    const { geometry } = ref.current;
+    const { position } = geometry.attributes;
 
     const newPositions = position.array.map((item, i) => {
       // Long array of coordinates made of of x, y, z, for each vertex. Get the x coord from each triplet to modify and leave the rest alone.
       if ((i - 2) % 3 === 0) {
-        return item + (Math.sin((position.array[i + 1] * i || 0) + clock.getElapsedTime()) * 0.01);
+        return (
+          item +
+          Math.sin((position.array[i + 1] * i || 0) + clock.getElapsedTime()) *
+            0.01
+        );
       }
       return item;
     });
 
     position.array = newPositions;
-    position.needsUpdate = true
-    geometry.computeVertexNormals()
+    position.needsUpdate = true;
+    geometry.computeVertexNormals();
   });
-
 
   console.log('Ceiling');
   return (
-    <mesh ref={ref} position={[0, 10, -100]}>
-      <planeBufferGeometry attach="geometry" args={[800, 300, 80, 30]}/>
+    <mesh ref={ref} position={[0, worldStore.waterHeight, -100]}>
+      <planeBufferGeometry attach="geometry" args={[800, 300, 80, 30]} />
       <meshPhongMaterial
         shininess={100}
         color="#587fad"
@@ -116,8 +124,8 @@ const Ceiling = props => {
 
 const UnderwaterBackground = props => (
   <mesh rotation={[degToRad(0), 0, 0]} position={[0, 0, -200]}>
-    <planeBufferGeometry attach="geometry" args={[1000, 20]} />
-    <meshBasicMaterial color="#356375" />
+    <planeBufferGeometry attach="geometry" args={[1000, 30]} />
+    <meshBasicMaterial color="#e3f6ff" />
   </mesh>
 );
 
