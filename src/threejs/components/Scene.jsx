@@ -98,7 +98,7 @@ const Ceiling = props => {
   console.log('Ceiling');
   return (
     <mesh ref={ref} position={[0, worldStore.waterHeight, -100]}>
-      <planeBufferGeometry attach="geometry" args={[800, 300, 80, 30]} />
+      <planeBufferGeometry attach="geometry" args={[800, 300, 10, 30]} />
       <meshPhongMaterial
         shininess={100}
         color="#587fad"
