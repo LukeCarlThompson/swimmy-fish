@@ -39,7 +39,7 @@ const Sphere = props => {
 const BackgroundMounds = props => {
   const mesh = useRef();
   const coordsRef = useRef(
-    Array.from(Array(20)).map(item => [
+    Array.from(Array(10)).map(item => [
       Math.random() - 0.5,
       Math.random(),
       Math.random(),

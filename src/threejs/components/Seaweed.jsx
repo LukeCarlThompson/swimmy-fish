@@ -19,7 +19,7 @@ const SeaweedWide = props => {
   colorMap.repeat.set(1, 2);
 
   const coordsRef = useRef(
-    Array.from(Array(1000)).map(item => [
+    Array.from(Array(500)).map(item => [
       Math.random() - 0.5,
       Math.random(),
       Math.random() * 0.5,
@@ -125,7 +125,7 @@ const Plane = props => {
 
 const SeaweedTall = props => {
   const coordsRef = useRef(
-    Array.from(Array(500)).map((item, i) => [
+    Array.from(Array(250)).map((item, i) => [
       Math.sin(i) - 0.5,
       Math.random(),
       Math.random(),
