@@ -12,7 +12,10 @@ import Ball from './Ball';
 import BackgroundMounds from './BackgroundMounds';
 import imgUrl from '../../images/caustics-bw.png';
 import Seaweed from './Seaweed';
+import BackgroundImages from './BackgroundImages';
 import worldStore from '../../stores/worldStore';
+import textureUrl from '../../images/rock-surface-texture.png';
+import normalMapUrl from '../../images/rock-surface-normalmap.png';
 
 const WaterSurface = props => {
   const [ref] = usePlane(() => ({
@@ -135,12 +138,24 @@ const Floor = props => {
     position: [0, -10, 0],
     ...props,
   }));
+
+  const colorMap = useLoader(TextureLoader, textureUrl);
+  const normalMap = useLoader(TextureLoader, normalMapUrl);
+
   return (
     <mesh ref={ref}>
-      <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
-      <meshLambertMaterial
+      <planeBufferGeometry attach="geometry" args={[1000, 1000, 400, 400]} />
+      <meshPhongMaterial
         attach="material"
         color={worldStore.groundBaseColor}
+        shininess={0}
+        map={colorMap}
+        displacementMap={normalMap}
+        displacementScale={4}
+        displacementBias={-2}
+        normalMap={normalMap}
+        normalScale={[0.2, 0.2]}
+        roughnessMap={colorMap}
       />
     </mesh>
   );
@@ -176,6 +191,7 @@ const Scene = props => {
         <Ball position={[-7, -5, 0]} size={0.8} />
         <BackgroundMounds />
         <Seaweed />
+        <BackgroundImages />
         <UnderwaterBackground />
         <Floor />
       </Physics>

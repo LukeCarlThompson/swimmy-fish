@@ -37,12 +37,12 @@ const PostProcessing = () => {
       {/* <Vignette eskil={false} offset={0.01} darkness={0.5} /> */}
       <DepthOfField
         ref={dofRef}
-        focusDistance={0.05}
-        focalLength={0.3}
-        bokehScale={2}
+        focusDistance={0.086}
+        focalLength={0.1}
+        bokehScale={1}
         height={480}
       />
-      {/* <Noise opacity={0.15} premultiply blendFunction={BlendFunction.NORMAL} /> */}
+      <Noise opacity={0.15} premultiply blendFunction={BlendFunction.NORMAL} />
       <ToneMapping
         blendFunction={BlendFunction.NORMAL} // blend mode
         adaptive={false} // toggle adaptive luminance map usage

@@ -1,16 +1,36 @@
 import React, { useRef, useLayoutEffect } from 'react';
 import { Object3D } from 'three/src/core/Object3D.js';
+import { useFrame, useLoader } from '@react-three/fiber';
+import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import worldStore from '../../stores/worldStore';
+
+import textureUrl from '../../images/rock-surface-texture.png';
+import normalMapUrl from '../../images/rock-surface-normalmap.png';
 
 const Sphere = props => {
   console.log('Sphere');
 
+  const colorMap = useLoader(TextureLoader, textureUrl);
+  const normalMap = useLoader(TextureLoader, normalMapUrl);
+
   return (
     <>
-      <sphereGeometry args={(Math.random() * 0.5 + 0.75) * 8} />
-      <meshLambertMaterial
+      <sphereGeometry args={(Math.random() * 0.5 + 0.75) * 6} />
+      {/* <meshLambertMaterial
         attach="material"
         color={worldStore.groundBaseColor}
+      /> */}
+      <meshPhongMaterial
+        attach="material"
+        color={worldStore.groundBaseColor}
+        shininess={0}
+        map={colorMap}
+        displacementMap={normalMap}
+        displacementScale={2}
+        displacementBias={0}
+        normalMap={normalMap}
+        normalScale={[0.2, 0.2]}
+        roughnessMap={colorMap}
       />
     </>
   );
@@ -28,8 +48,8 @@ const BackgroundMounds = props => {
   const dummy = useRef(new Object3D());
   const positions = useRef(
     coordsRef.current.map((item, i) => {
-      const positionX = item[0] * 100;
-      const positionZ = item[1] * -100 + 10;
+      const positionX = item[0] * 300;
+      const positionZ = item[1] * -100 - 10;
       const rotationY = item[2];
 
       return { positionX, positionZ, rotationY };
@@ -41,12 +61,17 @@ const BackgroundMounds = props => {
     positions.current.forEach((item, i) => {
       const { positionX, positionZ, rotationY } = item;
       const randomHeight = Math.random() * 0.5 + 0.5;
+      dummy.current.rotation.set(-1, 0, -0.5);
       dummy.current.position.set(
         positionX * (Math.random() + 0.5),
-        -15,
-        positionZ * (Math.random() + 0.75)
+        -15 + Math.abs(positionX) * 0.05,
+        positionZ
       );
-      dummy.current.scale.set(1, randomHeight, 1);
+      dummy.current.scale.set(
+        1 + Math.abs(positionX) * 0.01,
+        1 + Math.abs(positionX) * 0.01,
+        1 + Math.abs(positionX) * 0.01
+      );
       dummy.current.updateMatrix();
       mesh.current.setMatrixAt(i, dummy.current.matrix);
     });
@@ -59,43 +84,6 @@ const BackgroundMounds = props => {
       <instancedMesh ref={mesh} args={[null, null, positions.current.length]}>
         <Sphere />
       </instancedMesh>
-      <mesh position={[-30, -13, -100]} rotation={[0, 0, 0]}>
-        <icosahedronGeometry args={25} />
-        <meshLambertMaterial
-          attach="material"
-          color={worldStore.groundBaseColor}
-        />
-      </mesh>
-      <mesh
-        position={[-40, -15, -40]}
-        rotation={[Math.random() * 10, Math.random() * 10, Math.random() * 10]}
-      >
-        <icosahedronGeometry args={15} />
-        <meshLambertMaterial
-          attach="material"
-          color={worldStore.groundBaseColor}
-        />
-      </mesh>
-      <mesh
-        position={[10, -10, -10]}
-        rotation={[Math.random() * 10, Math.random() * 10, Math.random() * 10]}
-      >
-        <icosahedronGeometry args={5} />
-        <meshLambertMaterial
-          attach="material"
-          color={worldStore.groundBaseColor}
-        />
-      </mesh>
-      <mesh
-        position={[20, -10, -25]}
-        rotation={[Math.random() * 10, Math.random() * 10, Math.random() * 10]}
-      >
-        <dodecahedronGeometry args={5} />
-        <meshLambertMaterial
-          attach="material"
-          color={worldStore.groundBaseColor}
-        />
-      </mesh>
     </group>
   );
 };

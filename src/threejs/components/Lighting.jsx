@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as MathUtils from 'three/src/math/MathUtils.js';
-import playerStore from '../../stores/playerStore';
 import { Color } from 'three/src/math/Color.js';
+import playerStore from '../../stores/playerStore';
 
 // console.log('Color -->', Color);
 
@@ -22,7 +22,12 @@ const Lighting = () => {
       0.1
     );
 
-    ambientLightRef.current.color.lerp(isUnderWater ? colorRef.current.set('#ffffff') : colorRef.current.set('#ffdb4a'), 0.1);
+    ambientLightRef.current.color.lerp(
+      isUnderWater
+        ? colorRef.current.set('#ffffff')
+        : colorRef.current.set('#ffdb4a'),
+      0.1
+    );
 
     // SPot light adjustments
     // spotLightRef.current.color.lerp(isUnderWater ? colorRef.current.set('#ffffff') : colorRef.current.set('#ffdb4a'), 0.1);
