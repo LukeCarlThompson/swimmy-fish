@@ -45,8 +45,6 @@ const Tail = (props) => {
 
   const { abs, sin } = Math;
 
-  console.log("Tail");
-
   useFrame((state, delta) => {
     const { velocity, position } = playerStore;
 
