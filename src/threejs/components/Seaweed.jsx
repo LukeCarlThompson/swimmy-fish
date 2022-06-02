@@ -1,29 +1,19 @@
-import React, { useRef, useMemo, Suspense, useLayoutEffect } from 'react';
-import {
-  useFrame,
-  useThree,
-  Canvas,
-  useLoader,
-  extend,
-} from '@react-three/fiber';
-import { Object3D } from 'three/src/core/Object3D.js';
-import { TextureLoader } from 'three/src/loaders/TextureLoader';
-import worldStore from '../../stores/worldStore';
-import imgUrl from '../../images/seaweed-02.png';
-import imgUrlWide from '../../images/seaweed-03.png';
+import React, { useRef, useMemo, Suspense, useLayoutEffect } from "react";
+import { useFrame, useThree, Canvas, useLoader, extend } from "@react-three/fiber";
+import { Object3D } from "three/src/core/Object3D.js";
+import { TextureLoader } from "three/src/loaders/TextureLoader";
+import worldStore from "../../stores/worldStore";
+import imgUrl from "../../images/seaweed-02.png";
+import imgUrlWide from "../../images/seaweed-03.png";
 
-const SeaweedWide = props => {
+const SeaweedWide = ({ number }) => {
   const colorMap = useLoader(TextureLoader, imgUrlWide);
   // This positions the texture on the plane. Puts the bottom center at the middle of the plane;
   colorMap.offset.set(0, -1);
   colorMap.repeat.set(1, 2);
 
   const coordsRef = useRef(
-    Array.from(Array(1000)).map(item => [
-      Math.random() - 0.5,
-      Math.random(),
-      Math.random() * 0.5,
-    ])
+    Array.from(Array(number)).map((item) => [Math.random() - 0.5, Math.random(), Math.random() * 0.5])
   );
   const mesh = useRef();
   const dummy = useRef(new Object3D());
@@ -65,10 +55,9 @@ const SeaweedWide = props => {
 
   const { sin } = Math;
 
-  useFrame(state => {
+  useFrame((state) => {
     positions.current.forEach((item, i) => {
-      const motion =
-        sin(state.clock.elapsedTime + item.position[0] * 0.03) * 0.1;
+      const motion = sin(state.clock.elapsedTime + item.position[0] * 0.03) * 0.1;
       dummy.current.scale.set(...item.scale);
       dummy.current.position.set(...item.position);
       dummy.current.rotation.set(motion * 1, motion * -2, motion);
@@ -97,8 +86,7 @@ const SeaweedWide = props => {
   );
 };
 
-const Plane = props => {
-  console.log('Plane');
+const Plane = (props) => {
   const colorMap = useLoader(TextureLoader, imgUrl);
   // This positions the texture on the plane. Puts the bottom center at the middle of the plane;
   colorMap.offset.set(0, -1);
@@ -123,13 +111,9 @@ const Plane = props => {
   );
 };
 
-const SeaweedTall = props => {
+const SeaweedTall = (number) => {
   const coordsRef = useRef(
-    Array.from(Array(500)).map((item, i) => [
-      Math.sin(i) - 0.5,
-      Math.random(),
-      Math.random(),
-    ])
+    Array.from(Array(number)).map((item, i) => [Math.sin(i) - 0.5, Math.random(), Math.random()])
   );
   const mesh = useRef();
   const dummy = useRef(new Object3D());
@@ -172,10 +156,9 @@ const SeaweedTall = props => {
 
   const { sin } = Math;
 
-  useFrame(state => {
+  useFrame((state) => {
     positions.current.forEach((item, i) => {
-      const motion =
-        sin(state.clock.elapsedTime + item.position[0] * 0.03) * 0.1;
+      const motion = sin(state.clock.elapsedTime + item.position[0] * 0.03) * 0.1;
       dummy.current.scale.set(...item.scale);
       dummy.current.position.set(...item.position);
       dummy.current.rotation.set(motion * 1, motion * -2, motion);
@@ -192,13 +175,11 @@ const SeaweedTall = props => {
   );
 };
 
-const Seaweed = () => {
-  console.log('seaweed');
-
+const Seaweed = ({ number }) => {
   return (
     <>
-      <SeaweedTall />
-      <SeaweedWide />
+      <SeaweedTall number={number * 0.5} />
+      <SeaweedWide number={number * 0.5} />
     </>
   );
 };

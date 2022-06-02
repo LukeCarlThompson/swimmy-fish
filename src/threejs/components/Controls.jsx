@@ -1,15 +1,13 @@
 /* eslint-disable no-nested-ternary */
-import React, { useEffect } from 'react';
-import { useFrame } from '@react-three/fiber';
-import playerStore from '../../stores/playerStore';
+import React, { useEffect } from "react";
+import { useFrame } from "@react-three/fiber";
+import playerStore from "../../stores/playerStore";
 
-const Scene = props => {
-  console.log('Controls');
-
+const Scene = (props) => {
   useEffect(() => {
     const { controls } = playerStore;
 
-    const keydownHandler = e => {
+    const keydownHandler = (e) => {
       if (e.keyCode === 38 || e.keyCode === 87 || e.keyCode === 32) {
         // up
         controls.up = true;
@@ -27,7 +25,7 @@ const Scene = props => {
       }
     };
 
-    const keyupHandler = e => {
+    const keyupHandler = (e) => {
       if (e.keyCode === 38 || e.keyCode === 87 || e.keyCode === 32) {
         // up
         controls.up = false;
@@ -53,24 +51,24 @@ const Scene = props => {
       controls.mouse = false;
     };
 
-    window.addEventListener('keydown', keydownHandler);
-    window.addEventListener('keyup', keyupHandler);
-    window.addEventListener('mousedown', mouseDownHandler);
-    window.addEventListener('mouseup', mouseUpHandler);
-    window.addEventListener('touchstart', mouseDownHandler);
-    window.addEventListener('touchend', mouseUpHandler);
+    window.addEventListener("keydown", keydownHandler);
+    window.addEventListener("keyup", keyupHandler);
+    window.addEventListener("mousedown", mouseDownHandler);
+    window.addEventListener("mouseup", mouseUpHandler);
+    window.addEventListener("touchstart", mouseDownHandler);
+    window.addEventListener("touchend", mouseUpHandler);
 
     return () => {
-      window.removeEventListener('keydown', keydownHandler);
-      window.removeEventListener('keyup', keyupHandler);
-      window.removeEventListener('mousedown', mouseDownHandler);
-      window.removeEventListener('mouseup', mouseUpHandler);
-      window.removeEventListener('touchstart', mouseDownHandler);
-      window.removeEventListener('touchend', mouseUpHandler);
+      window.removeEventListener("keydown", keydownHandler);
+      window.removeEventListener("keyup", keyupHandler);
+      window.removeEventListener("mousedown", mouseDownHandler);
+      window.removeEventListener("mouseup", mouseUpHandler);
+      window.removeEventListener("touchstart", mouseDownHandler);
+      window.removeEventListener("touchend", mouseUpHandler);
     };
   }, []);
 
-  useFrame(state => {
+  useFrame((state) => {
     const { mouse, viewport } = state;
 
     const mousePositionX = (mouse.x * viewport.width) / 2;

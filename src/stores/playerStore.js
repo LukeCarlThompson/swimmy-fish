@@ -12,14 +12,8 @@ const playerStore = {
   },
   isUnderWater: true,
   damping: 0.75,
-  uuid: '',
+  uuid: "",
   cannonApi: null,
-  // velocityUp: () => {
-  //   const { velocity, cannonApi } = get();
-  //   cannonApi.velocity.set(velocity[0], velocity[1] + 0.2, velocity[2]);
-  //   console.log('velocity setting -->', velocity);
-  //   // set({ velocity: [velocity[0], velocity[1] + 1, velocity[2]] });
-  // },
 };
 
 export default playerStore;

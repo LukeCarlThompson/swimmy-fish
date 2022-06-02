@@ -1,25 +1,19 @@
-import React, { useRef, useLayoutEffect } from 'react';
-import { Object3D } from 'three/src/core/Object3D.js';
-import { useFrame, useLoader } from '@react-three/fiber';
-import { TextureLoader } from 'three/src/loaders/TextureLoader';
-import worldStore from '../../stores/worldStore';
+import React, { useRef, useLayoutEffect } from "react";
+import { Object3D } from "three/src/core/Object3D.js";
+import { useFrame, useLoader } from "@react-three/fiber";
+import { TextureLoader } from "three/src/loaders/TextureLoader";
+import worldStore from "../../stores/worldStore";
 
-import textureUrl from '../../images/rock-surface-texture.png';
-import normalMapUrl from '../../images/rock-surface-normalmap.png';
+import textureUrl from "../../images/rock-surface-texture.png";
+import normalMapUrl from "../../images/rock-surface-normalmap.png";
 
-const Sphere = props => {
-  console.log('Sphere');
-
+const Sphere = (props) => {
   const colorMap = useLoader(TextureLoader, textureUrl);
   const normalMap = useLoader(TextureLoader, normalMapUrl);
 
   return (
     <>
       <sphereGeometry args={(Math.random() * 0.5 + 0.75) * 6} />
-      {/* <meshLambertMaterial
-        attach="material"
-        color={worldStore.groundBaseColor}
-      /> */}
       <meshPhongMaterial
         attach="material"
         color={worldStore.groundBaseColor}
@@ -36,15 +30,9 @@ const Sphere = props => {
   );
 };
 
-const BackgroundMounds = props => {
+const BackgroundMounds = (props) => {
   const mesh = useRef();
-  const coordsRef = useRef(
-    Array.from(Array(10)).map(item => [
-      Math.random() - 0.5,
-      Math.random(),
-      Math.random(),
-    ])
-  );
+  const coordsRef = useRef(Array.from(Array(10)).map((item) => [Math.random() - 0.5, Math.random(), Math.random()]));
   const dummy = useRef(new Object3D());
   const positions = useRef(
     coordsRef.current.map((item, i) => {
@@ -60,13 +48,8 @@ const BackgroundMounds = props => {
   useLayoutEffect(() => {
     positions.current.forEach((item, i) => {
       const { positionX, positionZ, rotationY } = item;
-      const randomHeight = Math.random() * 0.5 + 0.5;
       dummy.current.rotation.set(-1, 0, -0.5);
-      dummy.current.position.set(
-        positionX * (Math.random() + 0.5),
-        -15 + Math.abs(positionX) * 0.05,
-        positionZ
-      );
+      dummy.current.position.set(positionX * (Math.random() + 0.5), -15 + Math.abs(positionX) * 0.05, positionZ);
       dummy.current.scale.set(
         1 + Math.abs(positionX) * 0.01,
         1 + Math.abs(positionX) * 0.01,

@@ -1,16 +1,16 @@
-import React, { Suspense, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import styled from 'styled-components';
+import React, { Suspense, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import styled from "styled-components";
 // import { useSpring, a } from '@react-spring/three';
-import { Sky, Stats, Environment } from '@react-three/drei';
-import * as MathUtils from 'three/src/math/MathUtils.js';
-import Scene from './threejs/components/Scene';
-import Controls from './threejs/components/Controls';
-import Lighting from './threejs/components/Lighting';
-import Effects from './threejs/components/Effects';
-import playerStore from './stores/playerStore';
-import worldStore from './stores/worldStore';
-import Particles from './threejs/components/Particles';
+import { Sky, Stats, Environment } from "@react-three/drei";
+import * as MathUtils from "three/src/math/MathUtils.js";
+import { PhysicsScene } from "./threejs/components/PhysicsScene";
+import Controls from "./threejs/components/Controls";
+import Lighting from "./threejs/components/Lighting";
+import Effects from "./threejs/components/Effects";
+import playerStore from "./stores/playerStore";
+import worldStore from "./stores/worldStore";
+import Particles from "./threejs/components/Particles";
 // import envImgUrl from './images/blue-env.hdr';
 
 const SceneStyles = styled.div`
@@ -20,35 +20,18 @@ const SceneStyles = styled.div`
 `;
 
 const CameraMovement = () => {
-  console.log('Camera movement');
+  console.log("Camera movement");
 
-  useFrame(state => {
+  useFrame((state, delta) => {
     const [x, y, z] = playerStore.position;
     const [velocityX, velocityY, velocityZ] = playerStore.velocity;
 
-    const lerpedX = MathUtils.lerp(
-      state.camera.position.x,
-      x + velocityX * 0.1,
-      0.5
-    );
-    const limitedY =
-      y + velocityY * 0.1 > 11
-        ? 11
-        : y + velocityY * 0.1 > -9
-        ? y + velocityY * 0.1
-        : -9;
+    const lerpedX = MathUtils.lerp(state.camera.position.x, x + velocityX * 0.1, 0.5);
+    const limitedY = y + velocityY * 0.1 > 11 ? 11 : y + velocityY * 0.1 > -9 ? y + velocityY * 0.1 : -9;
 
-    const lerpedYPosition = MathUtils.lerp(
-      state.camera.position.y,
-      limitedY,
-      0.5
-    );
+    const lerpedYPosition = MathUtils.lerp(state.camera.position.y, limitedY, 0.5);
 
-    const lerpedYLookAt = MathUtils.lerp(
-      state.camera.position.y,
-      y + velocityY * 0.1,
-      0.7
-    );
+    const lerpedYLookAt = MathUtils.lerp(state.camera.position.y, y + velocityY * 0.1, 0.7);
 
     state.camera.lookAt(lerpedX, lerpedYLookAt, 0);
 
@@ -77,8 +60,6 @@ const Fog = () => {
 };
 
 const App = () => {
-  console.log('Scene mounted');
-
   return (
     <SceneStyles>
       <Canvas
@@ -98,24 +79,16 @@ const App = () => {
           minDistance={20}
           maxDistance={60}
         /> */}
-        <Suspense fallback={null}>
-          <Environment files="./blue-env-02.hdr" />
-        </Suspense>
-        <Suspense fallback={null}>
-          <Lighting />
-          <Scene />
-          <Sky
-            azimuth={0}
-            turbidity={5}
-            rayleigh={0}
-            inclination={0.8}
-            sunPosition={[0.1, 5, -5]}
-            distance={10000}
-          />
-          <Particles count={1000} mouse={{ current: [0, 0] }} />
-        </Suspense>
+        <Sky azimuth={0} turbidity={5} rayleigh={0} inclination={0.8} sunPosition={[0.1, 5, -5]} distance={10000} />
         <Fog />
         <color attach="background" args={worldStore.fogColor} />
+
+        <Suspense fallback={null}>
+          <Environment files="./blue-env-02.hdr" />
+          <Lighting />
+          <PhysicsScene />
+          <Particles count={1000} />
+        </Suspense>
         <CameraMovement />
         <Controls />
         {/* <Effects /> */}

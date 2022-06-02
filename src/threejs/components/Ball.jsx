@@ -1,14 +1,14 @@
-import React, { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { useSphere } from '@react-three/cannon';
-import { MeshDistortMaterial, Sphere } from '@react-three/drei';
-import { Color } from 'three/src/math/Color.js';
+import React, { useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import { useSphere } from "@react-three/cannon";
+import { MeshDistortMaterial, Sphere } from "@react-three/drei";
+import { Color } from "three/src/math/Color.js";
 
-const Ball = props => {
+const Ball = (props) => {
   const material = useRef();
   const isTouchedRef = useRef(false);
-  const initialColorRef = useRef(new Color('hsl(228, 90%, 50%)'));
-  const touchedColorRef = useRef(new Color('hsl(342, 80%, 37%)'));
+  const initialColorRef = useRef(new Color("hsl(228, 90%, 50%)"));
+  const touchedColorRef = useRef(new Color("hsl(342, 80%, 37%)"));
 
   const size = props.size || 0.5;
 
@@ -20,7 +20,7 @@ const Ball = props => {
     args: [size],
     allowSleep: true,
     sleepSpeedLimit: 0.25,
-    onCollide: e => {
+    onCollide: (e) => {
       isTouchedRef.current = !isTouchedRef.current;
     },
     ...props,
@@ -35,8 +35,6 @@ const Ball = props => {
       // material.current.distort = 0.5;
     }
   });
-
-  console.log('Ball');
 
   return (
     <group ref={ref}>
