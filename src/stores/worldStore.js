@@ -1,7 +1,8 @@
 const worldStore = {
-  fogColor: '#4898e8',
-  groundBaseColor: '#164f6e',
+  fogColor: "#5091bf",
+  groundBaseColor: "#2c618a",
   waterHeight: 10,
+  quality: 1,
 };
 
 export default worldStore;

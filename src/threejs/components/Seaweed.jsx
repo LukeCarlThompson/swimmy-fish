@@ -32,15 +32,7 @@ const SeaweedWide = ({ number }) => {
     positions.current.forEach((item, i) => {
       const { positionX, positionZ, rotationY } = item;
       const randomHeight = Math.random() * Math.random() * 2 + 0.2;
-      item.position = [
-        positionX,
-        // randomHeight * 8 * 0.5 + -10,
-        -10,
-        // positionZ > -1 && positionZ < 2
-        //   ? positionZ
-        //   : positionZ - Math.sin(i) * 100,
-        positionZ - Math.sin(i) * 100,
-      ];
+      item.position = [positionX, -10, positionZ - Math.sin(i) * 100];
 
       dummy.current.position.set(...item.position);
 
@@ -69,7 +61,7 @@ const SeaweedWide = ({ number }) => {
 
   return (
     <instancedMesh ref={mesh} args={[null, null, positions.current.length]}>
-      <planeGeometry args={[6, 6]} />
+      <planeGeometry args={[8, 8]} />
       <meshLambertMaterial
         attach="material"
         color={worldStore.groundBaseColor}
@@ -94,7 +86,7 @@ const Plane = (props) => {
 
   return (
     <>
-      <planeGeometry args={[3, 12]} />
+      <planeGeometry args={[5, 16]} />
       <meshLambertMaterial
         attach="material"
         color={worldStore.groundBaseColor}
@@ -132,16 +124,7 @@ const SeaweedTall = (number) => {
     positions.current.forEach((item, i) => {
       const { positionX, positionZ, rotationY } = item;
       const randomHeight = Math.random() * Math.random() * 2 + 0.2;
-      item.position = [
-        // Math.sin(i) * 100,
-        positionX,
-        // randomHeight * 8 * 0.5 + -10,
-        -10,
-        // positionZ > -1 && positionZ < 2
-        //   ? positionZ
-        //   : positionZ - Math.random() * 100,
-        positionZ - Math.sin(i) * 100,
-      ];
+      item.position = [positionX, -10, positionZ - Math.sin(i) * 100];
 
       dummy.current.position.set(...item.position);
 

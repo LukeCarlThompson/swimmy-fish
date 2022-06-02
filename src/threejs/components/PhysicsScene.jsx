@@ -7,10 +7,7 @@ import playerStore from "../../stores/playerStore";
 import { degToRad } from "../helpers";
 import Player from "./Player";
 import Ball from "./Ball";
-import BackgroundMounds from "./BackgroundMounds";
 import imgUrl from "../../images/caustics-bw.png";
-import Seaweed from "./Seaweed";
-import BackgroundImages from "./BackgroundImages";
 import worldStore from "../../stores/worldStore";
 import textureUrl from "../../images/rock-surface-texture.png";
 import normalMapUrl from "../../images/rock-surface-normalmap.png";
@@ -120,9 +117,6 @@ const PhysicsScene = (props) => {
         <WaterSurface />
         <Player color="#e07e28" />
         <Ball position={[-3, -3, 0]} size={1.2} />
-        <BackgroundMounds />
-        <Seaweed number={1000} />
-        <BackgroundImages />
         <UnderwaterBackground />
         <Floor />
       </Physics>

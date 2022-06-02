@@ -68,7 +68,7 @@ const Scene = (props) => {
     };
   }, []);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     const { mouse, viewport } = state;
 
     const mousePositionX = (mouse.x * viewport.width) / 2;
