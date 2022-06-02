@@ -4,8 +4,6 @@ import { useFrame } from "@react-three/fiber";
 import playerStore from "../../stores/playerStore";
 
 const Scene = (props) => {
-  console.log("Controls");
-
   useEffect(() => {
     const { controls } = playerStore;
 
