@@ -1,28 +1,25 @@
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useRef, useLayoutEffect } from "react";
 // import { useSpring, a } from '@react-spring/three';
-import { useFrame } from '@react-three/fiber';
-import { useSphere } from '@react-three/cannon';
-import { Sphere, RoundedBox } from '@react-three/drei';
-import { Vector3 } from 'three/src/math/Vector3.js';
-import * as MathUtils from 'three/src/math/MathUtils.js';
-import playerStore from '../../stores/playerStore';
-import { sigmoid, degToRad, truncDec } from '../helpers';
+import { useFrame } from "@react-three/fiber";
+import { useSphere } from "@react-three/cannon";
+import { Sphere, RoundedBox } from "@react-three/drei";
+import { Vector3 } from "three/src/math/Vector3.js";
+import * as MathUtils from "three/src/math/MathUtils.js";
+import playerStore from "../../stores/playerStore";
+import worldStore from "../../stores/worldStore";
+import { sigmoid, degToRad, truncDec } from "../helpers";
 
-const BodyMaterial = props => {
+const BodyMaterial = (props) => {
   const bodyMaterialRef = useRef();
 
   useFrame(() => {
     const { position } = playerStore;
 
     // Modify player material appearance based on depth
-    bodyMaterialRef.current.envMapIntensity =
-      position[1] > 0 ? 1 : 1 + position[1] * 0.1;
-    bodyMaterialRef.current.clearcoat =
-      position[1] > 0 ? 1 : 1 + position[1] * 0.1;
-    bodyMaterialRef.current.reflectivity =
-      position[1] > 0 ? 0.3 : 0.3 + position[1] * 0.1;
-    bodyMaterialRef.current.roughness =
-      position[1] > -3 ? 0.7 : 0.7 - position[1] * 0.1;
+    bodyMaterialRef.current.envMapIntensity = position[1] > 0 ? 1 : 1 + position[1] * 0.1;
+    bodyMaterialRef.current.clearcoat = position[1] > 0 ? 1 : 1 + position[1] * 0.1;
+    bodyMaterialRef.current.reflectivity = position[1] > 0 ? 0.3 : 0.3 + position[1] * 0.1;
+    bodyMaterialRef.current.roughness = position[1] > -3 ? 0.7 : 0.7 - position[1] * 0.1;
   });
 
   return (
@@ -36,21 +33,21 @@ const BodyMaterial = props => {
       metalness={0.5}
       clearcoat={1}
       clearcoatRoughness={0.2}
-      color={props.color || 'purple'}
+      color={props.color || "purple"}
     />
   );
 };
 
-const Tail = props => {
+const Tail = (props) => {
   const tailRef = useRef();
   const tailSecondRef = useRef();
   const tailThirdRef = useRef();
 
   const { abs, sin } = Math;
 
-  console.log('Tail');
+  console.log("Tail");
 
-  useFrame(state => {
+  useFrame((state) => {
     const { velocity, position } = playerStore;
 
     const [velocityX, velocityY, velocityZ] = velocity;
@@ -58,13 +55,7 @@ const Tail = props => {
 
     // tail movement
     const sideToSide = degToRad(
-      sin(
-        abs(velocityY) +
-          abs(positionY) +
-          abs(velocityX) +
-          abs(positionX) +
-          state.clock.getElapsedTime() * 4
-      )
+      sin(abs(velocityY) + abs(positionY) + abs(velocityX) + abs(positionX) + state.clock.getElapsedTime() * 4)
     );
 
     tailRef.current.rotation.set(0, sideToSide * 10, 0);
@@ -74,14 +65,7 @@ const Tail = props => {
 
   return (
     <group ref={tailRef} name="tail">
-      <RoundedBox
-        args={[1, 0.75, 0.6]}
-        position={[-0.5, 0.05, 0]}
-        radius={0.2}
-        smoothness={4}
-        receiveShadow
-        castShadow
-      >
+      <RoundedBox args={[1, 0.75, 0.6]} position={[-0.5, 0.05, 0]} radius={0.2} smoothness={4} receiveShadow castShadow>
         <BodyMaterial color={props.color} />
       </RoundedBox>
       <group ref={tailSecondRef} position={[-1, 0, 0]}>
@@ -124,45 +108,30 @@ const Tail = props => {
   );
 };
 
-const EyeBall = props => {
+const EyeBall = (props) => {
   const ref = useRef();
   const vec3 = new Vector3();
 
-  useFrame(state => {
+  useFrame((state) => {
     const [x, y, z] = playerStore.velocity;
 
-    const direction = vec3.set(
-      sigmoid(y * -0.1),
-      sigmoid(y * -1) * 0.1 + 0.5,
-      0
-    );
-    ref.current.setRotationFromAxisAngle(
-      direction.normalize(),
-      props.mirror ? -10 : 0.5
-    );
+    const direction = vec3.set(sigmoid(y * -0.1), sigmoid(y * -1) * 0.1 + 0.5, 0);
+    ref.current.setRotationFromAxisAngle(direction.normalize(), props.mirror ? -10 : 0.5);
   });
 
   return (
     <group {...props} ref={ref} name="eyeball">
       <Sphere position={[0, 0, 0]} args={[0.3]} receiveShadow castShadow>
-        <BodyMaterial
-          translate={[0, 10, 0.25]}
-          attach="material"
-          color="#f3f3f3"
-        />
+        <BodyMaterial translate={[0, 10, 0.25]} attach="material" color="#f3f3f3" />
       </Sphere>
       <Sphere position={[0, 0, 0.25]} args={[0.1]} receiveShadow castShadow>
-        <BodyMaterial
-          translate={[0, 10, 0.25]}
-          attach="material"
-          color="black"
-        />
+        <BodyMaterial translate={[0, 10, 0.25]} attach="material" color="black" />
       </Sphere>
     </group>
   );
 };
 
-const Player = props => {
+const Player = (props) => {
   const [playerPhysicsRef, api] = useSphere(() => ({
     mass: 1,
     position: [0, 0, 0],
@@ -180,7 +149,7 @@ const Player = props => {
   const vec3 = new Vector3();
   const { abs, sin, atan2 } = Math;
 
-  console.log('Player');
+  console.log("Player");
 
   useLayoutEffect(() => {
     // Save the player uuid to state
@@ -189,21 +158,21 @@ const Player = props => {
     playerStore.cannonApi = api;
 
     // Subscribe the velocity, position and rotation from Cannon to some local refs
-    console.count('subscribed');
-    const unsubscribeVelocity = api.velocity.subscribe(v => {
+    console.count("subscribed");
+    const unsubscribeVelocity = api.velocity.subscribe((v) => {
       playerStore.velocity = v;
     });
 
-    const unsubscribePosition = api.position.subscribe(p => {
+    const unsubscribePosition = api.position.subscribe((p) => {
       playerStore.position = p;
     });
 
-    const unsubscribeDamping = api.linearDamping.subscribe(d => {
+    const unsubscribeDamping = api.linearDamping.subscribe((d) => {
       playerStore.damping = d;
     });
 
     return () => {
-      console.count('unsubscribed');
+      console.count("unsubscribed");
       unsubscribeVelocity();
       unsubscribePosition();
       unsubscribeDamping();
@@ -211,19 +180,19 @@ const Player = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useFrame(state => {
-    let {
-      controls,
-      isUnderWater,
-      position,
-      velocity,
-      mousePosition,
-      damping,
-    } = playerStore;
+  useFrame((state) => {
+    let { controls, isUnderWater, position, velocity, mousePosition, damping } = playerStore;
 
     const [velocityX, velocityY, velocityZ] = velocity;
     const [mouseX, mouseY] = mousePosition;
     const [positionX, positionY, positionZ] = position;
+
+    // Set underwater state based on position
+    if (positionY > worldStore.waterHeight) {
+      playerStore.isUnderWater = false;
+    } else {
+      playerStore.isUnderWater = true;
+    }
 
     if (controls.up && isUnderWater) {
       api.applyImpulse([0, 0.4, 0], [0, 0, 0]);
@@ -246,22 +215,15 @@ const Player = props => {
     }
 
     // Apply some damping if underwater and moving too fast downwards
-    const newDamping =
-      (isUnderWater && velocityY) < -10 ? 0.99 : isUnderWater ? 0.75 : 0.01;
+    const newDamping = (isUnderWater && velocityY) < -10 ? 0.99 : isUnderWater ? 0.75 : 0.01;
     api.linearDamping.set(MathUtils.lerp(damping, newDamping, 0.5));
 
     if (!isUnderWater && positionY > 10.25) {
       api.applyImpulse([0, -0.5, 0], [0, 0, 0]);
     }
 
-    // Additional check for bug when slowly breaching the water
-    if (positionY < 9 && !isUnderWater) {
-      isUnderWater = true;
-      // console.log('not underwater');
-    }
-
     // Push swimmy back up from the ground
-    if (positionY < -9) {
+    if (positionY < -8) {
       api.applyImpulse([0, 0.05, 0], [0, 0, 0]);
     }
 
@@ -271,8 +233,7 @@ const Player = props => {
     }
 
     // Velcoity factor for the head wobble
-    const velocityInput =
-      abs(velocityY) + abs(positionY) + abs(velocityX) + abs(positionX);
+    const velocityInput = abs(velocityY) + abs(positionY) + abs(velocityX) + abs(positionX);
     // Main player body wobble when idle and when swimming
     const wobble = sin(velocityInput + state.clock.getElapsedTime() * 4) * -10;
 
@@ -287,19 +248,13 @@ const Player = props => {
     // Calculate the angle from the player to the mouse position
     // If the mouse is close to the player use the angle oterh wise just flip it to left or right
     const mouseYAngle =
-      abs(mouseX) < 3
-        ? atan2(mouseX, abs(mouseY)) - Math.PI * 0.5
-        : mouseX > 0
-        ? degToRad(1)
-        : degToRad(-179);
+      abs(mouseX) < 3 ? atan2(mouseX, abs(mouseY)) - Math.PI * 0.5 : mouseX > 0 ? degToRad(1) : degToRad(-179);
     const mouseZAngle = atan2(mouseY, abs(mouseX));
 
     // Lerp the player rotation to angles based on mouse position or velocity
     const yAxisRotation = MathUtils.lerp(
       rotation.y,
-      controls.mouse & isUnderWater
-        ? mouseYAngle + degToRad(wobble)
-        : degToRad(direction.y),
+      controls.mouse & isUnderWater ? mouseYAngle + degToRad(wobble) : degToRad(direction.y),
       0.2
     );
 
@@ -312,14 +267,8 @@ const Player = props => {
     playerBodyRef.current.rotation.set(0, yAxisRotation, zAxisRotation);
 
     // Side fins rotation
-    leftFinRef.current.setRotationFromAxisAngle(
-      vec3.lerp(vec3.set(sigmoid(velocityY * 1), -1, 0), 0.25),
-      0.5
-    );
-    rightFinRef.current.setRotationFromAxisAngle(
-      vec3.lerp(vec3.set(sigmoid(velocityY * 1) * -1, 1, 0), 0.25),
-      0.5
-    );
+    leftFinRef.current.setRotationFromAxisAngle(vec3.lerp(vec3.set(sigmoid(velocityY * 1), -1, 0), 0.25), 0.5);
+    rightFinRef.current.setRotationFromAxisAngle(vec3.lerp(vec3.set(sigmoid(velocityY * 1) * -1, 1, 0), 0.25), 0.5);
   });
 
   return (
@@ -351,7 +300,6 @@ const Player = props => {
         <RoundedBox
           name="player-dorsal-fin"
           args={[0.5, 0.5, 0.05]}
-          name="dorsal-fin"
           position={[0.25, 0.7, 0]}
           radius={0.05}
           smoothness={4}
