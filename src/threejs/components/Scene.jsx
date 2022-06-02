@@ -1,7 +1,5 @@
 /* eslint-disable no-nested-ternary */
 import React from "react";
-// import { useSpring, a } from '@react-spring/three';
-// import { useFrame, useThree } from '@react-three/fiber';
 import { Physics, usePlane } from "@react-three/cannon";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import { useFrame, useLoader } from "@react-three/fiber";
@@ -35,27 +33,26 @@ const Ceiling = (props) => {
   }));
 
   const emissiveMap = useLoader(TextureLoader, imgUrl);
-  // This positions the txture on the plane. Puts the bottom center at the middle of the plane;
+  // This positions the texture on the plane. Puts the bottom center at the middle of the plane;
   emissiveMap.offset.set(0, 1);
   emissiveMap.repeat.set(100, 30);
-  // console.log("emissiveMap -->", emissiveMap);
 
-  useFrame(({ clock }) => {
-    const { geometry } = ref.current;
-    const { position } = geometry.attributes;
+  // useFrame(({ clock }) => {
+  //   const { geometry } = ref.current;
+  //   const { position } = geometry.attributes;
 
-    const newPositions = position.array.map((item, i) => {
-      // Long array of coordinates made of of x, y, z, for each vertex. Get the x coord from each triplet to modify and leave the rest alone.
-      if ((i - 2) % 3 === 0) {
-        return item + Math.sin((position.array[i + 1] * i || 0) + clock.getElapsedTime()) * 0.01;
-      }
-      return item;
-    });
+  //   const newPositions = position.array.map((item, i) => {
+  //     // Long array of coordinates made of of x, y, z, for each vertex. Get the x coord from each triplet to modify and leave the rest alone.
+  //     if ((i - 2) % 3 === 0) {
+  //       return item + Math.sin((position.array[i + 1] * i || 0) + clock.getElapsedTime()) * 0.01;
+  //     }
+  //     return item;
+  //   });
 
-    position.array = newPositions;
-    position.needsUpdate = true;
-    geometry.computeVertexNormals();
-  });
+  //   position.array = newPositions;
+  //   position.needsUpdate = true;
+  //   geometry.computeVertexNormals();
+  // });
 
   return (
     <mesh ref={ref} position={[0, worldStore.waterHeight, -100]}>
@@ -68,20 +65,6 @@ const Ceiling = (props) => {
         emissiveIntensity={0.75}
         side={2}
       />
-      {/* <meshPhysicalMaterial
-        attach="material"
-        specular="white"
-        roughness={0.3}
-        reflectivity={1}
-        metalness={0.5}
-        clearcoat={1}
-        clearcoatRoughness={0.15}
-        color={worldStore.groundBaseColor}
-        side={2}
-        emissive="#9aede5"
-        emissiveMap={emissiveMap}
-        emissiveIntensity={1}
-      /> */}
     </mesh>
   );
 };
@@ -150,7 +133,7 @@ const Scene = (props) => {
         <Ball position={[-3, -3, 0]} size={1.2} />
         <Ball position={[-7, -5, 0]} size={0.8} />
         <BackgroundMounds />
-        <Seaweed />
+        <Seaweed number={1000} />
         <BackgroundImages />
         <UnderwaterBackground />
         <Floor />
