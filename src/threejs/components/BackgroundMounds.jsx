@@ -8,8 +8,6 @@ import textureUrl from "../../images/rock-surface-texture.png";
 import normalMapUrl from "../../images/rock-surface-normalmap.png";
 
 const Sphere = (props) => {
-  console.log("Sphere");
-
   const colorMap = useLoader(TextureLoader, textureUrl);
   const normalMap = useLoader(TextureLoader, normalMapUrl);
 

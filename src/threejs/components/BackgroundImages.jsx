@@ -1,12 +1,11 @@
-import React, { useRef, useMemo, Suspense, useLayoutEffect } from 'react';
-import { useFrame, useThree, Canvas, useLoader } from '@react-three/fiber';
-import { TextureLoader } from 'three/src/loaders/TextureLoader';
-import worldStore from '../../stores/worldStore';
-import imgUrl from '../../images/rocks-01.png';
-import RocksTwoImgUrl from '../../images/rocks-02.png';
+import React, { useRef, useMemo, Suspense, useLayoutEffect } from "react";
+import { useFrame, useThree, Canvas, useLoader } from "@react-three/fiber";
+import { TextureLoader } from "three/src/loaders/TextureLoader";
+import worldStore from "../../stores/worldStore";
+import imgUrl from "../../images/rocks-01.png";
+import RocksTwoImgUrl from "../../images/rocks-02.png";
 
-const RockTwo = props => {
-  console.log('Plane');
+const RockTwo = (props) => {
   const colorMap = useLoader(TextureLoader, RocksTwoImgUrl);
   // This positions the texture on the plane.
   // colorMap.offset.set(0, -1);
@@ -31,8 +30,7 @@ const RockTwo = props => {
   );
 };
 
-const RockOne = props => {
-  console.log('Plane');
+const RockOne = (props) => {
   const colorMap = useLoader(TextureLoader, imgUrl);
   // This positions the texture on the plane.
   // colorMap.offset.set(0, -1);
@@ -57,9 +55,7 @@ const RockOne = props => {
   );
 };
 
-const BackgroundImages = props => {
-  console.log('BackgroundImages');
-
+const BackgroundImages = (props) => {
   return (
     <group>
       <RockOne />

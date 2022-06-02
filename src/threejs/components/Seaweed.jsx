@@ -87,7 +87,6 @@ const SeaweedWide = ({ number }) => {
 };
 
 const Plane = (props) => {
-  console.log("Plane");
   const colorMap = useLoader(TextureLoader, imgUrl);
   // This positions the texture on the plane. Puts the bottom center at the middle of the plane;
   colorMap.offset.set(0, -1);
@@ -177,8 +176,6 @@ const SeaweedTall = (number) => {
 };
 
 const Seaweed = ({ number }) => {
-  console.log("seaweed");
-
   return (
     <>
       <SeaweedTall number={number * 0.5} />
