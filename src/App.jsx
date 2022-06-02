@@ -4,7 +4,7 @@ import styled from "styled-components";
 // import { useSpring, a } from '@react-spring/three';
 import { Sky, Stats, Environment } from "@react-three/drei";
 import * as MathUtils from "three/src/math/MathUtils.js";
-import Scene from "./threejs/components/Scene";
+import { PhysicsScene } from "./threejs/components/PhysicsScene";
 import Controls from "./threejs/components/Controls";
 import Lighting from "./threejs/components/Lighting";
 import Effects from "./threejs/components/Effects";
@@ -79,17 +79,16 @@ const App = () => {
           minDistance={20}
           maxDistance={60}
         /> */}
-        <Suspense fallback={null}>
-          <Environment files="./blue-env-02.hdr" />
-        </Suspense>
-        <Suspense fallback={null}>
-          <Lighting />
-          <Scene />
-          <Sky azimuth={0} turbidity={5} rayleigh={0} inclination={0.8} sunPosition={[0.1, 5, -5]} distance={10000} />
-          <Particles count={500} />
-        </Suspense>
+        <Sky azimuth={0} turbidity={5} rayleigh={0} inclination={0.8} sunPosition={[0.1, 5, -5]} distance={10000} />
         <Fog />
         <color attach="background" args={worldStore.fogColor} />
+
+        <Suspense fallback={null}>
+          <Environment files="./blue-env-02.hdr" />
+          <Lighting />
+          <PhysicsScene />
+          <Particles count={1000} />
+        </Suspense>
         <CameraMovement />
         <Controls />
         {/* <Effects /> */}

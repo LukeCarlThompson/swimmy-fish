@@ -7,7 +7,9 @@ import { Vector3 } from "three/src/math/Vector3.js";
 import * as MathUtils from "three/src/math/MathUtils.js";
 import playerStore from "../../stores/playerStore";
 import worldStore from "../../stores/worldStore";
-import { sigmoid, degToRad, truncDec } from "../helpers";
+import { sigmoid, degToRad } from "../helpers";
+
+// TODO: Try and use instances of a cube for the fish geometry to increase performance
 
 const BodyMaterial = (props) => {
   const bodyMaterialRef = useRef();
@@ -63,7 +65,7 @@ const Tail = (props) => {
 
   return (
     <group ref={tailRef} name="tail">
-      <RoundedBox args={[1, 0.75, 0.6]} position={[-0.5, 0.05, 0]} radius={0.2} smoothness={4} receiveShadow castShadow>
+      <RoundedBox args={[1, 0.75, 0.6]} position={[-0.5, 0.05, 0]} radius={0.2} smoothness={2} receiveShadow castShadow>
         <BodyMaterial color={props.color} />
       </RoundedBox>
       <group ref={tailSecondRef} position={[-1, 0, 0]}>
@@ -71,7 +73,7 @@ const Tail = (props) => {
           args={[0.6, 0.6, 0.3]}
           position={[-0.1, 0, 0]}
           radius={0.05}
-          smoothness={4}
+          smoothness={2}
           receiveShadow
           castShadow
         >
@@ -82,7 +84,7 @@ const Tail = (props) => {
             args={[0.75, 0.4, 0.1]}
             position={[-0.1, 0.15, 0]}
             radius={0.05}
-            smoothness={4}
+            smoothness={2}
             rotation={[0, 0, -10]}
             receiveShadow
             castShadow
@@ -93,7 +95,7 @@ const Tail = (props) => {
             args={[0.75, 0.4, 0.1]}
             position={[-0.1, -0.15, 0]}
             radius={0.05}
-            smoothness={4}
+            smoothness={2}
             rotation={[0, 0, 10]}
             receiveShadow
             castShadow
@@ -189,24 +191,26 @@ const Player = (props) => {
       playerStore.isUnderWater = true;
     }
 
-    if (controls.up && isUnderWater) {
-      api.applyImpulse([0, 0.4, 0], [0, 0, 0]);
-    }
+    if (isUnderWater) {
+      if (controls.up) {
+        api.applyImpulse([0, 0.4, 0], [0, 0, 0]);
+      }
 
-    if (controls.down && isUnderWater) {
-      api.applyImpulse([0, -0.4, 0], [0, 0, 0]);
-    }
+      if (controls.down) {
+        api.applyImpulse([0, -0.4, 0], [0, 0, 0]);
+      }
 
-    if (controls.right && isUnderWater) {
-      api.applyImpulse([0.4, 0, 0], [0, 0, 0]);
-    }
+      if (controls.right) {
+        api.applyImpulse([0.4, 0, 0], [0, 0, 0]);
+      }
 
-    if (controls.left && isUnderWater) {
-      api.applyImpulse([-0.4, 0, 0], [0, 0, 0]);
-    }
+      if (controls.left) {
+        api.applyImpulse([-0.4, 0, 0], [0, 0, 0]);
+      }
 
-    if (controls.mouse && isUnderWater) {
-      api.applyImpulse([mouseX * 0.1, mouseY * 0.1, 0], [0, 0, 0]);
+      if (controls.mouse) {
+        api.applyImpulse([mouseX * 0.1, mouseY * 0.1, 0], [0, 0, 0]);
+      }
     }
 
     // Apply some damping if underwater and moving too fast downwards
@@ -274,7 +278,7 @@ const Player = (props) => {
           args={[1.5, 1.2, 0.8]}
           position={[0.25, 0.1, 0]}
           radius={0.2}
-          smoothness={4}
+          smoothness={2}
           receiveShadow
           castShadow
         >
@@ -286,7 +290,7 @@ const Player = (props) => {
           position={[0.8, -0.25, 0]}
           rotation={[0, 0, 0]}
           radius={0.2}
-          smoothness={6}
+          smoothness={2}
           receiveShadow
           castShadow
         >
@@ -297,7 +301,7 @@ const Player = (props) => {
           args={[0.5, 0.5, 0.05]}
           position={[0.25, 0.7, 0]}
           radius={0.05}
-          smoothness={4}
+          smoothness={2}
           rotation={[0, 0, 10]}
           receiveShadow
           castShadow
@@ -310,7 +314,7 @@ const Player = (props) => {
           args={[0.5, 0.1, 0.6]}
           position={[-0, -0.25, 0.4]}
           radius={0.05}
-          smoothness={4}
+          smoothness={2}
           receiveShadow
           castShadow
         >
@@ -322,7 +326,7 @@ const Player = (props) => {
           args={[0.5, 0.1, 0.6]}
           position={[-0, -0.25, -0.4]}
           radius={0.05}
-          smoothness={4}
+          smoothness={2}
           receiveShadow
           castShadow
         >
@@ -333,7 +337,7 @@ const Player = (props) => {
           args={[0.1, 0.1, 0.5]}
           position={[1.11, -0.3, 0]}
           radius={0.05}
-          smoothness={4}
+          smoothness={2}
           receiveShadow
           castShadow
         >

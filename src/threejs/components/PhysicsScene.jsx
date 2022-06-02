@@ -15,7 +15,7 @@ import worldStore from "../../stores/worldStore";
 import textureUrl from "../../images/rock-surface-texture.png";
 import normalMapUrl from "../../images/rock-surface-normalmap.png";
 
-const Ceiling = (props) => {
+const WaterSurface = (props) => {
   const [ref] = usePlane(() => ({
     rotation: [-Math.PI / -2, 0, 0],
     position: [0, worldStore.waterHeight, -125],
@@ -37,26 +37,26 @@ const Ceiling = (props) => {
   emissiveMap.offset.set(0, 1);
   emissiveMap.repeat.set(100, 30);
 
-  // useFrame(({ clock }) => {
-  //   const { geometry } = ref.current;
-  //   const { position } = geometry.attributes;
+  useFrame(({ clock }) => {
+    const { geometry } = ref.current;
+    const { position } = geometry.attributes;
 
-  //   const newPositions = position.array.map((item, i) => {
-  //     // Long array of coordinates made of of x, y, z, for each vertex. Get the x coord from each triplet to modify and leave the rest alone.
-  //     if ((i - 2) % 3 === 0) {
-  //       return item + Math.sin((position.array[i + 1] * i || 0) + clock.getElapsedTime()) * 0.01;
-  //     }
-  //     return item;
-  //   });
+    const newPositions = position.array.map((item, i) => {
+      // Long array of coordinates made of of x, y, z, for each vertex. Get the x coord from each triplet to modify and leave the rest alone.
+      if ((i - 2) % 3 === 0) {
+        return item + Math.sin((position.array[i + 1] * i || 0) + clock.getElapsedTime()) * 0.01;
+      }
+      return item;
+    });
 
-  //   position.array = newPositions;
-  //   position.needsUpdate = true;
-  //   geometry.computeVertexNormals();
-  // });
+    position.array = newPositions;
+    position.needsUpdate = true;
+    geometry.computeVertexNormals();
+  });
 
   return (
     <mesh ref={ref} position={[0, worldStore.waterHeight, -100]}>
-      <planeBufferGeometry attach="geometry" args={[800, 300, 10, 30]} />
+      <planeBufferGeometry attach="geometry" args={[800, 300, 10, 10]} />
       <meshPhongMaterial
         shininess={100}
         color="#587fad"
@@ -105,7 +105,7 @@ const Floor = (props) => {
   );
 };
 
-const Scene = (props) => {
+const PhysicsScene = (props) => {
   return (
     <>
       <Physics
@@ -117,21 +117,11 @@ const Scene = (props) => {
         }}
         allowSleep
       >
-        <Ceiling />
+        <WaterSurface />
         <Player color="#e07e28" />
-        <Ball position={[5, 0, 0]} size={0.75} />
-        <Ball position={[6, 2, 0]} size={0.25} />
-        <Ball position={[6, 2, 0]} size={0.25} />
-        <Ball position={[6, 2, 0]} size={0.25} />
-        <Ball position={[6, 2, 0]} size={0.2} />
-        <Ball position={[6, 2, 0]} size={0.15} />
-        <Ball position={[6, 2, 0]} size={0.35} />
-        <Ball position={[6, 2, 0]} size={0.25} />
-        <Ball position={[-2, -5, 0]} />
         <Ball position={[-3, -3, 0]} size={1.2} />
-        <Ball position={[-7, -5, 0]} size={0.8} />
         <BackgroundMounds />
-        <Seaweed number={500} />
+        <Seaweed number={1000} />
         <BackgroundImages />
         <UnderwaterBackground />
         <Floor />
@@ -140,4 +130,4 @@ const Scene = (props) => {
   );
 };
 
-export default Scene;
+export { PhysicsScene };
