@@ -47,7 +47,7 @@ const Tail = (props) => {
 
   console.log("Tail");
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     const { velocity, position } = playerStore;
 
     const [velocityX, velocityY, velocityZ] = velocity;
@@ -180,7 +180,8 @@ const Player = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
+    // console.log("delta -->", delta);
     let { controls, isUnderWater, position, velocity, mousePosition, damping } = playerStore;
 
     const [velocityX, velocityY, velocityZ] = velocity;
@@ -255,13 +256,13 @@ const Player = (props) => {
     const yAxisRotation = MathUtils.lerp(
       rotation.y,
       controls.mouse & isUnderWater ? mouseYAngle + degToRad(wobble) : degToRad(direction.y),
-      0.2
+      delta * 10
     );
 
     const zAxisRotation = MathUtils.lerp(
       rotation.z,
       controls.mouse & isUnderWater ? mouseZAngle : degToRad(direction.z),
-      0.05
+      delta * 5
     );
 
     playerBodyRef.current.rotation.set(0, yAxisRotation, zAxisRotation);
