@@ -88,7 +88,7 @@ const Floor = (props) => {
 
   return (
     <mesh ref={ref}>
-      <planeBufferGeometry attach="geometry" args={[1000, 1000, 400, 400]} />
+      <planeBufferGeometry attach="geometry" args={[1000, 1000, 50, 50]} />
       <meshPhongMaterial
         attach="material"
         color={worldStore.groundBaseColor}
@@ -98,7 +98,7 @@ const Floor = (props) => {
         displacementScale={4}
         displacementBias={-2}
         normalMap={normalMap}
-        normalScale={[0.2, 0.2]}
+        normalScale={[1, 1]}
         roughnessMap={colorMap}
       />
     </mesh>
@@ -133,7 +133,7 @@ const Scene = (props) => {
         <Ball position={[-3, -3, 0]} size={1.2} />
         <Ball position={[-7, -5, 0]} size={0.8} />
         <BackgroundMounds />
-        <Seaweed number={1000} />
+        <Seaweed number={500} />
         <BackgroundImages />
         <UnderwaterBackground />
         <Floor />
