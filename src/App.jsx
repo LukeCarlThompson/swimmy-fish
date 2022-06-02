@@ -81,7 +81,7 @@ const App = () => {
         }}
       >
         {/* <OrbitControls enabled target={[0, -20, 0]} minDistance={20} maxDistance={200} /> */}
-        <Sky azimuth={0} turbidity={3.5} rayleigh={2} inclination={1} sunPosition={[0.1, 5, -5]} distance={100} />
+        <Sky azimuth={0} turbidity={3.5} rayleigh={2} inclination={1} sunPosition={[0.1, 5, -5]} distance={1000} />
         <Fog />
         <color attach="background" args={[worldStore.fogColor]} />
         <Suspense fallback={null}>
