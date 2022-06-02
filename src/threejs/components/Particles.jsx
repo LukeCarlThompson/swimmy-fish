@@ -1,8 +1,8 @@
-import { Object3D } from 'three/src/core/Object3D.js';
-import React, { useRef, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { Object3D } from "three/src/core/Object3D.js";
+import React, { useRef, useMemo } from "react";
+import { useFrame } from "@react-three/fiber";
 
-export default function Particles({ count, mouse }) {
+export default function Particles({ count }) {
   const mesh = useRef();
   const { sin, cos, random } = Math;
 
@@ -22,7 +22,7 @@ export default function Particles({ count, mouse }) {
     return temp;
   }, [count, random]);
   // The innards of this hook will run every frame
-  useFrame(state => {
+  useFrame((state, delta) => {
     // Run through the randomized data to calculate some movement
     particles.forEach((particle, i) => {
       let { t, factor, speed, xFactor, yFactor, zFactor } = particle;
@@ -36,10 +36,7 @@ export default function Particles({ count, mouse }) {
           xFactor +
           cos(state.clock.elapsedTime * 0.05) +
           sin(state.clock.elapsedTime * 0.05) * 10,
-        particle.my / 10 +
-          yFactor +
-          sin(t * 0.01 * factor) +
-          (cos(t * 0.5) * factor) / 10,
+        particle.my / 10 + yFactor + sin(t * 0.01 * factor) + (cos(t * 0.5) * factor) / 10,
         zFactor
       );
       // dummy.rotation.set(s * 5, s * 5, s * 5);
