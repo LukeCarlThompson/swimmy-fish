@@ -88,7 +88,7 @@ const App = () => {
           <Lighting />
           <Scene />
           <Sky azimuth={0} turbidity={5} rayleigh={0} inclination={0.8} sunPosition={[0.1, 5, -5]} distance={10000} />
-          <Particles count={1000} mouse={{ current: [0, 0] }} />
+          <Particles count={500} />
         </Suspense>
         <Fog />
         <color attach="background" args={worldStore.fogColor} />
