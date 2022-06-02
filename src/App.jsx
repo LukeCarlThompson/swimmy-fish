@@ -60,8 +60,6 @@ const Fog = () => {
 };
 
 const App = () => {
-  console.log("Scene mounted");
-
   return (
     <SceneStyles>
       <Canvas
