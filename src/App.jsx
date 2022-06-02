@@ -2,7 +2,7 @@ import React, { Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import styled from "styled-components";
 // import { useSpring, a } from '@react-spring/three';
-import { Sky, Stats, Environment } from "@react-three/drei";
+import { Sky, Stats, Environment, AdaptiveDpr, AdaptiveEvents, OrbitControls } from "@react-three/drei";
 import * as MathUtils from "three/src/math/MathUtils.js";
 import { PhysicsScene } from "./threejs/components/PhysicsScene";
 import Controls from "./threejs/components/Controls";
@@ -11,6 +11,10 @@ import Effects from "./threejs/components/Effects";
 import playerStore from "./stores/playerStore";
 import worldStore from "./stores/worldStore";
 import Particles from "./threejs/components/Particles";
+import BackgroundMounds from "./threejs/components/BackgroundMounds";
+import Seaweed from "./threejs/components/Seaweed";
+import BackgroundImages from "./threejs/components/BackgroundImages";
+import { PerformanceControl } from "./threejs/components/PerformanceControl";
 // import envImgUrl from './images/blue-env.hdr';
 
 const SceneStyles = styled.div`
@@ -20,8 +24,6 @@ const SceneStyles = styled.div`
 `;
 
 const CameraMovement = () => {
-  console.log("Camera movement");
-
   useFrame((state, delta) => {
     const [x, y, z] = playerStore.position;
     const [velocityX, velocityY, velocityZ] = playerStore.velocity;
@@ -64,8 +66,13 @@ const App = () => {
     <SceneStyles>
       <Canvas
         // frameloop="demand"
+        performance={{
+          min: 0.1,
+          max: 1,
+          debounce: 200,
+        }}
+        shadows
         mode="concurrent"
-        colorManagement
         camera={{
           position: [0, 0, 20],
           fov: 45,
@@ -73,25 +80,25 @@ const App = () => {
           near: 0.1,
         }}
       >
-        {/* <OrbitControls
-          enabled
-          target={[0, -20, 0]}
-          minDistance={20}
-          maxDistance={60}
-        /> */}
-        <Sky azimuth={0} turbidity={5} rayleigh={0} inclination={0.8} sunPosition={[0.1, 5, -5]} distance={10000} />
+        {/* <OrbitControls enabled target={[0, -20, 0]} minDistance={20} maxDistance={200} /> */}
+        <Sky azimuth={0} turbidity={3.5} rayleigh={2} inclination={1} sunPosition={[0.1, 5, -5]} distance={100} />
         <Fog />
-        <color attach="background" args={worldStore.fogColor} />
-
+        <color attach="background" args={[worldStore.fogColor]} />
         <Suspense fallback={null}>
           <Environment files="./blue-env-02.hdr" />
           <Lighting />
           <PhysicsScene />
-          <Particles count={1000} />
+          <BackgroundImages />
+          <Seaweed number={1000} />
+          <BackgroundMounds />
+          <Particles count={500} />
         </Suspense>
         <CameraMovement />
         <Controls />
         {/* <Effects /> */}
+        <PerformanceControl />
+        <AdaptiveDpr pixelated />
+        <AdaptiveEvents />
         <Stats
           showPanel={0} // Start-up panel (default=0)
           className="stats" // Optional className to add to the stats container dom element

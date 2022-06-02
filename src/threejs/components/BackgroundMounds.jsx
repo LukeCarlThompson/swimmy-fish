@@ -13,7 +13,7 @@ const Sphere = (props) => {
 
   return (
     <>
-      <sphereGeometry args={(Math.random() * 0.5 + 0.75) * 6} />
+      <sphereGeometry args={[(Math.random() * 0.5 + 0.75) * 6]} />
       <meshPhongMaterial
         attach="material"
         color={worldStore.groundBaseColor}

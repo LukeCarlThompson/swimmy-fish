@@ -26,13 +26,13 @@ const Lighting = () => {
 
   return (
     <>
-      <ambientLight ref={ambientLightRef} intensity={0.1} color="white" />
+      <ambientLight ref={ambientLightRef} intensity={0.3} color="white" />
       <spotLight
         ref={spotLightRef}
-        position={[0, 200, -300]}
+        position={[0, 150, -300]}
         angle={0.3}
-        intensity={10}
-        distance={500}
+        intensity={50}
+        distance={400}
         decay={3}
         penumbra={1}
         color="white"
