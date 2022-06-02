@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect } from "react";
+import React, { useRef, useLayoutEffect, useMemo } from "react";
 // import { useSpring, a } from '@react-spring/three';
 import { useFrame } from "@react-three/fiber";
 import { useSphere } from "@react-three/cannon";
@@ -11,18 +11,18 @@ import { sigmoid, degToRad } from "../helpers";
 
 // TODO: Try and use instances of a cube for the fish geometry to increase performance
 
-const BodyMaterial = (props) => {
+const BodyMaterial = ({ color }) => {
   const bodyMaterialRef = useRef();
 
   useFrame(() => {
-    const { position } = playerStore;
-
     // Modify player material appearance based on depth
-    bodyMaterialRef.current.envMapIntensity = position[1] > 0 ? 1 : 1 + position[1] * 0.1;
-    bodyMaterialRef.current.clearcoat = position[1] > 0 ? 1 : 1 + position[1] * 0.1;
-    bodyMaterialRef.current.reflectivity = position[1] > 0 ? 0.3 : 0.3 + position[1] * 0.1;
-    bodyMaterialRef.current.roughness = position[1] > -3 ? 0.7 : 0.7 - position[1] * 0.1;
+    bodyMaterialRef.current.envMapIntensity = playerStore.position[1] > 0 ? 1 : 1 + playerStore.position[1] * 0.1;
+    // bodyMaterialRef.current.clearcoat = position[1] > 0 ? 1 : 1 + position[1] * 0.1;
+    // bodyMaterialRef.current.reflectivity = position[1] > 0 ? 0.3 : 0.3 + position[1] * 0.1;
+    // bodyMaterialRef.current.roughness = position[1] > -3 ? 0.7 : 0.7 - position[1] * 0.1;
   });
+
+  console.log("body material");
 
   return (
     <meshPhysicalMaterial
@@ -35,12 +35,12 @@ const BodyMaterial = (props) => {
       metalness={0.5}
       clearcoat={1}
       clearcoatRoughness={0.2}
-      color={props.color || "purple"}
+      color={color || "purple"}
     />
   );
 };
 
-const Tail = (props) => {
+const Tail = ({ material }) => {
   const tailRef = useRef();
   const tailSecondRef = useRef();
   const tailThirdRef = useRef();
@@ -65,42 +65,42 @@ const Tail = (props) => {
 
   return (
     <group ref={tailRef} name="tail">
-      <RoundedBox args={[1, 0.75, 0.6]} position={[-0.5, 0.05, 0]} radius={0.2} smoothness={2} receiveShadow castShadow>
-        <BodyMaterial color={props.color} />
+      <RoundedBox args={[1, 0.75, 0.6]} position={[-0.5, 0.05, 0]} radius={0.2} smoothness={1} receiveShadow castShadow>
+        {material}
       </RoundedBox>
       <group ref={tailSecondRef} position={[-1, 0, 0]}>
         <RoundedBox
           args={[0.6, 0.6, 0.3]}
           position={[-0.1, 0, 0]}
           radius={0.05}
-          smoothness={2}
+          smoothness={1}
           receiveShadow
           castShadow
         >
-          <BodyMaterial color={props.color} />
+          {material}
         </RoundedBox>
         <group ref={tailThirdRef} position={[-0.4, 0, 0]}>
           <RoundedBox
             args={[0.75, 0.4, 0.1]}
             position={[-0.1, 0.15, 0]}
             radius={0.05}
-            smoothness={2}
+            smoothness={1}
             rotation={[0, 0, -10]}
             receiveShadow
             castShadow
           >
-            <BodyMaterial color={props.color} />
+            {material}
           </RoundedBox>
           <RoundedBox
             args={[0.75, 0.4, 0.1]}
             position={[-0.1, -0.15, 0]}
             radius={0.05}
-            smoothness={2}
+            smoothness={1}
             rotation={[0, 0, 10]}
             receiveShadow
             castShadow
           >
-            <BodyMaterial color={props.color} />
+            {material}
           </RoundedBox>
         </group>
       </group>
@@ -131,7 +131,7 @@ const EyeBall = (props) => {
   );
 };
 
-const Player = (props) => {
+const Player = ({ material = <BodyMaterial color="#e07e28" /> }) => {
   const [playerPhysicsRef, api] = useSphere(() => ({
     mass: 1,
     position: [0, 0, 0],
@@ -141,7 +141,6 @@ const Player = (props) => {
     // fixedRotation: true,
     args: [1],
     allowSleep: false,
-    ...props,
   }));
   const leftFinRef = useRef();
   const rightFinRef = useRef();
@@ -245,7 +244,7 @@ const Player = (props) => {
     playerStore.rotation = [rotation.x, rotation.y, rotation.z];
 
     // Calculate the angle from the player to the mouse position
-    // If the mouse is close to the player use the angle oterh wise just flip it to left or right
+    // If the mouse is close to the player use the angle otherwise just flip it to left or right
     const mouseYAngle =
       abs(mouseX) < 3 ? atan2(mouseX, abs(mouseY)) - Math.PI * 0.5 : mouseX > 0 ? degToRad(1) : degToRad(-179);
     const mouseZAngle = atan2(mouseY, abs(mouseX));
@@ -278,11 +277,11 @@ const Player = (props) => {
           args={[1.5, 1.2, 0.8]}
           position={[0.25, 0.1, 0]}
           radius={0.2}
-          smoothness={2}
+          smoothness={1}
           receiveShadow
           castShadow
         >
-          <BodyMaterial color={props.color} />
+          {material}
         </RoundedBox>
         <RoundedBox
           name="player-body-mouth"
@@ -290,23 +289,23 @@ const Player = (props) => {
           position={[0.8, -0.25, 0]}
           rotation={[0, 0, 0]}
           radius={0.2}
-          smoothness={2}
+          smoothness={1}
           receiveShadow
           castShadow
         >
-          <BodyMaterial color={props.color} />
+          {material}
         </RoundedBox>
         <RoundedBox
           name="player-dorsal-fin"
           args={[0.5, 0.5, 0.05]}
           position={[0.25, 0.7, 0]}
           radius={0.05}
-          smoothness={2}
+          smoothness={1}
           rotation={[0, 0, 10]}
           receiveShadow
           castShadow
         >
-          <BodyMaterial color={props.color} />
+          {material}
         </RoundedBox>
         <RoundedBox
           ref={leftFinRef}
@@ -314,11 +313,11 @@ const Player = (props) => {
           args={[0.5, 0.1, 0.6]}
           position={[-0, -0.25, 0.4]}
           radius={0.05}
-          smoothness={2}
+          smoothness={1}
           receiveShadow
           castShadow
         >
-          <BodyMaterial color={props.color} />
+          {material}
         </RoundedBox>
         <RoundedBox
           ref={rightFinRef}
@@ -326,18 +325,18 @@ const Player = (props) => {
           args={[0.5, 0.1, 0.6]}
           position={[-0, -0.25, -0.4]}
           radius={0.05}
-          smoothness={2}
+          smoothness={1}
           receiveShadow
           castShadow
         >
-          <BodyMaterial color={props.color} />
+          {material}
         </RoundedBox>
         <RoundedBox
           name="player-lips"
           args={[0.1, 0.1, 0.5]}
           position={[1.11, -0.3, 0]}
           radius={0.05}
-          smoothness={2}
+          smoothness={1}
           receiveShadow
           castShadow
         >
@@ -345,7 +344,7 @@ const Player = (props) => {
         </RoundedBox>
         <EyeBall name="player-left-eye" position={[0.6, 0.1, 0.35]} />
         <EyeBall name="player-right-eye" position={[0.6, 0.1, -0.35]} mirror />
-        <Tail name="player-tail-group" color={props.color} />
+        <Tail name="player-tail-group" material={material} />
       </group>
     </group>
   );

@@ -115,7 +115,7 @@ const PhysicsScene = (props) => {
         allowSleep
       >
         <WaterSurface />
-        <Player color="#e07e28" />
+        <Player />
         <Ball position={[-3, -3, 0]} size={1.2} />
         <UnderwaterBackground />
         <Floor />
