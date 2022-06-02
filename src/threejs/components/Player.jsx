@@ -149,8 +149,6 @@ const Player = (props) => {
   const vec3 = new Vector3();
   const { abs, sin, atan2 } = Math;
 
-  console.log("Player");
-
   useLayoutEffect(() => {
     // Save the player uuid to state
     playerStore.uuid = playerPhysicsRef.current.uuid;
@@ -158,7 +156,6 @@ const Player = (props) => {
     playerStore.cannonApi = api;
 
     // Subscribe the velocity, position and rotation from Cannon to some local refs
-    console.count("subscribed");
     const unsubscribeVelocity = api.velocity.subscribe((v) => {
       playerStore.velocity = v;
     });
@@ -172,7 +169,6 @@ const Player = (props) => {
     });
 
     return () => {
-      console.count("unsubscribed");
       unsubscribeVelocity();
       unsubscribePosition();
       unsubscribeDamping();
@@ -233,7 +229,7 @@ const Player = (props) => {
       api.applyImpulse([positionX * -0.01, 0, 0], [0, 0, 0]);
     }
 
-    // Velcoity factor for the head wobble
+    // Velocity factor for the head wobble
     const velocityInput = abs(velocityY) + abs(positionY) + abs(velocityX) + abs(positionX);
     // Main player body wobble when idle and when swimming
     const wobble = sin(velocityInput + state.clock.getElapsedTime() * 4) * -10;
