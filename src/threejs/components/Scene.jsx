@@ -106,8 +106,6 @@ const Floor = (props) => {
 };
 
 const Scene = (props) => {
-  console.log("Scene");
-
   return (
     <>
       <Physics
