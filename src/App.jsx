@@ -89,7 +89,7 @@ const App = () => {
           <Lighting />
           <PhysicsScene />
           <BackgroundImages />
-          <Seaweed number={500} />
+          <Seaweed number={200} />
           <BackgroundMounds />
           <Particles count={100} />
         </Suspense>

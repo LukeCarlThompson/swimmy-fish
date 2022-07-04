@@ -1,9 +1,8 @@
-import React, { useRef, useMemo, Suspense, useLayoutEffect } from "react";
-import { useFrame, useThree, Canvas, useLoader, extend } from "@react-three/fiber";
+import React, { useRef, useLayoutEffect } from "react";
+import { useFrame, useLoader } from "@react-three/fiber";
 import { Object3D } from "three/src/core/Object3D.js";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import worldStore from "../../stores/worldStore";
-import imgUrl from "../../images/seaweed-02.png";
 import imgUrlWide from "../../images/seaweed-03.png";
 
 const SeaweedWide = ({ number }) => {
@@ -15,12 +14,13 @@ const SeaweedWide = ({ number }) => {
   const coordsRef = useRef(
     Array.from(Array(number)).map((item) => [Math.random() - 0.5, Math.random(), Math.random() * 0.5])
   );
+
   const mesh = useRef();
   const dummy = useRef(new Object3D());
   const positions = useRef(
     coordsRef.current.map((item, i) => {
       const positionX = item[0] * 200;
-      const positionZ = item[1] * -180 + 10;
+      const positionZ = item[1] * -100 + 10;
       const rotationY = item[2];
 
       return { positionX, positionZ, rotationY };
@@ -32,7 +32,7 @@ const SeaweedWide = ({ number }) => {
     positions.current.forEach((item, i) => {
       const { positionX, positionZ, rotationY } = item;
       const randomHeight = Math.random() * Math.random() * 2 + 0.2;
-      item.position = [positionX, -10, positionZ - Math.sin(i) * 100];
+      item.position = [positionX, -10, positionZ - (Math.sin(i) + 1) * 10];
 
       dummy.current.position.set(...item.position);
 
@@ -78,91 +78,10 @@ const SeaweedWide = ({ number }) => {
   );
 };
 
-const Plane = (props) => {
-  const colorMap = useLoader(TextureLoader, imgUrl);
-  // This positions the texture on the plane. Puts the bottom center at the middle of the plane;
-  colorMap.offset.set(0, -1);
-  colorMap.repeat.set(1, 2);
-
-  return (
-    <>
-      <planeGeometry args={[5, 16]} />
-      <meshLambertMaterial
-        attach="material"
-        color={worldStore.groundBaseColor}
-        transparent
-        alphaTest={0.5}
-        // opacity={1}
-        map={colorMap}
-        // alphaMap={colorMap}
-        // normalMap={colorMap}
-        // roughnessMap={colorMap}
-        // aoMap={colorMap}
-      />
-    </>
-  );
-};
-
-const SeaweedTall = (number) => {
-  const coordsRef = useRef(
-    Array.from(Array(number)).map((item, i) => [Math.sin(i) - 0.5, Math.random(), Math.random()])
-  );
-  const mesh = useRef();
-  const dummy = useRef(new Object3D());
-  const positions = useRef(
-    coordsRef.current.map((item, i) => {
-      const positionX = item[0] * 200;
-      const positionZ = item[1] * -180 + 10;
-      const rotationY = item[2];
-
-      return { positionX, positionZ, rotationY };
-    }),
-    []
-  );
-
-  useLayoutEffect(() => {
-    positions.current.forEach((item, i) => {
-      const { positionX, positionZ, rotationY } = item;
-      const randomHeight = Math.random() * Math.random() * 2 + 0.2;
-      item.position = [positionX, -10, positionZ - Math.sin(i) * 100];
-
-      dummy.current.position.set(...item.position);
-
-      item.scale = [randomHeight, randomHeight + (Math.random() - 0.5), 1];
-      dummy.current.scale.set(...item.scale);
-      dummy.current.updateMatrix();
-      mesh.current.setMatrixAt(i, dummy.current.matrix);
-    });
-    mesh.current.instanceMatrix.needsUpdate = true;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const { sin } = Math;
-
-  useFrame((state) => {
-    positions.current.forEach((item, i) => {
-      const motion = sin(state.clock.elapsedTime + item.position[0] * 0.03) * 0.1;
-      dummy.current.scale.set(...item.scale);
-      dummy.current.position.set(...item.position);
-      dummy.current.rotation.set(motion * 1, motion * -2, motion);
-      dummy.current.updateMatrix();
-      mesh.current.setMatrixAt(i, dummy.current.matrix);
-    });
-    mesh.current.instanceMatrix.needsUpdate = true;
-  });
-
-  return (
-    <instancedMesh ref={mesh} args={[null, null, positions.current.length]}>
-      <Plane />
-    </instancedMesh>
-  );
-};
-
 const Seaweed = ({ number }) => {
   return (
     <>
-      <SeaweedTall number={number * 0.5} />
-      <SeaweedWide number={number * 0.5} />
+      <SeaweedWide number={number} />
     </>
   );
 };
